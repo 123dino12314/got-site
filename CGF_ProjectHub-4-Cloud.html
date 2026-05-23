@@ -2542,16 +2542,23 @@ window.cloudSave = async (data) => {
   const ind = document.getElementById('save-indicator');
   if(ind){ ind.textContent = '↑ A guardar…'; ind.style.color = 'var(--fg3)'; }
   try {
-    await setDoc(doc(db, "projects", "cgf"), {
-      ...data,
-      _lastBy: currentUsername,
-      _lastAt: new Date().toISOString()
-    });
+    const timeout = new Promise((_,rej) => setTimeout(() => rej(new Error('timeout')), 8000));
+    await Promise.race([
+      setDoc(doc(db, "projects", "cgf"), {
+        ...data,
+        _lastBy: currentUsername,
+        _lastAt: new Date().toISOString()
+      }),
+      timeout
+    ]);
     if(ind){ ind.textContent = '✓ Guardado'; ind.style.color = 'var(--green)'; setTimeout(()=>{ ind.textContent=''; }, 3000); }
   } catch(e) {
-    console.error("Cloud save error", e);
-    if(ind){ ind.textContent = '✕ Erro ao guardar'; ind.style.color = 'var(--red)'; }
-    toast("Erro ao guardar na nuvem: " + e.message);
+    console.error("Cloud save error", e.message, "role:", currentRole, "user:", currentUsername);
+    if(ind){ ind.textContent = '✕ Erro ao guardar'; ind.style.color = 'var(--red)'; setTimeout(()=>{ ind.textContent=''; }, 6000); }
+    const msg = e.message === 'timeout'
+      ? 'Timeout: verifica as regras do Firestore e a ligação'
+      : e.message;
+    toast("Erro: " + msg);
   }
 };
 
