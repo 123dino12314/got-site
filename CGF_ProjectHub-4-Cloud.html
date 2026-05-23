@@ -1098,7 +1098,7 @@ body.view-public.show-login .landing-section{filter:blur(2px) brightness(0.4);po
   <div class="modal" style="text-align:center;">
     <div class="modal-h"><h2>A Aguardar Aprovação ⏳</h2></div>
     <div class="modal-b">
-      <p style="color:var(--fg2); margin-bottom:1.5rem;">A tua conta foi criada, mas precisa de ser aprovada pelo Dono do projeto (dino5651) para teres acesso ao conteúdo.</p>
+      <p style="color:var(--fg2); margin-bottom:1.5rem;">A tua conta foi criada. Aguarda a aprovação do Dono do projeto — assim que aprovado, recebes automaticamente o cargo de <strong>Desenvolvedor</strong> e terás acesso ao dashboard.</p>
       <button class="btn btn-ghost" onclick="window.logoutUser()">Sair da Conta</button>
     </div>
   </div>
@@ -1134,8 +1134,13 @@ body.view-public.show-login .landing-section{filter:blur(2px) brightness(0.4);po
       <button class="btn btn-sm btn-icon" onclick="closeModal('m-team')">✕</button>
     </div>
     <div class="modal-b">
+      <div id="team-pending-section" style="margin-bottom:1rem;display:none;">
+        <div style="font-size:0.7rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;">⏳ A Aguardar Aprovação</div>
+        <table class="team-table"><tbody id="team-pending"></tbody></table>
+      </div>
+      <div style="font-size:0.7rem;font-weight:700;color:var(--fg3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;">Equipa Ativa</div>
       <table class="team-table">
-        <thead><tr><th>Email</th><th>Função</th><th>Último Acesso</th><th>Ações</th></tr></thead>
+        <thead><tr><th>Utilizador</th><th>Cargo</th><th>Último Acesso</th><th>Ações</th></tr></thead>
         <tbody id="team-list"></tbody>
       </table>
     </div>
@@ -2731,37 +2736,60 @@ async function updateOnlineCount() {
 // ─── TEAM MANAGEMENT ─────────────────────────────────────
 async function loadTeam(){
   const snap = await getDocs(collection(db, "users"));
-  const html = [];
+  const pending = [], active = [];
   snap.forEach(d => {
-    const u = d.data();
-    const id = d.id;
-    const isOnline = (new Date() - new Date(u.last_online)) < 300000;
-    const onlineBadge = isOnline ? `<span style="color:#10b981;font-size:0.7rem;margin-left:5px;">● Online</span>` : '';
-    const dStr = new Date(u.last_online).toLocaleString('pt-PT');
-    const uName = u.email ? u.email.split('@')[0] : 'Anon';
-    html.push(`<tr>
-      <td>${uName} <span style="color:var(--fg3);font-size:0.75rem;">(${u.email || ''})</span>${onlineBadge}</td>
+    const u = d.data(); u._uid = d.id;
+    if(u.role === 'guest' && u.status !== 'banned') pending.push(u);
+    else active.push(u);
+  });
+
+  const row = (u, isPending) => {
+    const name = u.displayName || (u.email ? u.email.split('@')[0] : 'Anon');
+    const isOnline = u.last_online && (new Date() - new Date(u.last_online)) < 300000;
+    const onlineDot = isOnline ? ' <span style="color:#10b981;font-size:0.7rem;">●</span>' : '';
+    const lastSeen = u.last_online ? new Date(u.last_online).toLocaleString('pt-PT') : '—';
+    if(isPending) return `<tr>
+      <td>${name}${onlineDot} <span style="color:var(--fg3);font-size:0.72rem;">${u.email||''}</span></td>
+      <td><span style="color:var(--accent);font-size:0.72rem;">Pendente</span></td>
+      <td>${lastSeen}</td>
+      <td style="display:flex;gap:0.3rem;">
+        <button class="btn btn-sm btn-accent" onclick="window.approveUser('${u._uid}')">✓ Aprovar</button>
+        <button class="btn btn-sm btn-danger" onclick="window.toggleBan('${u._uid}','active')">Banir</button>
+      </td>
+    </tr>`;
+    return `<tr>
+      <td>${name}${onlineDot} <span style="color:var(--fg3);font-size:0.72rem;">${u.email||''}</span></td>
       <td>
-        <select class="inp" style="padding:0.2rem;font-size:0.75rem;" onchange="window.changeRole('${id}', this.value)">
-          <option value="guest" ${u.role==='guest'?'selected':''}>Visitante</option>
-          <option value="dev" ${u.role==='dev'?'selected':''}>Dev</option>
+        <select class="inp" style="padding:0.2rem;font-size:0.75rem;" onchange="window.changeRole('${u._uid}', this.value)">
+          <option value="dev" ${u.role==='dev'?'selected':''}>Desenvolvedor</option>
           <option value="owner" ${u.role==='owner'?'selected':''}>Dono</option>
         </select>
       </td>
-      <td>${dStr}</td>
+      <td>${lastSeen}</td>
       <td>
-        <button class="btn btn-sm ${u.status==='banned'?'btn-accent':'btn-danger'}" onclick="window.toggleBan('${id}', '${u.status}')">
+        <button class="btn btn-sm ${u.status==='banned'?'btn-accent':'btn-danger'}" onclick="window.toggleBan('${u._uid}','${u.status||'active'}')">
           ${u.status==='banned'?'Desbanir':'Banir'}
         </button>
       </td>
-    </tr>`);
-  });
-  document.getElementById('team-list').innerHTML = html.join('');
+    </tr>`;
+  };
+
+  const ps = document.getElementById('team-pending-section');
+  const pb = document.getElementById('team-pending');
+  if(pending.length){ ps.style.display='block'; pb.innerHTML=pending.map(u=>row(u,true)).join(''); }
+  else { ps.style.display='none'; pb.innerHTML=''; }
+  document.getElementById('team-list').innerHTML = active.map(u=>row(u,false)).join('') || '<tr><td colspan="4" style="color:var(--fg3);font-size:0.8rem;padding:0.5rem 0;">Sem membros ainda.</td></tr>';
 }
 
+window.approveUser = async (uid) => {
+  await updateDoc(doc(db, "users", uid), { role: 'dev' });
+  toast("Utilizador aprovado como Desenvolvedor.");
+  loadTeam();
+};
 window.changeRole = async (uid, newRole) => {
+  if(newRole !== 'dev' && newRole !== 'owner') return;
   await updateDoc(doc(db, "users", uid), { role: newRole });
-  toast("Função actualizada.");
+  toast("Cargo actualizado.");
   loadTeam();
 };
 
