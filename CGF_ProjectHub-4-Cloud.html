@@ -977,6 +977,24 @@ body.view-public.show-login .landing-section{filter:blur(2px) brightness(0.4);po
 <div class="pg-title">IA Assistente</div>
 <div class="pg-sub">Chat com memória de conversa · Muda de modo conforme o que precisas</div>
 
+<!-- API KEY SETUP BANNER -->
+<div id="ai-setup-banner" style="display:none;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.35);border-radius:var(--radius);padding:0.9rem 1rem;margin-bottom:0.75rem;">
+  <div style="font-size:0.82rem;font-weight:700;color:var(--accent);margin-bottom:0.5rem;">⚙ Configura a chave da IA antes de começar</div>
+  <div style="font-size:0.78rem;color:var(--fg2);line-height:1.6;margin-bottom:0.65rem;">
+    A IA usa a API do Google Gemini (gratuita). Cada membro da equipa precisa de configurar a sua própria chave — é rápido:
+    <ol style="margin:0.4rem 0 0 1.1rem;padding:0;display:flex;flex-direction:column;gap:0.2rem;">
+      <li>Abre <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--accent);font-weight:600;">aistudio.google.com/apikey</a></li>
+      <li>Clica <strong>"Create API key"</strong> e copia a chave</li>
+      <li>Cola no campo abaixo e clica <strong>Guardar</strong></li>
+    </ol>
+  </div>
+  <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+    <input class="inp" type="password" id="banner-gemini-key" placeholder="Cole aqui a tua chave Gemini…" style="flex:1;min-width:200px;font-size:0.78rem;padding:0.3rem 0.5rem;">
+    <button class="btn btn-accent" style="font-size:0.78rem;" onclick="saveBannerKey()">Guardar e activar</button>
+  </div>
+  <div style="font-size:0.65rem;color:var(--fg3);margin-top:0.4rem;">A chave fica guardada só no teu browser — nunca é partilhada ou enviada para o código.</div>
+</div>
+
 <!-- Role Tabs -->
 <div class="ai-roles" id="ai-roles">
   <button class="ai-role active" data-role="geral" onclick="switchRole('geral')"><span class="ai-role-icon">◈</span>Geral</button>
@@ -1322,6 +1340,7 @@ function nav(p){
   if(p==='phases')renderPhases();
   if(p==='lore')renderLore();
   if(p==='build')renderBuild();
+  if(p==='ai')updateAISetupBanner();
   if(window.innerWidth<769){document.getElementById('sidebar').classList.remove('open');document.getElementById('mob-overlay').classList.remove('open');}
 }
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('mob-overlay').classList.toggle('open');}
@@ -1966,6 +1985,21 @@ const GEMINI_MODELS = [
   'gemini-2.0-flash-lite'
 ];
 
+function updateAISetupBanner(){
+  const banner = document.getElementById('ai-setup-banner');
+  if(!banner) return;
+  const hasKey = !!localStorage.getItem('custom_gemini_key');
+  banner.style.display = hasKey ? 'none' : 'block';
+}
+
+window.saveBannerKey = function() {
+  const key = document.getElementById('banner-gemini-key').value.trim();
+  if(!key){ toast('Cola a chave antes de guardar.'); return; }
+  localStorage.setItem('custom_gemini_key', key);
+  updateAISetupBanner();
+  toast('Chave activada! Já podes usar a IA.');
+};
+
 window.toggleApiKeyInput = function() {
   const container = document.getElementById('api-key-container');
   const input = document.getElementById('custom-gemini-key');
@@ -1981,12 +2015,13 @@ window.saveCustomKey = function() {
   const key = document.getElementById('custom-gemini-key').value.trim();
   if (key) {
     localStorage.setItem('custom_gemini_key', key);
-    toast('Chave Gemini API guardada! A IA agora usa a tua chave.');
+    toast('Chave Gemini API guardada!');
   } else {
     localStorage.removeItem('custom_gemini_key');
-    toast('Chave removida. A usar a chave padrão do site.');
+    toast('Chave removida.');
   }
   document.getElementById('api-key-container').style.display = 'none';
+  updateAISetupBanner();
 };
 
 // Core API call with fallback models
