@@ -114,7 +114,7 @@ a{color:var(--accent);text-decoration:none;}
 /* SYSTEM ITEM */
 .sys{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:0.5rem;overflow:hidden;transition:border-color 0.15s;}
 .sys:hover{border-color:var(--border2);}
-.sys.open{border-color:var(--accent);border-color:rgba(245,158,11,0.3);}
+.sys.open{border-color:rgba(245,158,11,0.3);}
 .sys-h{display:flex;align-items:center;gap:0.65rem;padding:0.75rem 1rem;cursor:pointer;}
 .sys-name{flex:1;font-size:0.85rem;font-weight:600;}
 .sys-chev{color:var(--fg3);font-size:0.6rem;transition:transform 0.2s;}
@@ -257,6 +257,12 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .team-table th { color: var(--fg2); font-weight: 600; }
 .ro-disabled { opacity: 0.4; pointer-events: none; }
 .hide-guest { display: none; }
+
+/* MISSING UTILITY CLASSES */
+.g1{display:grid;grid-template-columns:1fr;gap:0.75rem;margin-bottom:0.75rem;}
+.lbl{font-size:0.7rem;font-weight:600;color:var(--fg3);margin-bottom:0.3rem;display:block;}
+.modal-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
+.modal-h h2{font-size:1rem;font-weight:700;margin:0;}
 
 </style>
 </head>
@@ -976,10 +982,17 @@ function parseMD(text){
 
 const GEMINI_KEY='AIzaSyAItVoWBWWJxwT_EI-oW42SZu47DpAul0w';
 
+// Models to try in order (fallback chain)
+const GEMINI_MODELS = [
+  'gemini-2.0-flash',
+  'gemini-1.5-flash',
+  'gemini-2.0-flash-lite'
+];
+
 window.toggleApiKeyInput = function() {
   const container = document.getElementById('api-key-container');
   const input = document.getElementById('custom-gemini-key');
-  if (container.style.display === 'none') {
+  if (container.style.display === 'none' || container.style.display === '') {
     container.style.display = 'flex';
     input.value = localStorage.getItem('custom_gemini_key') || '';
   } else {
@@ -991,48 +1004,107 @@ window.saveCustomKey = function() {
   const key = document.getElementById('custom-gemini-key').value.trim();
   if (key) {
     localStorage.setItem('custom_gemini_key', key);
-    toast('Chave Gemini API guardada com sucesso!');
+    toast('Chave Gemini API guardada! A IA agora usa a tua chave.');
   } else {
     localStorage.removeItem('custom_gemini_key');
-    toast('A usar a chave Gemini API padrão do site.');
+    toast('Chave removida. A usar a chave padrão do site.');
   }
   document.getElementById('api-key-container').style.display = 'none';
 };
 
-async function sendAI(){
-  const inp=document.getElementById('ai-inp');const msg=inp.value.trim();if(!msg)return;inp.value='';
-  addMsg('usr',msg);
-  aiHistory.push({role:'user',parts:[{text:msg}]});
-  updateMsgCount();
-  addMsg('bot','<span class="ai-thinking">A pensar<span class="ai-dot"></span><span class="ai-dot"></span><span class="ai-dot"></span></span>');
+// Core API call with fallback models
+async function callGeminiAPI(sysPrompt, hist, activeKey) {
+  let lastError = null;
+  
+  for (const model of GEMINI_MODELS) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${activeKey}`;
+    try {
+      const r = await fetch(url, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          system_instruction: {parts: [{text: sysPrompt}]},
+          contents: hist,
+          generationConfig: {maxOutputTokens: 2048, temperature: 0.7}
+        })
+      });
+      const d = await r.json();
+      
+      if (d.error) {
+        lastError = d.error.message || JSON.stringify(d.error);
+        // If quota error, try next model
+        if (d.error.code === 429 || (d.error.message && d.error.message.includes('quota'))) {
+          console.warn(`Modelo ${model} com quota esgotada, a tentar próximo...`);
+          continue;
+        }
+        throw new Error(lastError);
+      }
+      
+      const text = d.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!text) throw new Error('Resposta vazia do modelo.');
+      return text;
+    } catch (fetchErr) {
+      lastError = fetchErr.message || 'Erro de rede';
+      // Network errors — try next model
+      if (fetchErr.name === 'TypeError' || (fetchErr.message && fetchErr.message.includes('quota'))) {
+        continue;
+      }
+      throw fetchErr;
+    }
+  }
+  
+  // All models failed
+  throw new Error(lastError || 'Todos os modelos falharam.');
+}
 
-  const sysPrompt=buildSystemPrompt();
-  // Mantém últimas 20 mensagens para não exceder tokens
-  const hist=aiHistory.slice(-20);
+let _aiRetryData = null;
 
+async function sendAI(isRetry) {
+  const inp = document.getElementById('ai-inp');
+  
+  if (!isRetry) {
+    const msg = inp.value.trim();
+    if (!msg) return;
+    inp.value = '';
+    addMsg('usr', msg);
+    aiHistory.push({role: 'user', parts: [{text: msg}]});
+    updateMsgCount();
+  }
+  
+  // Show loading
+  addMsg('bot', '<span class="ai-thinking">A pensar<span class="ai-dot"></span><span class="ai-dot"></span><span class="ai-dot"></span></span>');
+
+  const sysPrompt = buildSystemPrompt();
+  const hist = aiHistory.slice(-20);
   const activeKey = localStorage.getItem('custom_gemini_key') || GEMINI_KEY;
-  const activeUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + activeKey;
 
-  try{
-    const r=await fetch(activeUrl,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        system_instruction:{parts:[{text:sysPrompt}]},
-        contents:hist,
-        generationConfig:{maxOutputTokens:2048,temperature:0.7}
-      })
-    });
-    const d=await r.json();
-    if(d.error){throw new Error(d.error.message);}
-    const t=d.candidates?.[0]?.content?.parts?.[0]?.text||'Sem resposta.';
-    aiHistory.push({role:'model',parts:[{text:t}]});
-    const lastBot=document.querySelector('.ai-msg.bot:last-child .ai-bubble');
-    if(lastBot) lastBot.innerHTML=parseMD(t);
-  }catch(e){
-    const lastBot=document.querySelector('.ai-msg.bot:last-child .ai-bubble');
-    if(lastBot) lastBot.innerHTML='Erro de ligação: '+e.message+'. Verifica a consola.';
-    console.error(e);
+  try {
+    const text = await callGeminiAPI(sysPrompt, hist, activeKey);
+    aiHistory.push({role: 'model', parts: [{text: text}]});
+    const lastBot = document.querySelector('.ai-msg.bot:last-child .ai-bubble');
+    if (lastBot) lastBot.innerHTML = parseMD(text);
+    _aiRetryData = null;
+  } catch(e) {
+    const lastBot = document.querySelector('.ai-msg.bot:last-child .ai-bubble');
+    const isQuota = e.message && (e.message.includes('quota') || e.message.includes('429') || e.message.includes('exceeded'));
+    
+    let errorHTML = '';
+    if (isQuota) {
+      errorHTML = `<div style="color:var(--red);font-size:0.8rem;">
+        <strong>Limite da API atingido.</strong> A chave Gemini gratuita esgotou a cota diária.<br><br>
+        <strong>Solução:</strong> Clica em <strong>⚙ API Key</strong> abaixo e coloca a tua própria chave.<br>
+        Podes criar uma grátis em <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--accent);">aistudio.google.com/apikey</a><br><br>
+        <button class="btn btn-sm btn-accent" onclick="sendAI(true)" style="margin-top:0.3rem;">↻ Tentar novamente</button>
+      </div>`;
+    } else {
+      errorHTML = `<div style="color:var(--red);font-size:0.8rem;">
+        Erro: ${e.message}<br>
+        <button class="btn btn-sm btn-accent" onclick="sendAI(true)" style="margin-top:0.5rem;">↻ Tentar novamente</button>
+      </div>`;
+    }
+    
+    if (lastBot) lastBot.innerHTML = errorHTML;
+    console.error('AI Error:', e);
   }
 }
 function addMsg(r,t){const m=document.getElementById('ai-msgs');const d=document.createElement('div');d.className='ai-msg '+r;const label=r==='usr'?'Tu':aiLabels[aiRole];d.innerHTML=`<div><div class="ai-who">${label}</div><div class="ai-bubble">${r==='bot'?t:t.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`;m.appendChild(d);m.scrollTop=m.scrollHeight;}
