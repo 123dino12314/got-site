@@ -940,19 +940,17 @@ body.view-public.show-login .landing-section{filter:blur(2px) brightness(0.4);po
 <!-- LORE -->
 <div class="panel" id="p-lore">
 <div class="pg-title">📜 Lore Maker</div>
-<div class="pg-sub">Facções, personagens, regiões, eventos — tudo o que dá vida ao mundo</div>
-<div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem;" id="lore-filter-cats">
-  <button class="btn btn-sm" onclick="setLoreCat('')" id="lf-all">Todos</button>
-  <button class="btn btn-sm" onclick="setLoreCat('Facção')" id="lf-fac">Facção</button>
-  <button class="btn btn-sm" onclick="setLoreCat('Personagem')" id="lf-per">Personagem</button>
-  <button class="btn btn-sm" onclick="setLoreCat('Região')" id="lf-reg">Região</button>
-  <button class="btn btn-sm" onclick="setLoreCat('Evento')" id="lf-ev">Evento</button>
-  <button class="btn btn-sm" onclick="setLoreCat('Item')" id="lf-item">Item</button>
-  <button class="btn btn-sm" onclick="setLoreCat('Magia')" id="lf-mag">Magia</button>
+<div class="pg-sub">Caderno de ideias — rascunha livremente, depois transforma em sistemas</div>
+<div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem;">
+  <button class="btn btn-sm btn-accent" id="ls-all" onclick="setLoreStatus('')">Todas</button>
+  <button class="btn btn-sm" id="ls-draft" onclick="setLoreStatus('draft')">📝 Rascunho</button>
+  <button class="btn btn-sm" id="ls-developed" onclick="setLoreStatus('developed')">✦ Desenvolvida</button>
+  <button class="btn btn-sm" id="ls-archived" onclick="setLoreStatus('archived')">🗃 Arquivada</button>
 </div>
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem;">
-  <div id="lore-stats" style="font-size:0.73rem;color:var(--fg3);"></div>
-  <button class="btn btn-accent auth-write" onclick="openModal('m-lore')">+ Nova Entrada</button>
+<div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:0.75rem;flex-wrap:wrap;">
+  <input class="search-inp" id="lore-search" placeholder="🔍 Pesquisar por título ou tag…" style="flex:1;min-width:180px;" oninput="renderLore()">
+  <div id="lore-stats" style="font-size:0.73rem;color:var(--fg3);white-space:nowrap;"></div>
+  <button class="btn btn-accent auth-write" onclick="openModal('m-lore')">+ Nova Ideia</button>
 </div>
 <div id="lore-list"></div>
 </div>
@@ -1080,20 +1078,13 @@ body.view-public.show-login .landing-section{filter:blur(2px) brightness(0.4);po
 <!-- MODAL: EDIT TIMELINE -->
 <!-- MODAL: LORE -->
 <div class="modal-bg" id="m-lore"><div class="modal">
-  <div class="modal-t">📜 Nova Entrada de Lore</div>
+  <div class="modal-t">📜 Nova Ideia de Lore</div>
   <div class="field"><div class="field-l">Título *</div><input class="inp" id="ml-name" placeholder="Ex: A Ordem dos Corvos"></div>
-  <div class="g2">
-    <div class="field"><div class="field-l">Categoria</div>
-      <select class="inp" id="ml-cat">
-        <option>Facção</option><option>Personagem</option><option>Região</option><option>Evento</option><option>Item</option><option>Magia</option>
-      </select>
-    </div>
-    <div class="field"><div class="field-l">Prazo (opcional)</div><input class="inp" type="date" id="ml-dl"></div>
-  </div>
-  <div class="field"><div class="field-l">Texto / Lore</div><textarea class="inp" id="ml-text" rows="5" placeholder="Escreve o lore aqui… ou deixa em branco e usa a IA depois."></textarea></div>
+  <div class="field"><div class="field-l">Tags <span style="font-weight:400;color:var(--fg3);">(separadas por vírgula)</span></div><input class="inp" id="ml-tags" placeholder="Ex: magia, facção, norte, segredo"></div>
+  <div class="field"><div class="field-l">Texto / Ideia</div><textarea class="inp" id="ml-text" rows="5" placeholder="Escreve o que tiveres — pode ser um parágrafo, um nome, uma citação, qualquer coisa. A IA ajuda a desenvolver depois."></textarea></div>
   <div class="modal-foot">
     <button class="btn" onclick="closeModal('m-lore')">Cancelar</button>
-    <button class="btn btn-accent" onclick="addLore()">Criar Entrada</button>
+    <button class="btn btn-accent" onclick="addLore()">Guardar Ideia</button>
   </div>
 </div></div>
 
@@ -1509,78 +1500,81 @@ function delAsset(id){D.assets=D.assets.filter(x=>x.id!==id);renderModel();save(
 function addAsset(){const n=document.getElementById('ma-name').value.trim();if(!n)return;D.assets.push({id:++D.nid,name:n,cat:document.getElementById('ma-cat').value,deadline:document.getElementById('ma-dl').value,priority:parseInt(document.getElementById('ma-pri').value)||99,status:'todo'});closeModal('m-asset');document.getElementById('ma-name').value='';renderModel();toast('Asset adicionado.');save();}
 
 // ─── RENDER: LORE ────────────────────────────────────────
-let loreCatFilter='';
-function setLoreCat(c){
-  loreCatFilter=c;
-  document.querySelectorAll('#lore-filter-cats .btn').forEach(b=>{b.classList.remove('btn-accent');});
-  const ids={'':"lf-all",'Facção':'lf-fac','Personagem':'lf-per','Região':'lf-reg','Evento':'lf-ev','Item':'lf-item','Magia':'lf-mag'};
-  const el=document.getElementById(ids[c]);if(el)el.classList.add('btn-accent');
+let loreStatusFilter='';
+function setLoreStatus(s){
+  loreStatusFilter=s;
+  document.querySelectorAll('#p-lore .btn.btn-sm').forEach(b=>b.classList.remove('btn-accent'));
+  const ids={'':'ls-all','draft':'ls-draft','developed':'ls-developed','archived':'ls-archived'};
+  const el=document.getElementById(ids[s]);if(el)el.classList.add('btn-accent');
   renderLore();
 }
 function renderLore(){
   if(!D.lore)D.lore=[];
-  const list=loreCatFilter?D.lore.filter(l=>l.cat===loreCatFilter):D.lore;
+  const q=(document.getElementById('lore-search')?.value||'').toLowerCase();
+  let list=loreStatusFilter?D.lore.filter(l=>l.status===loreStatusFilter):D.lore;
+  if(q) list=list.filter(l=>l.name.toLowerCase().includes(q)||(l.tags||'').toLowerCase().includes(q)||(l.text||'').toLowerCase().includes(q));
   const total=D.lore.length;
-  const draft=D.lore.filter(l=>l.status==='draft').length;
-  const approved=D.lore.filter(l=>l.status==='approved').length;
-  document.getElementById('lore-stats').textContent=`${total} entradas · ${approved} aprovadas · ${draft} rascunhos`;
-  const catColors={'Facção':'var(--red)','Personagem':'var(--accent)','Região':'#10b981','Evento':'#06b6d4','Item':'#a855f7','Magia':'#f97316'};
-  const statusBadge={draft:'<span class="badge badge-todo">Rascunho</span>',review:'<span class="badge badge-wip">Em Revisão</span>',approved:'<span class="badge badge-done">Aprovado</span>'};
+  const developed=D.lore.filter(l=>l.status==='developed').length;
+  document.getElementById('lore-stats').textContent=`${total} ideias · ${developed} desenvolvidas`;
+  const statusBadge={draft:'<span class="badge badge-todo">📝 Rascunho</span>',developed:'<span class="badge badge-wip">✦ Desenvolvida</span>',archived:'<span style="font-size:0.65rem;color:var(--fg3);padding:0.1rem 0.4rem;border:1px solid var(--border);border-radius:4px;">🗃 Arquivada</span>'};
   const el=document.getElementById('lore-list');
-  if(!list.length){el.innerHTML=`<div style="color:var(--fg3);font-size:0.8rem;padding:1rem 0;text-align:center;">Sem entradas de lore ainda. Cria a primeira!</div>`;return;}
+  if(!list.length){el.innerHTML=`<div style="color:var(--fg3);font-size:0.8rem;padding:1.5rem 0;text-align:center;">${q||loreStatusFilter?'Nenhuma ideia encontrada.':'O caderno está vazio. Escreve a primeira ideia!'}</div>`;return;}
   el.innerHTML=list.map(l=>{
-    const dlSafe=l.deadline?`<span style="font-size:0.65rem;color:${isOverdue(l.deadline)?'var(--red)':'var(--fg3)'};">⏱ ${displayDate(l.deadline)}</span>`:'';
-    const preview=l.text?(l.text.slice(0,120)+(l.text.length>120?'…':'')).replace(/</g,'&lt;'):'<em style="color:var(--fg3);">Sem texto ainda.</em>';
+    const tags=(l.tags||'').split(',').map(t=>t.trim()).filter(Boolean);
+    const tagChips=tags.map(t=>`<span style="font-size:0.6rem;background:rgba(168,85,247,0.12);color:#a855f7;border:1px solid rgba(168,85,247,0.3);border-radius:10px;padding:0.05rem 0.45rem;">${t}</span>`).join('');
+    const preview=l.text?(l.text.slice(0,140)+(l.text.length>140?'…':'')).replace(/</g,'&lt;'):'<em style="color:var(--fg3);">Sem texto ainda — clica para escrever.</em>';
     return `<div class="sys" id="lo${l.id}">
       <div class="sys-hd" onclick="togLore(${l.id})">
-        <div style="display:flex;align-items:center;gap:0.5rem;flex:1;min-width:0;">
-          <span style="font-size:0.65rem;font-weight:700;background:${catColors[l.cat]||'var(--fg3)'};color:#fff;padding:0.1rem 0.4rem;border-radius:4px;">${l.cat}</span>
-          <span class="sys-name">${l.name}</span>
-          ${dlSafe}
+        <div style="display:flex;flex-direction:column;gap:0.25rem;flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:0.5rem;">
+            <span class="sys-name">${l.name}</span>
+            ${statusBadge[l.status]||statusBadge.draft}
+          </div>
+          ${tags.length?`<div style="display:flex;gap:0.25rem;flex-wrap:wrap;">${tagChips}</div>`:''}
         </div>
-        <div style="display:flex;align-items:center;gap:0.4rem;">
-          ${statusBadge[l.status]||''}
-          <span class="sys-arrow">›</span>
-        </div>
+        <span class="sys-arrow">›</span>
       </div>
       <div class="sys-body">
-        <div style="font-size:0.78rem;color:var(--fg2);margin-bottom:0.5rem;">${preview}</div>
-        <div class="field"><div class="field-l">Título</div><input class="inp" value="${l.name.replace(/"/g,'&quot;')}" onchange="D.lore.find(x=>x.id===${l.id}).name=this.value;save();renderLore();" placeholder="Nome da entrada"></div>
+        <div style="font-size:0.78rem;color:var(--fg3);margin-bottom:0.75rem;font-style:italic;">${preview}</div>
         <div class="g2">
-          <div class="field"><div class="field-l">Categoria</div>
-            <select class="inp" onchange="D.lore.find(x=>x.id===${l.id}).cat=this.value;save();renderLore();">
-              ${['Facção','Personagem','Região','Evento','Item','Magia'].map(c=>`<option${l.cat===c?' selected':''}>${c}</option>`).join('')}
-            </select>
-          </div>
+          <div class="field"><div class="field-l">Título</div><input class="inp" value="${l.name.replace(/"/g,'&quot;')}" onchange="D.lore.find(x=>x.id===${l.id}).name=this.value;" onblur="save();renderLore();" placeholder="Nome da ideia"></div>
           <div class="field"><div class="field-l">Estado</div>
             <select class="inp" onchange="D.lore.find(x=>x.id===${l.id}).status=this.value;save();renderLore();">
-              <option value="draft"${l.status==='draft'?' selected':''}>Rascunho</option>
-              <option value="review"${l.status==='review'?' selected':''}>Em Revisão</option>
-              <option value="approved"${l.status==='approved'?' selected':''}>Aprovado</option>
+              <option value="draft"${(l.status||'draft')==='draft'?' selected':''}>📝 Rascunho</option>
+              <option value="developed"${l.status==='developed'?' selected':''}>✦ Desenvolvida</option>
+              <option value="archived"${l.status==='archived'?' selected':''}>🗃 Arquivada</option>
             </select>
           </div>
         </div>
-        <div class="field"><div class="field-l">Prazo (opcional)</div><input class="inp" type="date" value="${toISODate(l.deadline||'')}" onchange="D.lore.find(x=>x.id===${l.id}).deadline=this.value;save();renderLore();"></div>
-        <div class="field"><div class="field-l">Texto / Lore</div><textarea class="inp" rows="6" style="resize:vertical;" onchange="D.lore.find(x=>x.id===${l.id}).text=this.value;save();" placeholder="Escreve aqui o lore desta entrada…">${(l.text||'').replace(/</g,'&lt;')}</textarea></div>
-        <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.3rem;">
-          <button class="btn btn-sm" style="background:rgba(168,85,247,0.12);color:#a855f7;border-color:#a855f7;" onclick="loreAIIdea(${l.id})">💡 Nova Ideia</button>
+        <div class="field"><div class="field-l">Tags <span style="font-weight:400;color:var(--fg3);">(separadas por vírgula)</span></div><input class="inp" value="${(l.tags||'').replace(/"/g,'&quot;')}" onchange="D.lore.find(x=>x.id===${l.id}).tags=this.value;" onblur="save();renderLore();" placeholder="Ex: magia, facção, norte"></div>
+        <div class="field"><div class="field-l">Texto / Ideia</div><textarea class="inp" rows="7" style="resize:vertical;font-family:var(--font);line-height:1.6;" onchange="D.lore.find(x=>x.id===${l.id}).text=this.value;save();" placeholder="Escreve livremente…">${(l.text||'').replace(/</g,'&lt;')}</textarea></div>
+        <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.4rem;align-items:center;">
+          <button class="btn btn-sm" style="background:rgba(168,85,247,0.12);color:#a855f7;border-color:#a855f7;" onclick="loreAIIdea(${l.id})">💡 Desenvolver com IA</button>
           <button class="btn btn-sm" style="background:rgba(168,85,247,0.12);color:#a855f7;border-color:#a855f7;" onclick="loreAIComplete(${l.id})">✍️ Completar Texto</button>
-          <button class="btn btn-sm btn-danger" style="margin-left:auto;" onclick="delLore(${l.id})">✕ Remover</button>
+          <button class="btn btn-sm" style="background:rgba(34,197,94,0.1);color:var(--green);border-color:var(--green);" onclick="loreToSystem(${l.id})" title="Transforma esta ideia num Sistema">⚙ → Sistema</button>
+          <button class="btn btn-sm btn-danger" style="margin-left:auto;" onclick="delLore(${l.id})">✕</button>
         </div>
-        <div id="lore-ai-out-${l.id}" style="display:none;margin-top:0.5rem;background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.25);border-radius:var(--radius);padding:0.6rem 0.75rem;font-size:0.78rem;color:var(--fg2);white-space:pre-wrap;"></div>
+        <div id="lore-ai-out-${l.id}" style="display:none;margin-top:0.5rem;background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.25);border-radius:var(--radius);padding:0.6rem 0.75rem;font-size:0.78rem;color:var(--fg2);white-space:pre-wrap;line-height:1.55;"></div>
       </div>
     </div>`;
   }).join('');
 }
 function togLore(id){document.getElementById('lo'+id).classList.toggle('open');}
-function delLore(id){if(!confirm('Remover esta entrada de lore?'))return;const l=D.lore.find(x=>x.id===id);D.lore=D.lore.filter(x=>x.id!==id);renderLore();save();if(window.logChange&&l)window.logChange(`Removeu lore "${l.name}"`);}
+function delLore(id){if(!confirm('Remover esta ideia de lore?'))return;const l=D.lore.find(x=>x.id===id);D.lore=D.lore.filter(x=>x.id!==id);renderLore();save();if(window.logChange&&l)window.logChange(`Removeu lore "${l.name}"`);}
 function addLore(){
   const name=document.getElementById('ml-name').value.trim();if(!name)return;
-  const entry={id:++D.nid,name,cat:document.getElementById('ml-cat').value,status:'draft',text:document.getElementById('ml-text').value,deadline:document.getElementById('ml-dl').value};
+  const entry={id:++D.nid,name,tags:document.getElementById('ml-tags').value.trim(),status:'draft',text:document.getElementById('ml-text').value};
   D.lore.push(entry);closeModal('m-lore');
-  ['ml-name','ml-text','ml-dl'].forEach(x=>document.getElementById(x).value='');
-  renderLore();save();toast('Entrada de lore criada!');
+  ['ml-name','ml-tags','ml-text'].forEach(x=>document.getElementById(x).value='');
+  renderLore();save();toast('Ideia guardada!');
   if(window.logChange)window.logChange(`Adicionou lore "${name}"`);
+}
+function loreToSystem(id){
+  const l=D.lore.find(x=>x.id===id);if(!l)return;
+  document.getElementById('ms-name').value=l.name;
+  document.getElementById('ms-desc').value=(l.text||'').slice(0,200);
+  openModal('m-sys');
+  toast('Preenche os detalhes do sistema — texto do lore foi copiado.');
 }
 
 // ─── RENDER: BUILD ────────────────────────────────────────
@@ -1702,14 +1696,14 @@ function buildUnifiedTimeline(){
   D.timeline.forEach(t=>items.push({_type:'milestone',_id:t.id,date:t.date,sortDate:toISODate(t.date)||'9999-12-31',title:t.title,desc:t.desc||'',status:t.status||''}));
   D.systems.filter(s=>s.deadline).forEach(s=>items.push({_type:'system',_id:s.id,_phase:s.phase,date:s.deadline,sortDate:toISODate(s.deadline)||'9999-12-31',title:s.name,desc:`Sistema · Fase ${s.phase}`,status:stMap[s.status]||''}));
   D.assets.filter(a=>a.deadline).forEach(a=>items.push({_type:'asset',_id:a.id,date:a.deadline,sortDate:toISODate(a.deadline)||'9999-12-31',title:a.name,desc:`Asset · ${a.cat}`,status:a.status==='done'?'done':''}));
-  (D.lore||[]).filter(l=>l.deadline).forEach(l=>items.push({_type:'lore',_id:l.id,date:l.deadline,sortDate:toISODate(l.deadline)||'9999-12-31',title:l.name,desc:`Lore · ${l.cat}`,status:l.status==='approved'?'done':''}));
+  // Lore entries are a scratchpad — no deadlines, not in the timeline
   (D.builds||[]).filter(b=>b.deadline).forEach(b=>items.push({_type:'build',_id:b.id,date:b.deadline,sortDate:toISODate(b.deadline)||'9999-12-31',title:b.name,desc:`Build${b.zone?' · '+b.zone:''}`,status:b.status==='done'?'done':''}));
   return items.sort((a,b)=>a.sortDate.localeCompare(b.sortDate));
 }
 function renderTL(){
   const items=buildUnifiedTimeline();
-  const tLabel={milestone:'Marco',system:'Sistema',asset:'Asset',lore:'Lore',build:'Build'};
-  const tColor={milestone:'var(--fg3)',system:'var(--accent)',asset:'var(--blue)',lore:'#a855f7',build:'#06b6d4'};
+  const tLabel={milestone:'Marco',system:'Sistema',asset:'Asset',build:'Build'};
+  const tColor={milestone:'var(--fg3)',system:'var(--accent)',asset:'var(--blue)',build:'#06b6d4'};
   document.getElementById('tl-list').innerHTML=items.length?items.map(t=>{
     const od=t.status!=='done'&&isOverdue(t.date);
     let editBtn='';
@@ -2325,7 +2319,7 @@ function checkDeadlines(){
   const items=[];
   buildUnifiedTimeline().filter(t=>t.status!=='done'&&t.sortDate!=='9999-12-31').forEach(t=>{
     const d=new Date(t.sortDate+'T23:59:59');
-    const ctx={milestone:'Marco',system:'Sistema',asset:'Asset',lore:'Lore',build:'Build'}[t._type];
+    const ctx={milestone:'Marco',system:'Sistema',asset:'Asset',build:'Build'}[t._type];
     if(d<now)items.push({type:'overdue',name:t.title,dl:displayDate(t.date),ctx});
     else if(d<=soon)items.push({type:'soon',name:t.title,dl:displayDate(t.date),ctx});
   });
