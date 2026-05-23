@@ -272,9 +272,9 @@ tr:hover td{background:rgba(255,255,255,0.02);}
     <button class="btn" onclick="exportData()">↓ Exportar</button>
     <button class="btn btn-icon btn-ghost" onclick="exportJSON()" title="Backup JSON">💾</button>
     <button class="btn auth-owner" onclick="importData()">↑ Importar</button>
-    <button class="btn auth-owner" id="btn-team" style="display:none;" onclick="openModal('m-team')">👥 Equipa</button>
+    <button class="btn auth-owner" id="btn-team" onclick="openModal('m-team')">👥 Equipa</button>
     <button class="btn" id="btn-change-pass" style="display:none;" onclick="openModal('m-password')">🔑 Senha</button>
-    <button class="btn" onclick="window.logoutUser()">Sair</button>
+    <button class="btn" id="btn-logout" style="display:none;" onclick="window.logoutUser()">Sair</button>
     <button class="btn btn-accent auth-write" id="btn-add-sys" onclick="openModal('m-sys')">+ Sistema</button>
   </div>
 </header>
@@ -493,22 +493,41 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 
 <!-- MODAL: LOGIN -->
 <div class="modal-bg auth-bg" id="m-login" style="z-index: 9999;">
-  <div class="modal">
-    <div class="modal-h"><h2>Entrar no Project Hub</h2></div>
-    <div class="modal-b">
+  <div class="modal" style="max-width:420px;">
+    <!-- Tabs -->
+    <div style="display:flex;border-bottom:2px solid var(--border);margin-bottom:1rem;">
+      <button id="tab-login" class="btn btn-ghost" style="flex:1;border-radius:0;border-bottom:2px solid var(--accent);margin-bottom:-2px;font-weight:700;" onclick="window.switchAuthTab('login')">Entrar</button>
+      <button id="tab-register" class="btn btn-ghost" style="flex:1;border-radius:0;border-bottom:2px solid transparent;margin-bottom:-2px;" onclick="window.switchAuthTab('register')">Criar Conta</button>
+    </div>
+
+    <!-- LOGIN VIEW -->
+    <div id="view-login" class="modal-b">
       <div class="g1" style="gap:1rem;">
-        <div><label class="lbl">Utilizador ou E-mail</label><input type="text" id="auth-email" class="inp" placeholder="Ex: dino5651"></div>
-        <div><label class="lbl">Senha</label><input type="password" id="auth-pass" class="inp" placeholder="••••••••"></div>
-        <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
-          <button class="btn btn-accent" style="flex:1;" onclick="window.loginUser()">Entrar</button>
-          <button class="btn" style="flex:1;" onclick="window.registerUser()">Criar Conta</button>
-        </div>
-        <div style="text-align:center;margin:0.5rem 0;color:var(--fg3);font-size:0.8rem;">ou</div>
-        <button class="btn btn-ghost" style="width:100%;display:flex;align-items:center;justify-content:center;gap:0.5rem;" onclick="window.loginWithGoogle()">
-          <svg style="width:16px;height:16px;" viewBox="0 0 24 24"><path fill="currentColor" d="M12.24 10.285V13.4h6.887C18.2 15.614 15.645 18 12.24 18c-3.86 0-7-3.14-7-7s3.14-7 7-7c1.71 0 3.275.61 4.5 1.625l2.437-2.437C17.312 1.696 14.933 1 12.24 1 6.58 1 2 5.58 2 11.24s4.58 10.24 10.24 10.24c5.795 0 10.254-4.074 10.254-10.24 0-.695-.08-1.355-.22-1.955H12.24z"/></svg>
+        <button class="btn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:0.6rem;padding:0.7rem;background:var(--bg2);border:1px solid var(--border);" onclick="window.loginWithGoogle()">
+          <svg style="width:18px;height:18px;" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
           Entrar com Google
         </button>
-        <div id="auth-error" style="color:var(--red);font-size:0.8rem;text-align:center;margin-top:0.5rem;"></div>
+        <div style="text-align:center;color:var(--fg3);font-size:0.75rem;">ou com utilizador/email</div>
+        <div><label class="lbl">Utilizador ou E-mail</label><input type="text" id="auth-email" class="inp" placeholder="Ex: dino5651"></div>
+        <div><label class="lbl">Senha</label><input type="password" id="auth-pass" class="inp" placeholder="••••••••" onkeydown="if(event.key==='Enter')window.loginUser()"></div>
+        <button class="btn btn-accent" style="width:100%;justify-content:center;" onclick="window.loginUser()">Entrar</button>
+        <div id="auth-error" style="color:var(--red);font-size:0.8rem;text-align:center;"></div>
+      </div>
+    </div>
+
+    <!-- REGISTER VIEW -->
+    <div id="view-register" class="modal-b" style="display:none;">
+      <div class="g1" style="gap:1rem;">
+        <button class="btn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:0.6rem;padding:0.7rem;background:var(--bg2);border:1px solid var(--border);" onclick="window.loginWithGoogle()">
+          <svg style="width:18px;height:18px;" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Registar com Google
+        </button>
+        <div style="text-align:center;color:var(--fg3);font-size:0.75rem;">ou criar conta manual</div>
+        <div><label class="lbl">Utilizador</label><input type="text" id="reg-email" class="inp" placeholder="Ex: joao123"></div>
+        <div><label class="lbl">Senha (mín. 6 caracteres)</label><input type="password" id="reg-pass" class="inp" placeholder="••••••••"></div>
+        <div><label class="lbl">Confirmar Senha</label><input type="password" id="reg-pass2" class="inp" placeholder="••••••••" onkeydown="if(event.key==='Enter')window.registerUser()"></div>
+        <button class="btn btn-accent" style="width:100%;justify-content:center;" onclick="window.registerUser()">Criar Conta</button>
+        <div id="reg-error" style="color:var(--red);font-size:0.8rem;text-align:center;"></div>
       </div>
     </div>
   </div>
@@ -1137,102 +1156,131 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
 
 let currentRole = 'guest';
+let userSub = null;
+let dataSub = null;
+
+// Owner emails list
+const OWNER_EMAILS = ['dino5651@got.com', 'bernardinobravo9@gmail.com'];
+function isOwnerEmail(email) {
+  return email && OWNER_EMAILS.includes(email.toLowerCase());
+}
 
 // Helper to normalize username/email input
-const getEmail = (val) => {
+function getEmail(val) {
   const trimmed = val.trim();
   if(!trimmed) return '';
   return trimmed.includes('@') ? trimmed : `${trimmed}@got.com`;
+}
+
+// ─── TAB SWITCHING ───────────────────────────────────────
+window.switchAuthTab = (tab) => {
+  const tLogin = document.getElementById('tab-login');
+  const tReg = document.getElementById('tab-register');
+  const vLogin = document.getElementById('view-login');
+  const vReg = document.getElementById('view-register');
+  document.getElementById('auth-error').textContent = '';
+  document.getElementById('reg-error').textContent = '';
+  if(tab === 'login') {
+    vLogin.style.display = '';
+    vReg.style.display = 'none';
+    tLogin.style.borderBottomColor = 'var(--accent)';
+    tLogin.style.fontWeight = '700';
+    tReg.style.borderBottomColor = 'transparent';
+    tReg.style.fontWeight = '';
+  } else {
+    vLogin.style.display = 'none';
+    vReg.style.display = '';
+    tReg.style.borderBottomColor = 'var(--accent)';
+    tReg.style.fontWeight = '700';
+    tLogin.style.borderBottomColor = 'transparent';
+    tLogin.style.fontWeight = '';
+  }
 };
 
+// ─── LOGIN WITH EMAIL ────────────────────────────────────
 window.loginUser = async () => {
   const emailInput = document.getElementById('auth-email').value;
   const e = getEmail(emailInput);
   const p = document.getElementById('auth-pass').value;
+  const errEl = document.getElementById('auth-error');
   
-  if(!e || !p) {
-    document.getElementById('auth-error').textContent = "Por favor preencha todos os campos.";
-    return;
-  }
+  if(!e || !p) { errEl.textContent = "Por favor preencha todos os campos."; return; }
   
   try {
     await signInWithEmailAndPassword(auth, e, p);
-    document.getElementById('auth-error').textContent = '';
+    errEl.textContent = '';
   } catch(err) {
-    // If logging in as dino5651 and user doesn't exist, auto-create it as owner!
-    if (e.toLowerCase() === 'dino5651@got.com') {
+    // Auto-create owner accounts on first login attempt
+    if (isOwnerEmail(e)) {
       try {
         const res = await createUserWithEmailAndPassword(auth, e, p);
         await setDoc(doc(db, "users", res.user.uid), {
-          email: e,
-          role: 'owner',
-          status: 'active',
-          last_online: new Date().toISOString()
+          email: e, role: 'owner', status: 'active', last_online: new Date().toISOString()
         });
-        document.getElementById('auth-error').textContent = '';
-        toast("Conta de Dono auto-criada e logada com sucesso!");
+        errEl.textContent = '';
+        toast("Conta de Dono criada com sucesso!");
         return;
       } catch(regErr) {
-        console.error("Auto-registration error for dino5651", regErr);
+        console.error("Auto-registration error", regErr);
       }
     }
-    document.getElementById('auth-error').textContent = "Utilizador/E-mail ou senha inválidos.";
-  }
-};
-window.loginWithGoogle = async () => {
-  const provider = new GoogleAuthProvider();
-  try {
-    await signInWithPopup(auth, provider);
-    document.getElementById('auth-error').textContent = '';
-  } catch(err) {
-    document.getElementById('auth-error').textContent = "Erro ao entrar com Google: " + err.message;
+    errEl.textContent = "Utilizador/E-mail ou senha inválidos.";
   }
 };
 
-window.registerUser = async () => {
-  const emailInput = document.getElementById('auth-email').value;
-  const e = getEmail(emailInput);
-  const p = document.getElementById('auth-pass').value;
-  
-  if(!e || !p) {
-    document.getElementById('auth-error').textContent = "Por favor preencha todos os campos.";
-    return;
+// ─── LOGIN WITH GOOGLE ───────────────────────────────────
+window.loginWithGoogle = async () => {
+  try {
+    await signInWithPopup(auth, googleProvider);
+    // onAuthStateChanged will handle the rest
+  } catch(err) {
+    if (err.code === 'auth/popup-closed-by-user') return;
+    const errEl = document.getElementById('auth-error');
+    if (errEl) errEl.textContent = "Erro ao entrar com Google: " + err.message;
   }
+};
+
+// ─── REGISTER WITH EMAIL ─────────────────────────────────
+window.registerUser = async () => {
+  const emailInput = document.getElementById('reg-email').value;
+  const e = getEmail(emailInput);
+  const p = document.getElementById('reg-pass').value;
+  const p2 = document.getElementById('reg-pass2').value;
+  const errEl = document.getElementById('reg-error');
+  
+  if(!e || !p) { errEl.textContent = "Por favor preencha todos os campos."; return; }
+  if(p.length < 6) { errEl.textContent = "A senha deve ter pelo menos 6 caracteres."; return; }
+  if(p !== p2) { errEl.textContent = "As senhas não coincidem."; return; }
   
   try {
     const res = await createUserWithEmailAndPassword(auth, e, p);
-    const role = (e.toLowerCase() === 'dino5651@got.com') ? 'owner' : 'guest';
+    const role = isOwnerEmail(e) ? 'owner' : 'guest';
     await setDoc(doc(db, "users", res.user.uid), {
-      email: e,
-      role: role,
-      status: 'active',
-      last_online: new Date().toISOString()
+      email: e, role: role, status: 'active', last_online: new Date().toISOString()
     });
-    document.getElementById('auth-error').textContent = '';
+    errEl.textContent = '';
+    toast(role === 'owner' ? "Conta de Dono criada!" : "Conta criada! A aguardar aprovação.");
   } catch(err) {
-    document.getElementById('auth-error').textContent = "Erro ao criar conta: " + err.message;
+    if (err.code === 'auth/email-already-in-use') {
+      errEl.textContent = "Este utilizador já existe. Vai ao separador Entrar.";
+    } else {
+      errEl.textContent = "Erro ao criar conta: " + err.message;
+    }
   }
 };
 
+// ─── CHANGE PASSWORD ─────────────────────────────────────
 window.changePassword = async () => {
   const newPass = document.getElementById('new-password').value;
   const confPass = document.getElementById('confirm-password').value;
   const errorEl = document.getElementById('password-error');
   
-  if (!newPass) {
-    errorEl.textContent = "Introduza a nova senha.";
-    return;
-  }
-  if (newPass.length < 6) {
-    errorEl.textContent = "A senha deve ter pelo menos 6 caracteres.";
-    return;
-  }
-  if (newPass !== confPass) {
-    errorEl.textContent = "As senhas não coincidem.";
-    return;
-  }
+  if (!newPass) { errorEl.textContent = "Introduza a nova senha."; return; }
+  if (newPass.length < 6) { errorEl.textContent = "A senha deve ter pelo menos 6 caracteres."; return; }
+  if (newPass !== confPass) { errorEl.textContent = "As senhas não coincidem."; return; }
   
   try {
     if (auth.currentUser) {
@@ -1247,97 +1295,110 @@ window.changePassword = async () => {
     }
   } catch(err) {
     if (err.code === 'auth/requires-recent-login') {
-      errorEl.textContent = "Sessão expirou. Por favor saia e entre novamente para alterar a senha.";
+      errorEl.textContent = "Sessão expirou. Saia e entre novamente para alterar.";
     } else {
       errorEl.textContent = "Erro: " + err.message;
     }
   }
 };
 
-let userSub = null;
-
+// ─── LOGOUT ──────────────────────────────────────────────
 window.logoutUser = async () => { 
   if (userSub) { userSub(); userSub = null; }
+  if (dataSub) { dataSub(); dataSub = null; }
   await signOut(auth); 
 };
 
-onAuthStateChanged(auth, async (user) => {
+// ─── APPLY ROLE UI ───────────────────────────────────────
+function applyRoleUI(role) {
+  currentRole = role;
   const mLogin = document.getElementById('m-login');
-  if (userSub) { userSub(); userSub = null; }
+  const mPending = document.getElementById('m-pending');
   
-  if(!user){
-    mLogin.classList.add('open');
-    document.querySelectorAll('.auth-write, .auth-owner').forEach(el=>el.style.display='none');
-    document.getElementById('btn-change-pass').style.display = 'none';
-    document.getElementById('m-pending').classList.remove('open');
-    return;
+  // Close login modal
+  mLogin.classList.remove('open');
+  
+  // Show logout + change password buttons
+  document.getElementById('btn-change-pass').style.display = 'inline-flex';
+  document.getElementById('btn-logout').style.display = 'inline-flex';
+  
+  // Apply owner UI
+  if(role === 'owner') {
+    document.querySelectorAll('.auth-owner').forEach(el => el.style.display = 'inline-flex');
+  } else {
+    document.querySelectorAll('.auth-owner').forEach(el => el.style.display = 'none');
   }
   
-  // User logged in
+  // Apply write UI + pending
+  if(role === 'owner' || role === 'dev') {
+    document.querySelectorAll('.auth-write').forEach(el => el.style.display = 'inline-flex');
+    mPending.classList.remove('open');
+  } else {
+    document.querySelectorAll('.auth-write').forEach(el => el.style.display = 'none');
+    mPending.classList.add('open');
+  }
+}
+
+function resetUI() {
+  document.getElementById('m-login').classList.add('open');
+  document.getElementById('m-pending').classList.remove('open');
+  document.querySelectorAll('.auth-write, .auth-owner').forEach(el => el.style.display = 'none');
+  document.getElementById('btn-change-pass').style.display = 'none';
+  document.getElementById('btn-logout').style.display = 'none';
+}
+
+// ─── AUTH STATE CHANGE ───────────────────────────────────
+onAuthStateChanged(auth, async (user) => {
+  // Clean up previous listeners
+  if (userSub) { userSub(); userSub = null; }
+  if (dataSub) { dataSub(); dataSub = null; }
+  
+  if(!user) { resetUI(); return; }
+  
+  // User logged in — setup Firestore user doc
   const uDocRef = doc(db, "users", user.uid);
   const udoc = await getDoc(uDocRef);
   let udata = udoc.data();
+  const ownerFlag = isOwnerEmail(user.email);
   
-  const isDino = user.email && user.email.toLowerCase() === 'dino5651@got.com';
-  const isBernardino = user.email && user.email.toLowerCase() === 'bernardinobravo9@gmail.com';
-  const isOwnerEmail = isDino || isBernardino;
-  
-  if(!udata){
+  if(!udata) {
     udata = {
       email: user.email,
-      role: isOwnerEmail ? 'owner' : 'guest',
+      role: ownerFlag ? 'owner' : 'guest',
       status: 'active',
       last_online: new Date().toISOString()
     };
     await setDoc(uDocRef, udata);
-  } else if (isOwnerEmail && udata.role !== 'owner') {
-    udata.role = 'owner';
+  } else if (ownerFlag && udata.role !== 'owner') {
     await updateDoc(uDocRef, { role: 'owner' });
   }
   
-  // Real-time listener for user document (handles real-time approvals/bans!)
+  // Update last_online once on login
+  await updateDoc(uDocRef, { last_online: new Date().toISOString() }).catch(() => {});
+  
+  // Real-time listener for user role/status changes (e.g. owner approves a guest)
+  let isFirstSnapshot = true;
   userSub = onSnapshot(uDocRef, async (snap) => {
     const data = snap.data();
     if(!data) return;
     
-    if(data.status === 'banned'){
+    if(data.status === 'banned') {
       document.getElementById('auth-error').textContent = "Esta conta foi banida.";
       if (userSub) { userSub(); userSub = null; }
       await signOut(auth);
       return;
     }
     
-    // Success
-    mLogin.classList.remove('open');
-    currentRole = data.role;
-    
-    // Safe last online update (cooldown of 1 min to prevent loops)
-    const lastOnline = new Date(data.last_online);
-    if (!data.last_online || new Date() - lastOnline > 60000) {
-      await updateDoc(uDocRef, { last_online: new Date().toISOString() });
-    }
-    
-    // Apply role UI
-    if(currentRole === 'owner') document.querySelectorAll('.auth-owner').forEach(el=>el.style.display='inline-flex');
-    else document.querySelectorAll('.auth-owner').forEach(el=>el.style.display='none');
-    
-    if(currentRole === 'owner' || currentRole === 'dev'){
-      document.querySelectorAll('.auth-write').forEach(el=>el.style.display='inline-flex');
-      document.getElementById('m-pending').classList.remove('open');
-    } else {
-      document.querySelectorAll('.auth-write').forEach(el=>el.style.display='none');
-      document.getElementById('m-pending').classList.add('open');
-    }
-    
-    // Show change password button
-    document.getElementById('btn-change-pass').style.display = 'inline-flex';
+    applyRoleUI(data.role);
     
     // Load Team if owner
-    if(currentRole === 'owner') loadTeam();
+    if(data.role === 'owner') loadTeam();
+    
+    isFirstSnapshot = false;
   });
 
-  // Listen to remote data
-  onSnapshot(doc(db, "projects", "cgf"), (dSnap) => {
+  // Listen to remote project data
+  dataSub = onSnapshot(doc(db, "projects", "cgf"), (dSnap) => {
     if(dSnap.exists()){
       D = dSnap.data();
       if(!D.nid) D.nid=100;
@@ -1355,8 +1416,9 @@ onAuthStateChanged(auth, async (user) => {
   });
 });
 
+// ─── CLOUD SAVE ──────────────────────────────────────────
 window.cloudSave = async (data) => {
-  if(currentRole !== 'owner' && currentRole !== 'dev') return; // Guests can't save
+  if(currentRole !== 'owner' && currentRole !== 'dev') return;
   try {
     await setDoc(doc(db, "projects", "cgf"), data);
   } catch(e) {
@@ -1365,6 +1427,7 @@ window.cloudSave = async (data) => {
   }
 };
 
+// ─── TEAM MANAGEMENT ─────────────────────────────────────
 async function loadTeam(){
   const snap = await getDocs(collection(db, "users"));
   const html = [];
@@ -1374,9 +1437,9 @@ async function loadTeam(){
     const isOnline = (new Date() - new Date(u.last_online)) < 300000;
     const onlineBadge = isOnline ? `<span style="color:#10b981;font-size:0.7rem;margin-left:5px;">● Online</span>` : '';
     const dStr = new Date(u.last_online).toLocaleString('pt-PT');
-    const uName = u.email.split('@')[0];
+    const uName = u.email ? u.email.split('@')[0] : 'Anon';
     html.push(`<tr>
-      <td>${uName} <span style="color:var(--fg3);font-size:0.75rem;">(${u.email})</span>${onlineBadge}</td>
+      <td>${uName} <span style="color:var(--fg3);font-size:0.75rem;">(${u.email || ''})</span>${onlineBadge}</td>
       <td>
         <select class="inp" style="padding:0.2rem;font-size:0.75rem;" onchange="window.changeRole('${id}', this.value)">
           <option value="guest" ${u.role==='guest'?'selected':''}>Visitante</option>
@@ -1398,6 +1461,7 @@ async function loadTeam(){
 window.changeRole = async (uid, newRole) => {
   await updateDoc(doc(db, "users", uid), { role: newRole });
   toast("Função actualizada.");
+  loadTeam();
 };
 
 window.toggleBan = async (uid, currStatus) => {
