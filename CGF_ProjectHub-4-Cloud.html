@@ -3227,8 +3227,8 @@ async function loadTeam(){
   const pending = [], active = [];
   snap.forEach(d => {
     const u = d.data(); u._uid = d.id;
-    if(u.role === 'guest' && u.status !== 'banned') pending.push(u);
-    else if(u.status !== 'banned' || u.role !== 'guest') active.push(u);
+    if(u.role === 'guest' && u.status !== 'banned' && u.status !== 'rejected') pending.push(u);
+    else if(u.role !== 'guest' || u.status === 'banned') active.push(u);
   });
 
   const row = (u, isPending) => {
@@ -3240,9 +3240,10 @@ async function loadTeam(){
       <td>${name}${onlineDot} <span style="color:var(--fg3);font-size:0.72rem;">${u.email||''}</span></td>
       <td><span style="color:var(--accent);font-size:0.72rem;">Pendente</span></td>
       <td>${lastSeen}</td>
-      <td style="display:flex;gap:0.3rem;">
+      <td style="display:flex;gap:0.3rem;flex-wrap:wrap;">
         <button class="btn btn-sm btn-accent" onclick="window.approveUser('${u._uid}')">✓ Aprovar</button>
-        <button class="btn btn-sm btn-danger" onclick="window.toggleBan('${u._uid}','active')">Banir</button>
+        <button class="btn btn-sm" style="border-color:var(--fg3);color:var(--fg3);" onclick="window.rejectUser('${u._uid}')">✕ Recusar</button>
+        <button class="btn btn-sm btn-danger" onclick="window.toggleBan('${u._uid}','active')">⛔ Banir</button>
       </td>
     </tr>`;
     return `<tr>
@@ -3256,9 +3257,10 @@ async function loadTeam(){
         </select>
       </td>
       <td>${lastSeen}</td>
-      <td>
+      <td style="display:flex;gap:0.3rem;flex-wrap:wrap;">
+        <button class="btn btn-sm" style="border-color:#f97316;color:#f97316;" onclick="window.kickUser('${u._uid}')" title="Remove o acesso mas pode pedir novamente">↩ Kick</button>
         <button class="btn btn-sm ${u.status==='banned'?'btn-accent':'btn-danger'}" onclick="window.toggleBan('${u._uid}','${u.status||'active'}')">
-          ${u.status==='banned'?'Desbanir':'Banir'}
+          ${u.status==='banned'?'✓ Desbanir':'⛔ Banir'}
         </button>
       </td>
     </tr>`;
@@ -3283,10 +3285,22 @@ window.changeRole = async (uid, newRole) => {
   loadTeam();
 };
 
+window.rejectUser = async (uid) => {
+  if(!confirm('Recusar este pedido? O utilizador volta ao estado de espera mas pode tentar novamente.')) return;
+  await updateDoc(doc(db, "users", uid), { status: 'rejected' });
+  toast("Pedido recusado.");
+  loadTeam();
+};
+window.kickUser = async (uid) => {
+  if(!confirm('Fazer kick? O utilizador perde o acesso mas pode pedir novamente.')) return;
+  await updateDoc(doc(db, "users", uid), { role: 'guest', status: 'active' });
+  toast("Utilizador removido da equipa.");
+  loadTeam();
+};
 window.toggleBan = async (uid, currStatus) => {
   const ns = currStatus === 'banned' ? 'active' : 'banned';
   await updateDoc(doc(db, "users", uid), { status: ns });
-  toast("Estado actualizado.");
+  toast(ns === 'banned' ? "Utilizador banido." : "Ban levantado.");
   loadTeam();
 };
 </script>
