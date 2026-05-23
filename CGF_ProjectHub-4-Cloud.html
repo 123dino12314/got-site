@@ -325,6 +325,15 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .notif-i-sub{font-size:0.67rem;color:var(--fg3);margin-top:0.08rem;}
 /* USER AVATAR */
 .u-av{width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:0.58rem;font-weight:700;color:#fff;flex-shrink:0;vertical-align:middle;}
+.u-av-lg{width:44px;height:44px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;color:#fff;flex-shrink:0;}
+/* PROFILE BTN IN HEADER */
+.hdr-profile-btn{display:flex;align-items:center;gap:0.4rem;cursor:pointer;padding:0.2rem 0.5rem;border-radius:var(--radius);border:1px solid transparent;background:none;color:var(--fg2);font-size:0.72rem;transition:background 0.15s,border-color 0.15s;}
+.hdr-profile-btn:hover{background:var(--bg3);border-color:var(--border);}
+/* EMOJI PICKER */
+.emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:0.3rem;margin:0.5rem 0;}
+.emoji-opt{font-size:1.4rem;cursor:pointer;padding:0.2rem;border-radius:6px;text-align:center;border:2px solid transparent;transition:border-color 0.15s,background 0.15s;}
+.emoji-opt:hover{background:var(--bg3);}
+.emoji-opt.selected{border-color:var(--accent);background:rgba(138,101,52,0.15);}
 /* SYS HISTORY */
 .sys-hist{border-top:1px solid var(--border);margin-top:0.75rem;padding-top:0.5rem;}
 .sys-hist-row{display:flex;gap:0.4rem;align-items:center;font-size:0.7rem;color:var(--fg3);padding:0.12rem 0;}
@@ -780,7 +789,11 @@ body.view-public.show-login .landing-section{filter:blur(2px) brightness(0.4);po
     <div class="hdr-logo"><div class="hdr-dot"></div><span class="hdr-title">CGF Project Hub</span><span class="hdr-tag">v1.0</span></div>
   </div>
   <div style="display:flex;align-items:center;gap:0.5rem;flex:1;justify-content:flex-end;margin-right:0.5rem;">
-    <div class="hdr-user" id="hdr-user" style="display:none;"><div class="hdr-user-dot"></div><span id="hdr-username" style="cursor:pointer;" onclick="openRename()" title="Clica para mudar nome"></span> <span style="font-size:0.65rem;color:var(--fg3);">✏</span></div>
+    <button class="hdr-profile-btn" id="hdr-user" style="display:none;" onclick="openProfile()" title="Editar perfil">
+      <span id="hdr-avatar-preview" style="width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;color:#fff;"></span>
+      <span id="hdr-username"></span>
+      <span style="font-size:0.6rem;color:var(--fg3);">✏</span>
+    </button>
     <div class="hdr-online" id="hdr-online" style="display:none;"><div class="hdr-online-dot"></div><span id="hdr-online-count">1</span> online</div>
     <span id="save-indicator" style="font-size:0.7rem;transition:color 0.3s;"></span>
     <div class="notif-wrap auth-write" id="notif-wrap" style="display:none;">
@@ -1003,13 +1016,23 @@ body.view-public.show-login .landing-section{filter:blur(2px) brightness(0.4);po
 </div></div>
 
 <!-- MODAL: RENAME -->
-<div class="modal-bg" id="m-rename"><div class="modal" style="max-width:360px;">
-  <div class="modal-t">Mudar Nome de Utilizador</div>
-  <div class="field"><div class="field-l">Nome exibido</div><input class="inp" id="rename-inp" placeholder="Ex: Dino" maxlength="20"></div>
-  <div style="font-size:0.72rem;color:var(--fg3);margin-bottom:0.75rem;">Aparece nos comentários e no changelog.</div>
+<div class="modal-bg" id="m-rename"><div class="modal" style="max-width:400px;">
+  <div class="modal-t">✏ Editar Perfil</div>
+  <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+    <span id="profile-avatar-big" class="u-av-lg"></span>
+    <div>
+      <div style="font-size:0.78rem;font-weight:600;color:var(--fg);" id="profile-name-preview">—</div>
+      <div style="font-size:0.68rem;color:var(--fg3);">Clica num avatar abaixo para mudar</div>
+    </div>
+  </div>
+  <div class="field"><div class="field-l">Nome exibido</div><input class="inp" id="rename-inp" placeholder="Ex: Dino" maxlength="20" oninput="updateProfilePreview()"></div>
+  <div style="font-size:0.72rem;color:var(--fg3);margin-bottom:0.5rem;">Aparece nos comentários e no changelog.</div>
+  <div class="field-l" style="margin-bottom:0.4rem;">Avatar</div>
+  <div class="emoji-grid" id="emoji-grid"></div>
+  <div style="font-size:0.68rem;color:var(--fg3);margin-bottom:0.75rem;">Selecciona um ícone que te represente.</div>
   <div class="modal-foot">
     <button class="btn" onclick="closeModal('m-rename')">Cancelar</button>
-    <button class="btn btn-accent" onclick="window.saveDisplayName()">Guardar</button>
+    <button class="btn btn-accent" onclick="window.saveProfile()">Guardar Perfil</button>
   </div>
 </div></div>
 
@@ -1923,6 +1946,8 @@ function userColor(name){
   return c[Math.abs(h)%c.length];
 }
 function userAvatar(name){
+  const emoji = window.userEmojis && window.userEmojis[name];
+  if(emoji) return `<span class="u-av" style="background:var(--bg3);font-size:0.85rem;">${emoji}</span>`;
   const col=userColor(name);
   const init=(name||'?').slice(0,1).toUpperCase();
   return `<span class="u-av" style="background:${col};">${init}</span>`;
@@ -1951,9 +1976,30 @@ function checkDeadlines(){
 function toggleNotifPanel(){
   document.getElementById('notif-panel').classList.toggle('open');
 }
-function openRename(){
-  document.getElementById('rename-inp').value=currentUsername;
+const PROFILE_EMOJIS=['⚔️','🛡️','🐉','🏰','👑','🧙','🗡️','🦅','🌑','🔥','🌊','⚡','🎯','🐺','🦁','🗺️','💎','🌿','🎭','🏹','🐴','🧝','🐗','🌙','🔮','⚗️','🦊','🐍'];
+function openProfile(){
+  document.getElementById('rename-inp').value = window._currentUsername || '';
+  window._selectedEmoji = window._currentUserEmoji || '';
+  updateProfilePreview();
+  const grid = document.getElementById('emoji-grid');
+  grid.innerHTML = PROFILE_EMOJIS.map(e =>
+    `<span class="emoji-opt${e===(window._selectedEmoji)?' selected':''}" onclick="selectEmoji(this,'${e}')" title="${e}">${e}</span>`
+  ).join('');
   openModal('m-rename');
+}
+function openRename(){ openProfile(); }
+function selectEmoji(el, e){
+  window._selectedEmoji = (window._selectedEmoji === e) ? '' : e;
+  document.querySelectorAll('.emoji-opt').forEach(x => x.classList.toggle('selected', x.textContent.trim()===window._selectedEmoji));
+  updateProfilePreview();
+}
+function updateProfilePreview(){
+  const name = document.getElementById('rename-inp').value.trim() || window._currentUsername || '?';
+  const emoji = window._selectedEmoji || '';
+  document.getElementById('profile-name-preview').textContent = name;
+  const big = document.getElementById('profile-avatar-big');
+  if(emoji){ big.textContent=emoji; big.style.background='var(--bg3)'; big.style.fontSize='1.6rem'; }
+  else { big.textContent=(name).slice(0,1).toUpperCase(); big.style.background=userColor(name); big.style.fontSize=''; }
 }
 function deadlineSpan(dl){
   if(!dl)return '';
@@ -2051,9 +2097,21 @@ document.addEventListener('input',e=>{
 window.addEventListener('beforeunload',e=>{if(document.querySelector('.sys.open'))e.preventDefault();});
 
 // ─── CURRENT USER DISPLAY ────────────────────────────────
-window.setCurrentUser = function(name) {
+window.setCurrentUser = function(name, emoji) {
   document.getElementById('hdr-username').textContent = name || '?';
   document.getElementById('hdr-user').style.display = 'flex';
+  const av = document.getElementById('hdr-avatar-preview');
+  if(av) {
+    if(emoji) {
+      av.textContent = emoji;
+      av.style.background = 'var(--bg3)';
+      av.style.fontSize = '0.9rem';
+    } else {
+      av.textContent = (name||'?').slice(0,1).toUpperCase();
+      av.style.background = userColor(name);
+      av.style.fontSize = '';
+    }
+  }
 };
 window.setOnlineCount = function(n) {
   document.getElementById('hdr-online-count').textContent = n;
@@ -2319,6 +2377,8 @@ const googleProvider = new GoogleAuthProvider();
 
 let currentRole = 'guest';
 let currentUsername = '';
+let currentUserEmoji = '';
+window.userEmojis = {}; // name → emoji, populated from Firestore
 let userSub = null;
 let dataSub = null;
 let publicDataSub = null;
@@ -2602,9 +2662,22 @@ onAuthStateChanged(auth, async (user) => {
   // Update last_online once on login
   await updateDoc(uDocRef, { last_online: new Date().toISOString() }).catch(() => {});
 
-  // Show current user in header (prefer displayName)
+  // Show current user in header (prefer displayName + emoji)
   currentUsername = udata.displayName || (user.email ? user.email.split('@')[0] : '');
-  window.setCurrentUser(currentUsername);
+  currentUserEmoji = udata.avatarEmoji || '';
+  window._currentUsername = currentUsername;
+  window._currentUserEmoji = currentUserEmoji;
+  window.userEmojis[currentUsername] = currentUserEmoji;
+  window.setCurrentUser(currentUsername, currentUserEmoji);
+
+  // Load all users' emojis so avatars show correctly in comments/changelog
+  getDocs(collection(db, "users")).then(snap => {
+    snap.forEach(d => {
+      const u = d.data();
+      const n = u.displayName || (u.email ? u.email.split('@')[0] : '');
+      if(n && u.avatarEmoji) window.userEmojis[n] = u.avatarEmoji;
+    });
+  }).catch(()=>{});
 
   // Comments real-time listener
   if(commentsSub){commentsSub();commentsSub=null;}
@@ -2647,6 +2720,18 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     applyRoleUI(data.role);
+
+    // Refresh username/emoji if changed externally
+    if(data.displayName && data.displayName !== currentUsername) {
+      currentUsername = data.displayName;
+      window._currentUsername = currentUsername;
+    }
+    if((data.avatarEmoji || '') !== currentUserEmoji) {
+      currentUserEmoji = data.avatarEmoji || '';
+      window._currentUserEmoji = currentUserEmoji;
+      window.userEmojis[currentUsername] = currentUserEmoji;
+      window.setCurrentUser(currentUsername, currentUserEmoji);
+    }
 
     // Load Team if owner
     if(data.role === 'owner') loadTeam();
@@ -2734,18 +2819,25 @@ window.logChange = async (action, sysId=null) => {
 };
 
 // ─── DISPLAY NAME ────────────────────────────────────────
-window.saveDisplayName = async () => {
+window.saveProfile = async () => {
   const inp = document.getElementById('rename-inp');
   const name = inp.value.trim();
   if(!name || !auth.currentUser) return;
   try {
-    await updateDoc(doc(db, "users", auth.currentUser.uid), { displayName: name });
+    const emoji = window._selectedEmoji || '';
+    const upd = { displayName: name, avatarEmoji: emoji };
+    await updateDoc(doc(db, "users", auth.currentUser.uid), upd);
     currentUsername = name;
-    window.setCurrentUser(name);
+    currentUserEmoji = emoji;
+    window._currentUsername = name;
+    window._currentUserEmoji = emoji;
+    window.userEmojis[name] = emoji;
+    window.setCurrentUser(name, emoji);
     closeModal('m-rename');
-    toast('Nome actualizado!');
-  } catch(e) { toast('Erro ao guardar nome.'); }
+    toast('Perfil actualizado!');
+  } catch(e) { toast('Erro ao guardar perfil: ' + e.message); }
 };
+window.saveDisplayName = window.saveProfile;
 
 // ─── ONLINE COUNT ────────────────────────────────────────
 async function updateOnlineCount() {
