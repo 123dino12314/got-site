@@ -1957,7 +1957,7 @@ function parseMD(text){
   return h;
 }
 
-const GEMINI_KEY='AIzaSyC8_FrrEF8rNgY6Qa_4_UlJcYRy-ZTqQ9k';
+const GEMINI_KEY='';
 
 // Models to try in order (fallback chain)
 const GEMINI_MODELS = [
@@ -2055,6 +2055,12 @@ async function sendAI(isRetry) {
   const hist = aiHistory.slice(-20);
   const activeKey = localStorage.getItem('custom_gemini_key') || GEMINI_KEY;
 
+  if(!activeKey) {
+    const lastBot = document.querySelector('.ai-msg.bot:last-child .ai-bubble');
+    if(lastBot) lastBot.innerHTML = `<div style="color:var(--accent);font-size:0.8rem;">Precisas de configurar a tua chave Gemini.<br><br>Clica em <strong>⚙ API Key</strong> abaixo, cria uma chave grátis em <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--accent);">aistudio.google.com/apikey</a> e cola aqui.</div>`;
+    return;
+  }
+
   try {
     const text = await callGeminiAPI(sysPrompt, hist, activeKey);
     aiHistory.push({role: 'model', parts: [{text: text}]});
@@ -2090,10 +2096,11 @@ function addMsg(r,t){const m=document.getElementById('ai-msgs');const d=document
 async function loreQuickCall(prompt, outId, btnEl){
   const out=document.getElementById(outId);
   if(!out)return;
+  const activeKey=localStorage.getItem('custom_gemini_key')||GEMINI_KEY;
+  if(!activeKey){out.style.display='block';out.textContent='Sem chave API. Clica em ⚙ API Key na secção IA Assistente para configurar.';return;}
   out.style.display='block';
   out.textContent='A gerar…';
   if(btnEl){btnEl.disabled=true;btnEl.textContent='A gerar…';}
-  const activeKey=localStorage.getItem('custom_gemini_key')||GEMINI_KEY;
   const loreCtx=D.lore&&D.lore.length?`LORE EXISTENTE:\n${D.lore.map(l=>`[${l.cat}] ${l.name}: ${(l.text||'').slice(0,200)}`).join('\n')}`:'';
   const sys=`És o lore master do projecto "Crônicas de Gelo e Fogo" — universo medieval/fantasia original baseado em GOT (211 AC). ${loreCtx}\nResponde em português. Sem emojis. Texto fluido e imersivo.`;
   try{
@@ -2120,10 +2127,11 @@ function loreAIComplete(btn, id){
 async function buildQuickCall(prompt, outId, btnEl){
   const out=document.getElementById(outId);
   if(!out)return;
+  const activeKey=localStorage.getItem('custom_gemini_key')||GEMINI_KEY;
+  if(!activeKey){out.style.display='block';out.textContent='Sem chave API. Clica em ⚙ API Key na secção IA Assistente para configurar.';return;}
   out.style.display='block';
   out.textContent='A gerar…';
   if(btnEl){btnEl.disabled=true;}
-  const activeKey=localStorage.getItem('custom_gemini_key')||GEMINI_KEY;
   const sys=`És o assistente de construção do projecto "Crônicas de Gelo e Fogo" — jogo medieval/fantasia no Roblox. Ajudas builders a planear zonas, arquitetura medieval, escala Roblox e organização de trabalho.\nResponde em português. Sem emojis. Prático e concreto.`;
   try{
     const text=await callGeminiAPI(sys,[{role:'user',parts:[{text:prompt}]}],activeKey);
