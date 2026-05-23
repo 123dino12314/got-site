@@ -509,6 +509,17 @@ tr:hover td{background:rgba(255,255,255,0.02);}
   </div>
 </div>
 
+<!-- MODAL: PENDING APPROVAL -->
+<div class="modal-bg auth-bg" id="m-pending" style="z-index: 9998; backdrop-filter: blur(10px);">
+  <div class="modal" style="text-align:center;">
+    <div class="modal-h"><h2>A Aguardar Aprovação ⏳</h2></div>
+    <div class="modal-b">
+      <p style="color:var(--fg2); margin-bottom:1.5rem;">A tua conta foi criada, mas precisa de ser aprovada pelo Dono do projeto (dino5651) para teres acesso ao conteúdo.</p>
+      <button class="btn btn-ghost" onclick="window.logoutUser()">Sair da Conta</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL: PASSWORD CHANGE -->
 <div class="modal-bg" id="m-password">
   <div class="modal" style="max-width:400px;">
@@ -1082,7 +1093,7 @@ function handleImport(e){
 const navKeys={1:'dash',2:'tl',3:'phases',4:'sys',5:'model',6:'ai',7:'dec'};
 document.addEventListener('keydown',e=>{
   if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')return;
-  if(e.key==='Escape'){document.querySelectorAll('.modal-bg.open:not(#m-login)').forEach(m=>m.classList.remove('open'));document.getElementById('tut-bg').classList.remove('open');return;}
+  if(e.key==='Escape'){document.querySelectorAll('.modal-bg.open:not(#m-login):not(#m-pending)').forEach(m=>m.classList.remove('open'));document.getElementById('tut-bg').classList.remove('open');return;}
   if(e.key==='/'){e.preventDefault();const s=document.getElementById('sys-search');if(s){nav('sys');setTimeout(()=>s.focus(),100);}return;}
   if(navKeys[e.key])nav(navKeys[e.key]);
 });
@@ -1279,9 +1290,10 @@ onAuthStateChanged(auth, async (user) => {
   
   if(currentRole === 'owner' || currentRole === 'dev'){
     document.querySelectorAll('.auth-write').forEach(el=>el.style.display='inline-flex');
+    document.getElementById('m-pending').classList.remove('open');
   } else {
     document.querySelectorAll('.auth-write').forEach(el=>el.style.display='none');
-    toast("Modo Visitante: Apenas leitura.");
+    document.getElementById('m-pending').classList.add('open');
   }
   
   // Load Team if owner
@@ -1322,9 +1334,12 @@ async function loadTeam(){
   snap.forEach(d => {
     const u = d.data();
     const id = d.id;
+    const isOnline = (new Date() - new Date(u.last_online)) < 300000;
+    const onlineBadge = isOnline ? `<span style="color:#10b981;font-size:0.7rem;margin-left:5px;">● Online</span>` : '';
     const dStr = new Date(u.last_online).toLocaleString('pt-PT');
+    const uName = u.email.split('@')[0];
     html.push(`<tr>
-      <td>${u.email}</td>
+      <td>${uName} <span style="color:var(--fg3);font-size:0.75rem;">(${u.email})</span>${onlineBadge}</td>
       <td>
         <select class="inp" style="padding:0.2rem;font-size:0.75rem;" onchange="window.changeRole('${id}', this.value)">
           <option value="guest" ${u.role==='guest'?'selected':''}>Visitante</option>
