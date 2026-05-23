@@ -2176,6 +2176,7 @@ let currentRole = 'guest';
 let currentUsername = '';
 let userSub = null;
 let dataSub = null;
+let publicDataSub = null;
 let commentsSub = null;
 let changelogSub = null;
 
@@ -2392,6 +2393,24 @@ function resetUI() {
   document.getElementById('hdr-user').style.display = 'none';
   document.getElementById('hdr-online').style.display = 'none';
 }
+
+// ─── PUBLIC DATA LISTENER (no auth required) ─────────────
+// Keeps the landing page live for players who are not logged in.
+publicDataSub = onSnapshot(doc(db, "projects", "cgf"), (dSnap) => {
+  // Only update if a dev is NOT logged in (dataSub handles the authenticated case)
+  if(dataSub) return;
+  if(dSnap.exists()){
+    const incoming = dSnap.data();
+    const {_lastBy, _lastAt, ...rest} = incoming;
+    D = rest;
+    if(!D.nid) D.nid=100;
+    if(!D.systems) D.systems=[];
+    if(!D.assets) D.assets=[];
+    if(!D.timeline) D.timeline=[];
+    if(!D.decisions) D.decisions=[];
+    renderLanding();
+  }
+});
 
 // ─── AUTH STATE CHANGE ───────────────────────────────────
 onAuthStateChanged(auth, async (user) => {
