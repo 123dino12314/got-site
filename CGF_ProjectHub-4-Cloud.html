@@ -1126,21 +1126,23 @@ body.view-public.show-login .landing-section{filter:blur(2px) brightness(0.4);po
 
 <!-- TUTORIAL -->
 <div class="tut-bg" id="tut-bg">
-<div class="tut">
+<div class="tut" style="max-width:600px;max-height:85vh;overflow-y:auto;">
   <div class="tut-header">
-    <h2>Bem-vindo ao Project Hub</h2>
-    <p>O centro de operações do Crônicas de Gelo e Fogo</p>
+    <h2>Bem-vindo ao CGF Project Hub</h2>
+    <p>Centro de operações do Crônicas de Gelo e Fogo · Lê isto uma vez e tens tudo</p>
   </div>
   <div class="tut-steps">
-    <div class="tut-step"><div class="tut-num">1</div><div class="tut-text"><h4>Dashboard</h4><p>Visão geral do projecto — percentagem de progresso, próximas datas e decisões chave. Tudo se actualiza automaticamente.</p></div></div>
-    <div class="tut-step"><div class="tut-num">2</div><div class="tut-text"><h4>Sistemas</h4><p>Cada sistema do jogo está listado aqui. Clica num para expandir, editar a descrição, mudar o estado ou remover. Usa o botão "+ Sistema" para adicionar novos.</p></div></div>
-    <div class="tut-step"><div class="tut-num">3</div><div class="tut-text"><h4>Modelador</h4><p>Lista de assets 3D com prioridade e prazos. O modelador sabe exactamente o que fazer e por que ordem. Marca como entregue quando receberes.</p></div></div>
-    <div class="tut-step"><div class="tut-num">4</div><div class="tut-text"><h4>Calendário</h4><p>Marcos com datas editáveis. Clica no ✎ para mudar qualquer data ou conteúdo. Adiciona novos marcos na parte inferior.</p></div></div>
-    <div class="tut-step"><div class="tut-num">5</div><div class="tut-text"><h4>IA Assistente</h4><p>Chat com memória de conversa e 4 modos: <strong>Geral</strong> (visão geral), <strong>Programador</strong> (Luau, arquitectura, debugging), <strong>Modelador</strong> (specs, pipeline, prioridades) e <strong>Ideias</strong> (mecânicas, lore, game design). Usa os botões rápidos para perguntas comuns.</p></div></div>
-    <div class="tut-step"><div class="tut-num">6</div><div class="tut-text"><h4>Exportar</h4><p>O botão "↓ Exportar" gera um ficheiro .txt com todo o estado actual. Cola-o numa conversa com o Claude para análise completa e sugestões.</p></div></div>
-    <div class="tut-step"><div class="tut-num">7</div><div class="tut-text"><h4>Decisões</h4><p>Regista aqui todas as decisões importantes. Evita voltar ao mesmo assunto semanas depois — está tudo documentado.</p></div></div>
+    <div class="tut-step"><div class="tut-num">1</div><div class="tut-text"><h4>Dashboard</h4><p>Visão geral automática — progresso do projeto, próximas datas de todos os sistemas/assets/builds, e o log de alterações da equipa em tempo real.</p></div></div>
+    <div class="tut-step"><div class="tut-num">2</div><div class="tut-text"><h4>Sistemas</h4><p>Cada sistema do jogo vive aqui. Clica para expandir → edita descrição, estado (A Fazer / Em Dev / Completo), prazo e subtarefas. O calendário actualiza-se automaticamente quando mudas um prazo.</p></div></div>
+    <div class="tut-step"><div class="tut-num">3</div><div class="tut-text"><h4>Modelador</h4><p>Lista de assets 3D com prioridade e prazo. Marca como entregue quando receberes. Os prazos aparecem no calendário e nos alertas 🔔.</p></div></div>
+    <div class="tut-step"><div class="tut-num">4</div><div class="tut-text"><h4>📜 Lore Maker</h4><p>Caderno de ideias criativas — escreve livremente sem pressão de datas. Usa <strong>tags livres</strong> para organizar (ex: "magia, norte"). Quando uma ideia madurar, clica <strong>⚙ → Sistema</strong> para a promover direto para um sistema real do projeto.</p></div></div>
+    <div class="tut-step"><div class="tut-num">5</div><div class="tut-text"><h4>🏗 Construção</h4><p>Regista as zonas a construir com estado, prazo e subtarefas. Usa <strong>🏰 Inspiração</strong> para referências visuais e <strong>📋 Sugerir Subtarefas</strong> para a IA dividir o trabalho automaticamente.</p></div></div>
+    <div class="tut-step"><div class="tut-num">6</div><div class="tut-text"><h4>Calendário</h4><p>Vista unificada de <em>tudo</em> — sistemas, assets, builds e marcos manuais, ordenados por data. Clica ✎ num marco para editar. Atrasados ficam a vermelho. O 🔔 no header mostra alertas de prazos próximos.</p></div></div>
+    <div class="tut-step"><div class="tut-num">7</div><div class="tut-text"><h4>IA Assistente</h4><p>6 modos especializados: <strong>Geral</strong>, <strong>Programador</strong> (Luau/Roblox), <strong>Modelador</strong> (specs 3D), <strong>Ideias</strong> (game design), <strong>Lore Maker</strong> e <strong>Builder</strong>. Dentro do Lore e das Construções tens botões de IA inline que respondem com contexto daquela entrada específica.</p></div></div>
+    <div class="tut-step"><div class="tut-num">8</div><div class="tut-text"><h4>Perfil e Equipa</h4><p>Clica no teu avatar no header para mudar o <strong>nome exibido</strong> e escolher um <strong>emoji de avatar</strong> — aparece nos comentários e no changelog. O Dono gere a equipa em <strong>👥 Equipa</strong>: aprova, recusa, kick ou bane. Cargos: Dono, Desenvolvedor, Lore Maker, Builder.</p></div></div>
+    <div class="tut-step"><div class="tut-num">9</div><div class="tut-text"><h4>Guardar / Exportar</h4><p>Tudo guarda automaticamente na nuvem (Firestore). O header mostra <strong>✓ Guardado</strong> após cada alteração. O botão <strong>↓ Exportar</strong> gera um .txt com o estado completo — útil para análise externa ou backup.</p></div></div>
   </div>
-  <div class="tut-foot"><button class="btn btn-accent" onclick="closeTutorial()">Entendi, vamos começar</button></div>
+  <div class="tut-foot"><button class="btn btn-accent" onclick="closeTutorial()">Entendi, vamos começar →</button></div>
 </div>
 </div>
 
@@ -1549,8 +1551,8 @@ function renderLore(){
         <div class="field"><div class="field-l">Tags <span style="font-weight:400;color:var(--fg3);">(separadas por vírgula)</span></div><input class="inp" value="${(l.tags||'').replace(/"/g,'&quot;')}" onchange="D.lore.find(x=>x.id===${l.id}).tags=this.value;" onblur="save();renderLore();" placeholder="Ex: magia, facção, norte"></div>
         <div class="field"><div class="field-l">Texto / Ideia</div><textarea class="inp" rows="7" style="resize:vertical;font-family:var(--font);line-height:1.6;" onchange="D.lore.find(x=>x.id===${l.id}).text=this.value;save();" placeholder="Escreve livremente…">${(l.text||'').replace(/</g,'&lt;')}</textarea></div>
         <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.4rem;align-items:center;">
-          <button class="btn btn-sm" style="background:rgba(168,85,247,0.12);color:#a855f7;border-color:#a855f7;" onclick="loreAIIdea(${l.id})">💡 Desenvolver com IA</button>
-          <button class="btn btn-sm" style="background:rgba(168,85,247,0.12);color:#a855f7;border-color:#a855f7;" onclick="loreAIComplete(${l.id})">✍️ Completar Texto</button>
+          <button class="btn btn-sm" style="background:rgba(168,85,247,0.12);color:#a855f7;border-color:#a855f7;" onclick="loreAIIdea(this,${l.id})">💡 Desenvolver com IA</button>
+          <button class="btn btn-sm" style="background:rgba(168,85,247,0.12);color:#a855f7;border-color:#a855f7;" onclick="loreAIComplete(this,${l.id})">✍️ Completar Texto</button>
           <button class="btn btn-sm" style="background:rgba(34,197,94,0.1);color:var(--green);border-color:var(--green);" onclick="loreToSystem(${l.id})" title="Transforma esta ideia num Sistema">⚙ → Sistema</button>
           <button class="btn btn-sm btn-danger" style="margin-left:auto;" onclick="delLore(${l.id})">✕</button>
         </div>
@@ -1639,8 +1641,8 @@ function renderBuild(){
           <button class="btn btn-sm" onclick="addBuildTask(${b.id})">+</button>
         </div>
         <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.6rem;">
-          <button class="btn btn-sm" style="background:rgba(6,182,212,0.12);color:#06b6d4;border-color:#06b6d4;" onclick="buildAIInspire(${b.id})">🏰 Inspiração</button>
-          <button class="btn btn-sm" style="background:rgba(6,182,212,0.12);color:#06b6d4;border-color:#06b6d4;" onclick="buildAITasks(${b.id})">📋 Sugerir Subtarefas</button>
+          <button class="btn btn-sm" style="background:rgba(6,182,212,0.12);color:#06b6d4;border-color:#06b6d4;" onclick="buildAIInspire(this,${b.id})">🏰 Inspiração</button>
+          <button class="btn btn-sm" style="background:rgba(6,182,212,0.12);color:#06b6d4;border-color:#06b6d4;" onclick="buildAITasks(this,${b.id})">📋 Sugerir Subtarefas</button>
           <button class="btn btn-sm btn-danger" style="margin-left:auto;" onclick="delBuild(${b.id})">✕ Remover</button>
         </div>
         <div id="build-ai-out-${b.id}" style="display:none;margin-top:0.5rem;background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.25);border-radius:var(--radius);padding:0.6rem 0.75rem;font-size:0.78rem;color:var(--fg2);white-space:pre-wrap;"></div>
@@ -2100,17 +2102,17 @@ async function loreQuickCall(prompt, outId, btnEl){
   }catch(e){out.textContent='Erro: '+e.message;}
   finally{if(btnEl){btnEl.disabled=false;}}
 }
-function loreAIIdea(id){
+function loreAIIdea(btn, id){
   const l=D.lore.find(x=>x.id===id);if(!l)return;
-  const btn=event.currentTarget;
-  const prompt=`Gera uma ideia nova de lore para a categoria "${l.cat}" intitulada "${l.name}". Deve ser única, coerente com o universo medieval/fantasia, e diferente do que já existe. Dá nome, resumo (2-3 parágrafos) e 2-3 ganchos narrativos interessantes.`;
+  const tags=l.tags?` Tags: ${l.tags}.`:'';
+  const prompt=`Desenvolve a ideia de lore intitulada "${l.name}".${tags} Expande com: origem, motivações, detalhes do mundo, e 2-3 ganchos narrativos que possam ligar a outras partes do universo. O tom deve ser medieval/fantasia, sombrio e imersivo.`;
   loreQuickCall(prompt,'lore-ai-out-'+id,btn);
 }
-function loreAIComplete(id){
+function loreAIComplete(btn, id){
   const l=D.lore.find(x=>x.id===id);if(!l)return;
-  const btn=event.currentTarget;
-  if(!l.text||l.text.trim().length<10){toast('Escreve pelo menos algumas linhas de lore antes de completar.');return;}
-  const prompt=`Completa e expande este texto de lore (categoria: ${l.cat}, título: ${l.name}):\n\n${l.text}\n\nContinua de forma coerente, adiciona detalhes, aprofunda a narrativa. Mantém o mesmo estilo e tom.`;
+  if(!l.text||l.text.trim().length<10){toast('Escreve pelo menos algumas linhas antes de completar.');return;}
+  const tags=l.tags?` (tags: ${l.tags})`:'';
+  const prompt=`Continua e expande este texto de lore intitulado "${l.name}"${tags}:\n\n${l.text}\n\nMantém o mesmo estilo, voz e tom. Adiciona detalhes, aprofunda a narrativa, sugere consequências ou ramificações.`;
   loreQuickCall(prompt,'lore-ai-out-'+id,btn);
 }
 
@@ -2129,16 +2131,14 @@ async function buildQuickCall(prompt, outId, btnEl){
   }catch(e){out.textContent='Erro: '+e.message;}
   finally{if(btnEl){btnEl.disabled=false;}}
 }
-function buildAIInspire(id){
+function buildAIInspire(btn, id){
   const b=D.builds.find(x=>x.id===id);if(!b)return;
-  const btn=event.currentTarget;
-  const prompt=`Dá-me inspiração visual e descritiva para construir a zona "${b.name}"${b.zone?' na área "'+b.zone+'"':''}. Inclui: estilo arquitectónico, materiais típicos, paleta de cores, atmosfera, 2-3 referências reais ou de filmes/séries medievais, e 1 detalhe único que tornará esta zona memorável.`;
+  const prompt=`Dá-me inspiração visual e descritiva para construir a zona "${b.name}"${b.zone?' na área "'+b.zone+'"':''}. Inclui: estilo arquitectónico, materiais típicos, paleta de cores, atmosfera, 2-3 referências reais ou de filmes/séries medievais, e 1 detalhe único que tornará esta zona memorável no jogo.`;
   buildQuickCall(prompt,'build-ai-out-'+id,btn);
 }
-function buildAITasks(id){
+function buildAITasks(btn, id){
   const b=D.builds.find(x=>x.id===id);if(!b)return;
-  const btn=event.currentTarget;
-  const prompt=`Divide a construção da zona "${b.name}"${b.zone?' (área: '+b.zone+')':''} em subtarefas concretas e ordenadas para um builder de Roblox. Segue esta estrutura: 1) Estrutura base/blockout, 2) Paredes e teto, 3) Interiores, 4) Iluminação, 5) Decoração e props, 6) Polish final. Sê específico e prático.`;
+  const prompt=`Divide a construção da zona "${b.name}"${b.zone?' (área: '+b.zone+')':''} em subtarefas concretas e ordenadas para um builder de Roblox. Usa esta estrutura: 1) Blockout/estrutura base, 2) Paredes e teto, 3) Interiores, 4) Iluminação, 5) Decoração e props, 6) Polish final. Sê específico ao tipo de zona.`;
   buildQuickCall(prompt,'build-ai-out-'+id,btn);
 }
 
