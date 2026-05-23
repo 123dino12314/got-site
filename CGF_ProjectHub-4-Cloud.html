@@ -762,6 +762,7 @@ body.view-public.show-login .landing-section{filter:blur(2px) brightness(0.4);po
   <div style="display:flex;align-items:center;gap:0.5rem;flex:1;justify-content:flex-end;margin-right:0.5rem;">
     <div class="hdr-user" id="hdr-user" style="display:none;"><div class="hdr-user-dot"></div><span id="hdr-username"></span></div>
     <div class="hdr-online" id="hdr-online" style="display:none;"><div class="hdr-online-dot"></div><span id="hdr-online-count">1</span> online</div>
+    <span id="save-indicator" style="font-size:0.7rem;transition:color 0.3s;"></span>
   </div>
   <div class="hdr-actions">
     <button class="btn btn-ghost" onclick="showTutorial()">? Guia</button>
@@ -2445,9 +2446,13 @@ onAuthStateChanged(auth, async (user) => {
     };
     await setDoc(uDocRef, udata);
   } else if (ownerFlag && udata.role !== 'owner') {
+    udata.role = 'owner';
     await updateDoc(uDocRef, { role: 'owner' });
   }
-  
+
+  // Apply role immediately — don't wait for userSub to fire
+  applyRoleUI(udata.role);
+
   // Update last_online once on login
   await updateDoc(uDocRef, { last_online: new Date().toISOString() }).catch(() => {});
 
@@ -2530,16 +2535,23 @@ onAuthStateChanged(auth, async (user) => {
 
 // ─── CLOUD SAVE ──────────────────────────────────────────
 window.cloudSave = async (data) => {
-  if(currentRole !== 'owner' && currentRole !== 'dev') return;
+  if(currentRole !== 'owner' && currentRole !== 'dev') {
+    toast("⚠ Sem permissão para guardar. Faz login como dev.");
+    return;
+  }
+  const ind = document.getElementById('save-indicator');
+  if(ind){ ind.textContent = '↑ A guardar…'; ind.style.color = 'var(--fg3)'; }
   try {
     await setDoc(doc(db, "projects", "cgf"), {
       ...data,
       _lastBy: currentUsername,
       _lastAt: new Date().toISOString()
     });
+    if(ind){ ind.textContent = '✓ Guardado'; ind.style.color = 'var(--green)'; setTimeout(()=>{ ind.textContent=''; }, 3000); }
   } catch(e) {
     console.error("Cloud save error", e);
-    toast("Erro ao guardar na nuvem!");
+    if(ind){ ind.textContent = '✕ Erro ao guardar'; ind.style.color = 'var(--red)'; }
+    toast("Erro ao guardar na nuvem: " + e.message);
   }
 };
 
