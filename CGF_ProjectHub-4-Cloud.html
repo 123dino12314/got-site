@@ -831,6 +831,8 @@ body.view-public.show-login .landing-section{filter:blur(2px) brightness(0.4);po
     <div class="side-label">Produção</div>
     <div class="side-item" data-p="sys"><span class="side-icon">⚙</span>Sistemas</div>
     <div class="side-item" data-p="model"><span class="side-icon">◻</span>Modelador</div>
+    <div class="side-item" data-p="lore"><span class="side-icon">📜</span>Lore</div>
+    <div class="side-item" data-p="build"><span class="side-icon">🏗</span>Construção</div>
   </div>
   <div class="side-section">
     <div class="side-label">Ferramentas</div>
@@ -935,6 +937,43 @@ body.view-public.show-login .landing-section{filter:blur(2px) brightness(0.4);po
 <div class="table-wrap"><table><thead><tr><th>#</th><th>Asset</th><th>Categoria</th><th>Prazo</th><th>Estado</th><th>Ações</th></tr></thead><tbody id="model-table"></tbody></table></div>
 </div>
 
+<!-- LORE -->
+<div class="panel" id="p-lore">
+<div class="pg-title">📜 Lore Maker</div>
+<div class="pg-sub">Facções, personagens, regiões, eventos — tudo o que dá vida ao mundo</div>
+<div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem;" id="lore-filter-cats">
+  <button class="btn btn-sm" onclick="setLoreCat('')" id="lf-all">Todos</button>
+  <button class="btn btn-sm" onclick="setLoreCat('Facção')" id="lf-fac">Facção</button>
+  <button class="btn btn-sm" onclick="setLoreCat('Personagem')" id="lf-per">Personagem</button>
+  <button class="btn btn-sm" onclick="setLoreCat('Região')" id="lf-reg">Região</button>
+  <button class="btn btn-sm" onclick="setLoreCat('Evento')" id="lf-ev">Evento</button>
+  <button class="btn btn-sm" onclick="setLoreCat('Item')" id="lf-item">Item</button>
+  <button class="btn btn-sm" onclick="setLoreCat('Magia')" id="lf-mag">Magia</button>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem;">
+  <div id="lore-stats" style="font-size:0.73rem;color:var(--fg3);"></div>
+  <button class="btn btn-accent auth-write" onclick="openModal('m-lore')">+ Nova Entrada</button>
+</div>
+<div id="lore-list"></div>
+</div>
+
+<!-- BUILD -->
+<div class="panel" id="p-build">
+<div class="pg-title">🏗 Construção</div>
+<div class="pg-sub">Zonas e estruturas a construir — progresso, prazos e subtarefas</div>
+<div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem;">
+  <button class="btn btn-sm" onclick="setBuildFilter('')" id="bf-all">Todas</button>
+  <button class="btn btn-sm" onclick="setBuildFilter('todo')" id="bf-todo">Por Fazer</button>
+  <button class="btn btn-sm" onclick="setBuildFilter('wip')" id="bf-wip">Em Construção</button>
+  <button class="btn btn-sm" onclick="setBuildFilter('done')" id="bf-done">Concluído</button>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem;">
+  <div id="build-stats" style="font-size:0.73rem;color:var(--fg3);"></div>
+  <button class="btn btn-accent auth-write" onclick="openModal('m-build')">+ Nova Zona</button>
+</div>
+<div id="build-list"></div>
+</div>
+
 <!-- AI -->
 <div class="panel" id="p-ai">
 <div class="pg-title">IA Assistente</div>
@@ -946,6 +985,8 @@ body.view-public.show-login .landing-section{filter:blur(2px) brightness(0.4);po
   <button class="ai-role" data-role="prog" onclick="switchRole('prog')"><span class="ai-role-icon">⚙</span>Programador</button>
   <button class="ai-role" data-role="model" onclick="switchRole('model')"><span class="ai-role-icon">◻</span>Modelador</button>
   <button class="ai-role" data-role="ideias" onclick="switchRole('ideias')"><span class="ai-role-icon">✦</span>Ideias &amp; Design</button>
+  <button class="ai-role" data-role="lore" onclick="switchRole('lore')"><span class="ai-role-icon">📜</span>Lore Maker</button>
+  <button class="ai-role" data-role="builder" onclick="switchRole('builder')"><span class="ai-role-icon">🏗</span>Builder</button>
 </div>
 
 <!-- Quick Actions -->
@@ -1037,6 +1078,46 @@ body.view-public.show-login .landing-section{filter:blur(2px) brightness(0.4);po
 </div></div>
 
 <!-- MODAL: EDIT TIMELINE -->
+<!-- MODAL: LORE -->
+<div class="modal-bg" id="m-lore"><div class="modal">
+  <div class="modal-t">📜 Nova Entrada de Lore</div>
+  <div class="field"><div class="field-l">Título *</div><input class="inp" id="ml-name" placeholder="Ex: A Ordem dos Corvos"></div>
+  <div class="g2">
+    <div class="field"><div class="field-l">Categoria</div>
+      <select class="inp" id="ml-cat">
+        <option>Facção</option><option>Personagem</option><option>Região</option><option>Evento</option><option>Item</option><option>Magia</option>
+      </select>
+    </div>
+    <div class="field"><div class="field-l">Prazo (opcional)</div><input class="inp" type="date" id="ml-dl"></div>
+  </div>
+  <div class="field"><div class="field-l">Texto / Lore</div><textarea class="inp" id="ml-text" rows="5" placeholder="Escreve o lore aqui… ou deixa em branco e usa a IA depois."></textarea></div>
+  <div class="modal-foot">
+    <button class="btn" onclick="closeModal('m-lore')">Cancelar</button>
+    <button class="btn btn-accent" onclick="addLore()">Criar Entrada</button>
+  </div>
+</div></div>
+
+<!-- MODAL: BUILD -->
+<div class="modal-bg" id="m-build"><div class="modal">
+  <div class="modal-t">🏗 Nova Zona de Construção</div>
+  <div class="g2">
+    <div class="field"><div class="field-l">Nome *</div><input class="inp" id="mb-name" placeholder="Ex: Torre do Rei"></div>
+    <div class="field"><div class="field-l">Zona / Área</div><input class="inp" id="mb-zone" placeholder="Ex: Castelo Norte"></div>
+  </div>
+  <div class="g2">
+    <div class="field"><div class="field-l">Estado inicial</div>
+      <select class="inp" id="mb-st">
+        <option value="todo">Por Fazer</option><option value="wip">Em Construção</option><option value="done">Concluído</option>
+      </select>
+    </div>
+    <div class="field"><div class="field-l">Prazo</div><input class="inp" type="date" id="mb-dl"></div>
+  </div>
+  <div class="modal-foot">
+    <button class="btn" onclick="closeModal('m-build')">Cancelar</button>
+    <button class="btn btn-accent" onclick="addBuild()">Criar Zona</button>
+  </div>
+</div></div>
+
 <div class="modal-bg" id="m-tl-edit"><div class="modal">
   <div class="modal-t">Editar Marco</div>
   <div class="g2">
@@ -1246,6 +1327,8 @@ function nav(p){
   if(p==='dec')renderDec();
   if(p==='dash')renderDash();
   if(p==='phases')renderPhases();
+  if(p==='lore')renderLore();
+  if(p==='build')renderBuild();
   if(window.innerWidth<769){document.getElementById('sidebar').classList.remove('open');document.getElementById('mob-overlay').classList.remove('open');}
 }
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('mob-overlay').classList.toggle('open');}
@@ -1425,6 +1508,192 @@ function chAsset(id,st){D.assets.find(x=>x.id===id).status=st;renderModel();save
 function delAsset(id){D.assets=D.assets.filter(x=>x.id!==id);renderModel();save();}
 function addAsset(){const n=document.getElementById('ma-name').value.trim();if(!n)return;D.assets.push({id:++D.nid,name:n,cat:document.getElementById('ma-cat').value,deadline:document.getElementById('ma-dl').value,priority:parseInt(document.getElementById('ma-pri').value)||99,status:'todo'});closeModal('m-asset');document.getElementById('ma-name').value='';renderModel();toast('Asset adicionado.');save();}
 
+// ─── RENDER: LORE ────────────────────────────────────────
+let loreCatFilter='';
+function setLoreCat(c){
+  loreCatFilter=c;
+  document.querySelectorAll('#lore-filter-cats .btn').forEach(b=>{b.classList.remove('btn-accent');});
+  const ids={'':"lf-all",'Facção':'lf-fac','Personagem':'lf-per','Região':'lf-reg','Evento':'lf-ev','Item':'lf-item','Magia':'lf-mag'};
+  const el=document.getElementById(ids[c]);if(el)el.classList.add('btn-accent');
+  renderLore();
+}
+function renderLore(){
+  if(!D.lore)D.lore=[];
+  const list=loreCatFilter?D.lore.filter(l=>l.cat===loreCatFilter):D.lore;
+  const total=D.lore.length;
+  const draft=D.lore.filter(l=>l.status==='draft').length;
+  const approved=D.lore.filter(l=>l.status==='approved').length;
+  document.getElementById('lore-stats').textContent=`${total} entradas · ${approved} aprovadas · ${draft} rascunhos`;
+  const catColors={'Facção':'var(--red)','Personagem':'var(--accent)','Região':'#10b981','Evento':'#06b6d4','Item':'#a855f7','Magia':'#f97316'};
+  const statusBadge={draft:'<span class="badge badge-todo">Rascunho</span>',review:'<span class="badge badge-wip">Em Revisão</span>',approved:'<span class="badge badge-done">Aprovado</span>'};
+  const el=document.getElementById('lore-list');
+  if(!list.length){el.innerHTML=`<div style="color:var(--fg3);font-size:0.8rem;padding:1rem 0;text-align:center;">Sem entradas de lore ainda. Cria a primeira!</div>`;return;}
+  el.innerHTML=list.map(l=>{
+    const dlSafe=l.deadline?`<span style="font-size:0.65rem;color:${isOverdue(l.deadline)?'var(--red)':'var(--fg3)'};">⏱ ${displayDate(l.deadline)}</span>`:'';
+    const preview=l.text?(l.text.slice(0,120)+(l.text.length>120?'…':'')).replace(/</g,'&lt;'):'<em style="color:var(--fg3);">Sem texto ainda.</em>';
+    return `<div class="sys" id="lo${l.id}">
+      <div class="sys-hd" onclick="togLore(${l.id})">
+        <div style="display:flex;align-items:center;gap:0.5rem;flex:1;min-width:0;">
+          <span style="font-size:0.65rem;font-weight:700;background:${catColors[l.cat]||'var(--fg3)'};color:#fff;padding:0.1rem 0.4rem;border-radius:4px;">${l.cat}</span>
+          <span class="sys-name">${l.name}</span>
+          ${dlSafe}
+        </div>
+        <div style="display:flex;align-items:center;gap:0.4rem;">
+          ${statusBadge[l.status]||''}
+          <span class="sys-arrow">›</span>
+        </div>
+      </div>
+      <div class="sys-body">
+        <div style="font-size:0.78rem;color:var(--fg2);margin-bottom:0.5rem;">${preview}</div>
+        <div class="field"><div class="field-l">Título</div><input class="inp" value="${l.name.replace(/"/g,'&quot;')}" onchange="D.lore.find(x=>x.id===${l.id}).name=this.value;save();renderLore();" placeholder="Nome da entrada"></div>
+        <div class="g2">
+          <div class="field"><div class="field-l">Categoria</div>
+            <select class="inp" onchange="D.lore.find(x=>x.id===${l.id}).cat=this.value;save();renderLore();">
+              ${['Facção','Personagem','Região','Evento','Item','Magia'].map(c=>`<option${l.cat===c?' selected':''}>${c}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field"><div class="field-l">Estado</div>
+            <select class="inp" onchange="D.lore.find(x=>x.id===${l.id}).status=this.value;save();renderLore();">
+              <option value="draft"${l.status==='draft'?' selected':''}>Rascunho</option>
+              <option value="review"${l.status==='review'?' selected':''}>Em Revisão</option>
+              <option value="approved"${l.status==='approved'?' selected':''}>Aprovado</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><div class="field-l">Prazo (opcional)</div><input class="inp" type="date" value="${toISODate(l.deadline||'')}" onchange="D.lore.find(x=>x.id===${l.id}).deadline=this.value;save();renderLore();"></div>
+        <div class="field"><div class="field-l">Texto / Lore</div><textarea class="inp" rows="6" style="resize:vertical;" onchange="D.lore.find(x=>x.id===${l.id}).text=this.value;save();" placeholder="Escreve aqui o lore desta entrada…">${(l.text||'').replace(/</g,'&lt;')}</textarea></div>
+        <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.3rem;">
+          <button class="btn btn-sm" style="background:rgba(168,85,247,0.12);color:#a855f7;border-color:#a855f7;" onclick="loreAIIdea(${l.id})">💡 Nova Ideia</button>
+          <button class="btn btn-sm" style="background:rgba(168,85,247,0.12);color:#a855f7;border-color:#a855f7;" onclick="loreAIComplete(${l.id})">✍️ Completar Texto</button>
+          <button class="btn btn-sm btn-danger" style="margin-left:auto;" onclick="delLore(${l.id})">✕ Remover</button>
+        </div>
+        <div id="lore-ai-out-${l.id}" style="display:none;margin-top:0.5rem;background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.25);border-radius:var(--radius);padding:0.6rem 0.75rem;font-size:0.78rem;color:var(--fg2);white-space:pre-wrap;"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function togLore(id){document.getElementById('lo'+id).classList.toggle('open');}
+function delLore(id){if(!confirm('Remover esta entrada de lore?'))return;const l=D.lore.find(x=>x.id===id);D.lore=D.lore.filter(x=>x.id!==id);renderLore();save();if(window.logChange&&l)window.logChange(`Removeu lore "${l.name}"`);}
+function addLore(){
+  const name=document.getElementById('ml-name').value.trim();if(!name)return;
+  const entry={id:++D.nid,name,cat:document.getElementById('ml-cat').value,status:'draft',text:document.getElementById('ml-text').value,deadline:document.getElementById('ml-dl').value};
+  D.lore.push(entry);closeModal('m-lore');
+  ['ml-name','ml-text','ml-dl'].forEach(x=>document.getElementById(x).value='');
+  renderLore();save();toast('Entrada de lore criada!');
+  if(window.logChange)window.logChange(`Adicionou lore "${name}"`);
+}
+
+// ─── RENDER: BUILD ────────────────────────────────────────
+let buildFilter='';
+function setBuildFilter(f){
+  buildFilter=f;
+  document.querySelectorAll('#p-build .btn').forEach(b=>b.classList.remove('btn-accent'));
+  const ids={'':'bf-all','todo':'bf-todo','wip':'bf-wip','done':'bf-done'};
+  const el=document.getElementById(ids[f]);if(el)el.classList.add('btn-accent');
+  renderBuild();
+}
+function renderBuild(){
+  if(!D.builds)D.builds=[];
+  const list=buildFilter?D.builds.filter(b=>b.status===buildFilter):D.builds;
+  const done=D.builds.filter(b=>b.status==='done').length;
+  const wip=D.builds.filter(b=>b.status==='wip').length;
+  const todo=D.builds.filter(b=>b.status==='todo').length;
+  document.getElementById('build-stats').textContent=`${D.builds.length} zonas · ${done} concluídas · ${wip} em curso · ${todo} por fazer`;
+  const statusLabel={todo:'Por Fazer',wip:'Em Construção',done:'Concluído'};
+  const statusBadge={todo:'<span class="badge badge-todo">Por Fazer</span>',wip:'<span class="badge badge-wip">Em Construção</span>',done:'<span class="badge badge-done">Concluído</span>'};
+  const el=document.getElementById('build-list');
+  if(!list.length){el.innerHTML=`<div style="color:var(--fg3);font-size:0.8rem;padding:1rem 0;text-align:center;">Sem zonas de construção ainda. Cria a primeira!</div>`;return;}
+  el.innerHTML=list.map(b=>{
+    const tasks=b.subtasks||[];
+    const tasksDone=tasks.filter(t=>t.done).length;
+    const dlSafe=b.deadline?`<span style="font-size:0.65rem;color:${isOverdue(b.deadline)?'var(--red)':'var(--fg3)'};">⏱ ${displayDate(b.deadline)}</span>`:'';
+    const progressBar=tasks.length?`<div style="background:var(--bg3);border-radius:4px;height:4px;margin:0.3rem 0;overflow:hidden;"><div style="height:100%;background:var(--green);width:${Math.round(tasksDone/tasks.length*100)}%;transition:width 0.3s;"></div></div>`:'';
+    return `<div class="sys" id="bd${b.id}">
+      <div class="sys-hd" onclick="togBuild(${b.id})">
+        <div style="display:flex;align-items:center;gap:0.5rem;flex:1;min-width:0;">
+          <span class="sys-name">🏗 ${b.name}</span>
+          ${b.zone?`<span style="font-size:0.65rem;color:var(--fg3);">[${b.zone}]</span>`:''}
+          ${dlSafe}
+        </div>
+        <div style="display:flex;align-items:center;gap:0.4rem;">
+          ${tasks.length?`<span style="font-size:0.65rem;color:var(--fg3);">${tasksDone}/${tasks.length}</span>`:''}
+          ${statusBadge[b.status]||''}
+          <span class="sys-arrow">›</span>
+        </div>
+      </div>
+      <div class="sys-body">
+        ${progressBar}
+        <div class="g2">
+          <div class="field"><div class="field-l">Nome</div><input class="inp" value="${b.name.replace(/"/g,'&quot;')}" onchange="D.builds.find(x=>x.id===${b.id}).name=this.value;save();renderBuild();" placeholder="Nome da zona"></div>
+          <div class="field"><div class="field-l">Zona / Área</div><input class="inp" value="${(b.zone||'').replace(/"/g,'&quot;')}" onchange="D.builds.find(x=>x.id===${b.id}).zone=this.value;save();" placeholder="Ex: Castelo Norte"></div>
+        </div>
+        <div class="g2">
+          <div class="field"><div class="field-l">Estado</div>
+            <select class="inp" onchange="D.builds.find(x=>x.id===${b.id}).status=this.value;save();renderBuild();">
+              <option value="todo"${b.status==='todo'?' selected':''}>Por Fazer</option>
+              <option value="wip"${b.status==='wip'?' selected':''}>Em Construção</option>
+              <option value="done"${b.status==='done'?' selected':''}>Concluído</option>
+            </select>
+          </div>
+          <div class="field"><div class="field-l">Prazo</div><input class="inp" type="date" value="${toISODate(b.deadline||'')}" onchange="D.builds.find(x=>x.id===${b.id}).deadline=this.value;save();renderBuild();"></div>
+        </div>
+        <div class="field"><div class="field-l">Notas</div><textarea class="inp" rows="3" style="resize:vertical;" onchange="D.builds.find(x=>x.id===${b.id}).notes=this.value;save();" placeholder="Notas, referências, descrição da zona…">${(b.notes||'').replace(/</g,'&lt;')}</textarea></div>
+        <div class="field-l" style="margin-bottom:0.3rem;">Subtarefas <span style="font-weight:400;color:var(--fg3);">(${tasksDone}/${tasks.length})</span></div>
+        <div id="btasks-${b.id}">${renderBuildTasks(b)}</div>
+        <div style="display:flex;gap:0.4rem;margin-top:0.3rem;">
+          <input class="inp" id="bt-inp-${b.id}" placeholder="Nova subtarefa…" style="flex:1;font-size:0.78rem;padding:0.2rem 0.4rem;" onkeydown="if(event.key==='Enter')addBuildTask(${b.id})">
+          <button class="btn btn-sm" onclick="addBuildTask(${b.id})">+</button>
+        </div>
+        <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.6rem;">
+          <button class="btn btn-sm" style="background:rgba(6,182,212,0.12);color:#06b6d4;border-color:#06b6d4;" onclick="buildAIInspire(${b.id})">🏰 Inspiração</button>
+          <button class="btn btn-sm" style="background:rgba(6,182,212,0.12);color:#06b6d4;border-color:#06b6d4;" onclick="buildAITasks(${b.id})">📋 Sugerir Subtarefas</button>
+          <button class="btn btn-sm btn-danger" style="margin-left:auto;" onclick="delBuild(${b.id})">✕ Remover</button>
+        </div>
+        <div id="build-ai-out-${b.id}" style="display:none;margin-top:0.5rem;background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.25);border-radius:var(--radius);padding:0.6rem 0.75rem;font-size:0.78rem;color:var(--fg2);white-space:pre-wrap;"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function renderBuildTasks(b){
+  const tasks=b.subtasks||[];
+  if(!tasks.length)return`<div style="color:var(--fg3);font-size:0.72rem;padding:0.2rem 0;">Sem subtarefas ainda.</div>`;
+  return tasks.map(t=>`<div class="sys-task${t.done?' done-task':''}" id="bti${b.id}-${t.id}">
+    <input type="checkbox"${t.done?' checked':''} onchange="toggleBuildTask(${b.id},${t.id})">
+    <span class="task-text">${t.text.replace(/</g,'&lt;')}</span>
+    <button class="btn btn-sm btn-icon btn-danger" style="margin-left:auto;opacity:0.6;" onclick="delBuildTask(${b.id},${t.id})">✕</button>
+  </div>`).join('');
+}
+function togBuild(id){document.getElementById('bd'+id).classList.toggle('open');}
+function delBuild(id){if(!confirm('Remover esta zona?'))return;const b=D.builds.find(x=>x.id===id);D.builds=D.builds.filter(x=>x.id!==id);renderBuild();save();if(window.logChange&&b)window.logChange(`Removeu build "${b.name}"`);}
+function addBuild(){
+  const name=document.getElementById('mb-name').value.trim();if(!name)return;
+  D.builds.push({id:++D.nid,name,zone:document.getElementById('mb-zone').value.trim(),status:document.getElementById('mb-st').value,deadline:document.getElementById('mb-dl').value,notes:'',subtasks:[]});
+  closeModal('m-build');['mb-name','mb-zone','mb-dl'].forEach(x=>document.getElementById(x).value='');
+  renderBuild();save();toast('Zona adicionada!');
+  if(window.logChange)window.logChange(`Adicionou build "${name}"`);
+}
+function addBuildTask(bid){
+  const inp=document.getElementById('bt-inp-'+bid);const txt=inp.value.trim();if(!txt)return;
+  const b=D.builds.find(x=>x.id===bid);if(!b)return;
+  if(!b.subtasks)b.subtasks=[];
+  b.subtasks.push({id:++D.nid,text:txt,done:false});
+  inp.value='';save();
+  document.getElementById('btasks-'+bid).innerHTML=renderBuildTasks(b);
+  document.getElementById('build-stats').textContent=`${D.builds.length} zonas · ${D.builds.filter(x=>x.status==='done').length} concluídas`;
+}
+function toggleBuildTask(bid,tid){
+  const b=D.builds.find(x=>x.id===bid);const t=(b.subtasks||[]).find(x=>x.id===tid);if(!t)return;
+  t.done=!t.done;
+  const el=document.getElementById('bti'+bid+'-'+tid);if(el)el.classList.toggle('done-task',t.done);
+  save();
+}
+function delBuildTask(bid,tid){
+  const b=D.builds.find(x=>x.id===bid);if(!b)return;
+  b.subtasks=(b.subtasks||[]).filter(x=>x.id!==tid);
+  document.getElementById('btasks-'+bid).innerHTML=renderBuildTasks(b);
+  save();
+}
+
 // ─── RENDER: TIMELINE (unified) ──────────────────────────
 let editTLId=null;
 function buildUnifiedTimeline(){
@@ -1433,12 +1702,14 @@ function buildUnifiedTimeline(){
   D.timeline.forEach(t=>items.push({_type:'milestone',_id:t.id,date:t.date,sortDate:toISODate(t.date)||'9999-12-31',title:t.title,desc:t.desc||'',status:t.status||''}));
   D.systems.filter(s=>s.deadline).forEach(s=>items.push({_type:'system',_id:s.id,_phase:s.phase,date:s.deadline,sortDate:toISODate(s.deadline)||'9999-12-31',title:s.name,desc:`Sistema · Fase ${s.phase}`,status:stMap[s.status]||''}));
   D.assets.filter(a=>a.deadline).forEach(a=>items.push({_type:'asset',_id:a.id,date:a.deadline,sortDate:toISODate(a.deadline)||'9999-12-31',title:a.name,desc:`Asset · ${a.cat}`,status:a.status==='done'?'done':''}));
+  (D.lore||[]).filter(l=>l.deadline).forEach(l=>items.push({_type:'lore',_id:l.id,date:l.deadline,sortDate:toISODate(l.deadline)||'9999-12-31',title:l.name,desc:`Lore · ${l.cat}`,status:l.status==='approved'?'done':''}));
+  (D.builds||[]).filter(b=>b.deadline).forEach(b=>items.push({_type:'build',_id:b.id,date:b.deadline,sortDate:toISODate(b.deadline)||'9999-12-31',title:b.name,desc:`Build${b.zone?' · '+b.zone:''}`,status:b.status==='done'?'done':''}));
   return items.sort((a,b)=>a.sortDate.localeCompare(b.sortDate));
 }
 function renderTL(){
   const items=buildUnifiedTimeline();
-  const tLabel={milestone:'Marco',system:'Sistema',asset:'Asset'};
-  const tColor={milestone:'var(--fg3)',system:'var(--accent)',asset:'var(--blue)'};
+  const tLabel={milestone:'Marco',system:'Sistema',asset:'Asset',lore:'Lore',build:'Build'};
+  const tColor={milestone:'var(--fg3)',system:'var(--accent)',asset:'var(--blue)',lore:'#a855f7',build:'#06b6d4'};
   document.getElementById('tl-list').innerHTML=items.length?items.map(t=>{
     const od=t.status!=='done'&&isOverdue(t.date);
     let editBtn='';
@@ -1518,9 +1789,11 @@ const aiWelcome={
   geral:'Olá. Tenho contexto completo do projecto — sistemas, prazos, decisões, assets. Pergunta o que precisares.',
   prog:'Modo Programador activo. Posso ajudar com arquitectura Luau/Roblox, debugging, integração de sistemas, estrutura de módulos, networking. Manda código ou descreve o problema.',
   model:'Modo Modelador activo. Posso ajudar com prioridades de assets, especificações técnicas (poly count, textures, rigs), pipeline de entrega, e referências visuais para cada peça.',
-  ideias:'Modo Ideias & Design activo. Vamos explorar mecânicas, loops de gameplay, narrativa, progressão, eventos. Posso propor features novas, analisar se encaixam no que já existe, e ajudar a expandir o GDD.'
+  ideias:'Modo Ideias & Design activo. Vamos explorar mecânicas, loops de gameplay, narrativa, progressão, eventos. Posso propor features novas, analisar se encaixam no que já existe, e ajudar a expandir o GDD.',
+  lore:'Modo Lore Maker activo. Posso criar facções, personagens, regiões e eventos para o universo de Crônicas de Gelo e Fogo. Diz-me o que queres desenvolver — começo do zero ou expando o que já tens.',
+  builder:'Modo Builder activo. Posso ajudar a planear zonas de construção — arquitetura medieval, referências visuais, paletas de cor, ordem de construção e subtarefas detalhadas. Que zona vamos trabalhar?'
 };
-const aiLabels={geral:'Assistente CGF',prog:'Assistente · Programador',model:'Assistente · Modelador',ideias:'Assistente · Ideias'};
+const aiLabels={geral:'Assistente CGF',prog:'Assistente · Programador',model:'Assistente · Modelador',ideias:'Assistente · Ideias',lore:'Assistente · Lore Maker',builder:'Assistente · Builder'};
 const quickActions={
   geral:[
     {label:'Estado do projecto',msg:'Dá-me um resumo rápido do estado actual do projecto — o que está feito, o que falta, e os próximos passos.'},
@@ -1549,6 +1822,22 @@ const quickActions={
     {label:'Monetização',msg:'Ideias de monetização éticas para Roblox que não sejam pay-to-win e respeitem o espírito RPG do jogo.'},
     {label:'Narrativa / Lore',msg:'Ajuda a expandir o lore do universo próprio — facções, conflitos, personagens NPC que enriqueçam o mundo.'},
     {label:'Onboarding',msg:'Como deve ser a primeira hora de um jogador novo? Propõe um fluxo de onboarding que ensine sem ser tutorial forçado.'}
+  ],
+  lore:[
+    {label:'Criar uma facção',msg:'Cria uma facção original para o universo de Crônicas de Gelo e Fogo — nome, história de origem, objetivos, símbolo, território e personalidades notáveis. Que seja única e integre com o tema medieval.'},
+    {label:'Criar um personagem',msg:'Cria um personagem NPC memorável — nome, origem, motivações, segredos, aparência e como interage com os jogadores. Deve ter profundidade e contribuir para o lore.'},
+    {label:'Criar uma região',msg:'Descreve uma região do mundo — geografia, clima, habitantes, história, recursos e conflitos locais. Detalha o suficiente para um builder poder visualizá-la.'},
+    {label:'Criar um evento histórico',msg:'Cria um evento histórico significativo do passado do mundo — uma batalha, traição, descoberta ou catástrofe. Deve ter consequências visíveis no presente.'},
+    {label:'Criar um item lendário',msg:'Cria um item lendário — nome, origem, poderes, lenda associada, quem o detém e o que acontece se for destruído.'},
+    {label:'Expandir lore existente',msg:'Tenho lore já escrito. Vou partilhar — ajuda-me a aprofundá-lo, identificar contradições, e sugerir onde pode ramificar.'}
+  ],
+  builder:[
+    {label:'Planear uma zona',msg:'Quero planear uma nova zona de construção. Diz-me o que preciso de considerar: escala, estilo medieval, fluxo de movimento dos jogadores, pontos de interesse e integração com as mecânicas de jogo.'},
+    {label:'Arquitetura do castelo principal',msg:'Sugere a estrutura e divisões do castelo principal do jogo — muralhas, torres, salões, masmorras, pátios. Como deve ser organizado para RPG?'},
+    {label:'Referências visuais medievais',msg:'Que referências visuais devo seguir para as construções do jogo? Épocas históricas, castelos reais, filmes/séries. Foco em manter coerência com o estilo GOT/medieval.'},
+    {label:'Subtarefas para uma zona',msg:'Vou dar-te o nome de uma zona. Divide a construção em subtarefas concretas e ordenadas: estrutura base, interiores, iluminação, decoração, props, polish.'},
+    {label:'Paleta de cores',msg:'Sugere paletas de cores para diferentes zonas do jogo — tons para zonas frias (Norte), quentes (Sul), neutras (tavernas, mercados) e sombrias (masmorras).'},
+    {label:'Escala e proporções Roblox',msg:'Quais são as melhores práticas de escala e proporção para construções medievais no Roblox? Alturas de porta, espessura de paredes, escala humana.'}
   ]
 };
 
@@ -1577,7 +1866,7 @@ function clearChat(){
 function updateMsgCount(){
   const c=aiHistory.filter(m=>m.role==='user').length;
   document.getElementById('ai-msg-count').textContent=c;
-  const labels={geral:'Geral',prog:'Programador',model:'Modelador',ideias:'Ideias'};
+  const labels={geral:'Geral',prog:'Programador',model:'Modelador',ideias:'Ideias',lore:'Lore Maker',builder:'Builder'};
   document.getElementById('ai-status').innerHTML=`Modo: ${labels[aiRole]} · <span id="ai-msg-count">${c}</span> mensagens`;
 }
 
@@ -1603,6 +1892,12 @@ ${D.timeline.map(t=>`[${t.status||'todo'}] ${t.date} — ${t.title}: ${t.desc}`)
 DECISÕES TOMADAS:
 ${D.decisions.map(d=>`- ${d.title}: ${d.reason}`).join('\n')}
 
+LORE DO UNIVERSO (${(D.lore||[]).length} entradas):
+${(D.lore||[]).slice(0,20).map(l=>`[${l.cat}] ${l.name} (${l.status}): ${(l.text||'').slice(0,150)}`).join('\n')||'Sem lore registado ainda.'}
+
+CONSTRUÇÕES (${(D.builds||[]).length} zonas):
+${(D.builds||[]).map(b=>`[${b.status}] ${b.name}${b.zone?' ('+b.zone+')':''}${b.deadline?' — prazo: '+b.deadline:''}`).join('\n')||'Sem zonas registadas ainda.'}
+
 REFERÊNCIAS: Skyrim (progressão por uso), Witcher 3 (mundo/narrativa), GTA RP (interacção social)
 ATRIBUTOS: Força, Destreza, Resistência, Magia, Stamina (progressão por uso, sem classes)
 LANÇAMENTO: Exclusivo Jun 2026 (testers). Público 2027.
@@ -1625,7 +1920,21 @@ Português. Sem emojis. Directo.`,
 Foco: Game design, mecânicas, loops de gameplay, progressão, narrativa, eventos, monetização, UX, worldbuilding.
 Quando propuseres features, analisa sempre: como integra com o que já existe? Qual o custo de dev? Vale a pena para Fase 1 ou adia para depois?
 Sê criativo mas prático. Fundamenta as ideias no que o projecto já tem.
-Português. Sem emojis. Estrutura as propostas com prós, contras e integração.`
+Português. Sem emojis. Estrutura as propostas com prós, contras e integração.`,
+    lore:`\n\nMODO LORE MAKER ACTIVO.
+Tens acesso a todo o lore já registado no projecto (ver LORE DO UNIVERSO acima).
+Foco: Criação e expansão de lore coerente — facções, personagens, regiões, eventos, itens, magia.
+Princípios: o universo é medieval/fantasia, inspirado em GOT mas original. Sem anacronismos. Consistência interna é prioridade.
+Quando criares algo novo, verifica que não contradiz o lore existente.
+Quando expandires lore existente, mantém o tom e estilo.
+Escreve em português. Texto imersivo e literário (não técnico). Sem emojis.`,
+    builder:`\n\nMODO BUILDER ACTIVO.
+Tens acesso às zonas de construção do projecto (ver CONSTRUÇÕES acima).
+Foco: Planeamento e execução de construções medievais no Roblox — escala, arquitetura, materiais, iluminação, props, polish.
+Quando deres subtarefas, sê concreto e ordenado (blockout → estrutura → interiores → decoração → polish).
+Considera as limitações do Roblox: performance, streaming, poly budget.
+Referências visuais preferidas: GOT, Vikings, Witcher, castelos medievais reais.
+Português. Prático e directo. Sem emojis.`
   };
   return base+(roleCtx[aiRole]||roleCtx.geral);
 }
@@ -1780,6 +2089,64 @@ async function sendAI(isRetry) {
   }
 }
 function addMsg(r,t){const m=document.getElementById('ai-msgs');const d=document.createElement('div');d.className='ai-msg '+r;const label=r==='usr'?'Tu':aiLabels[aiRole];d.innerHTML=`<div><div class="ai-who">${label}</div><div class="ai-bubble">${r==='bot'?t:t.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`;m.appendChild(d);m.scrollTop=m.scrollHeight;}
+
+// ─── INLINE AI: LORE ─────────────────────────────────────
+async function loreQuickCall(prompt, outId, btnEl){
+  const out=document.getElementById(outId);
+  if(!out)return;
+  out.style.display='block';
+  out.textContent='A gerar…';
+  if(btnEl){btnEl.disabled=true;btnEl.textContent='A gerar…';}
+  const activeKey=localStorage.getItem('custom_gemini_key')||GEMINI_KEY;
+  const loreCtx=D.lore&&D.lore.length?`LORE EXISTENTE:\n${D.lore.map(l=>`[${l.cat}] ${l.name}: ${(l.text||'').slice(0,200)}`).join('\n')}`:'';
+  const sys=`És o lore master do projecto "Crônicas de Gelo e Fogo" — universo medieval/fantasia original baseado em GOT (211 AC). ${loreCtx}\nResponde em português. Sem emojis. Texto fluido e imersivo.`;
+  try{
+    const text=await callGeminiAPI(sys,[{role:'user',parts:[{text:prompt}]}],activeKey);
+    out.textContent=text;
+  }catch(e){out.textContent='Erro: '+e.message;}
+  finally{if(btnEl){btnEl.disabled=false;}}
+}
+function loreAIIdea(id){
+  const l=D.lore.find(x=>x.id===id);if(!l)return;
+  const btn=event.currentTarget;
+  const prompt=`Gera uma ideia nova de lore para a categoria "${l.cat}" intitulada "${l.name}". Deve ser única, coerente com o universo medieval/fantasia, e diferente do que já existe. Dá nome, resumo (2-3 parágrafos) e 2-3 ganchos narrativos interessantes.`;
+  loreQuickCall(prompt,'lore-ai-out-'+id,btn);
+}
+function loreAIComplete(id){
+  const l=D.lore.find(x=>x.id===id);if(!l)return;
+  const btn=event.currentTarget;
+  if(!l.text||l.text.trim().length<10){toast('Escreve pelo menos algumas linhas de lore antes de completar.');return;}
+  const prompt=`Completa e expande este texto de lore (categoria: ${l.cat}, título: ${l.name}):\n\n${l.text}\n\nContinua de forma coerente, adiciona detalhes, aprofunda a narrativa. Mantém o mesmo estilo e tom.`;
+  loreQuickCall(prompt,'lore-ai-out-'+id,btn);
+}
+
+// ─── INLINE AI: BUILD ─────────────────────────────────────
+async function buildQuickCall(prompt, outId, btnEl){
+  const out=document.getElementById(outId);
+  if(!out)return;
+  out.style.display='block';
+  out.textContent='A gerar…';
+  if(btnEl){btnEl.disabled=true;}
+  const activeKey=localStorage.getItem('custom_gemini_key')||GEMINI_KEY;
+  const sys=`És o assistente de construção do projecto "Crônicas de Gelo e Fogo" — jogo medieval/fantasia no Roblox. Ajudas builders a planear zonas, arquitetura medieval, escala Roblox e organização de trabalho.\nResponde em português. Sem emojis. Prático e concreto.`;
+  try{
+    const text=await callGeminiAPI(sys,[{role:'user',parts:[{text:prompt}]}],activeKey);
+    out.textContent=text;
+  }catch(e){out.textContent='Erro: '+e.message;}
+  finally{if(btnEl){btnEl.disabled=false;}}
+}
+function buildAIInspire(id){
+  const b=D.builds.find(x=>x.id===id);if(!b)return;
+  const btn=event.currentTarget;
+  const prompt=`Dá-me inspiração visual e descritiva para construir a zona "${b.name}"${b.zone?' na área "'+b.zone+'"':''}. Inclui: estilo arquitectónico, materiais típicos, paleta de cores, atmosfera, 2-3 referências reais ou de filmes/séries medievais, e 1 detalhe único que tornará esta zona memorável.`;
+  buildQuickCall(prompt,'build-ai-out-'+id,btn);
+}
+function buildAITasks(id){
+  const b=D.builds.find(x=>x.id===id);if(!b)return;
+  const btn=event.currentTarget;
+  const prompt=`Divide a construção da zona "${b.name}"${b.zone?' (área: '+b.zone+')':''} em subtarefas concretas e ordenadas para um builder de Roblox. Segue esta estrutura: 1) Estrutura base/blockout, 2) Paredes e teto, 3) Interiores, 4) Iluminação, 5) Decoração e props, 6) Polish final. Sê específico e prático.`;
+  buildQuickCall(prompt,'build-ai-out-'+id,btn);
+}
 
 // ─── HELPERS ─────────────────────────────────────────────
 function formatRelTime(d){
@@ -1958,7 +2325,7 @@ function checkDeadlines(){
   const items=[];
   buildUnifiedTimeline().filter(t=>t.status!=='done'&&t.sortDate!=='9999-12-31').forEach(t=>{
     const d=new Date(t.sortDate+'T23:59:59');
-    const ctx={milestone:'Marco',system:'Sistema',asset:'Asset'}[t._type];
+    const ctx={milestone:'Marco',system:'Sistema',asset:'Asset',lore:'Lore',build:'Build'}[t._type];
     if(d<now)items.push({type:'overdue',name:t.title,dl:displayDate(t.date),ctx});
     else if(d<=soon)items.push({type:'soon',name:t.title,dl:displayDate(t.date),ctx});
   });
@@ -2551,8 +2918,8 @@ function applyRoleUI(role) {
   mLogin.classList.remove('open');
   document.body.classList.remove('show-login');
   
-  // Owner/dev → switch to dev view. Otherwise stay on public landing.
-  if(role === 'owner' || role === 'dev') {
+  // Owner/dev/loremaker/builder → switch to dev view. Otherwise stay on public landing.
+  if(role === 'owner' || role === 'dev' || role === 'loremaker' || role === 'builder') {
     document.body.classList.remove('view-public');
     document.body.classList.add('view-dev');
     mPending.classList.remove('open');
@@ -2615,6 +2982,8 @@ publicDataSub = onSnapshot(doc(db, "projects", "cgf"), (dSnap) => {
     if(!D.assets) D.assets=[];
     if(!D.timeline) D.timeline=[];
     if(!D.decisions) D.decisions=[];
+    if(!D.lore) D.lore=[];
+    if(!D.builds) D.builds=[];
     renderLanding();
   }
 });
@@ -2754,6 +3123,8 @@ onAuthStateChanged(auth, async (user) => {
       if(!D.assets) D.assets=[];
       if(!D.timeline) D.timeline=[];
       if(!D.decisions) D.decisions=[];
+      if(!D.lore) D.lore=[];
+      if(!D.builds) D.builds=[];
       renderDash(); updateSidebarCounts();
       renderSys();
       renderModel(); renderTL(); renderDec();
@@ -2857,7 +3228,7 @@ async function loadTeam(){
   snap.forEach(d => {
     const u = d.data(); u._uid = d.id;
     if(u.role === 'guest' && u.status !== 'banned') pending.push(u);
-    else active.push(u);
+    else if(u.status !== 'banned' || u.role !== 'guest') active.push(u);
   });
 
   const row = (u, isPending) => {
@@ -2879,6 +3250,8 @@ async function loadTeam(){
       <td>
         <select class="inp" style="padding:0.2rem;font-size:0.75rem;" onchange="window.changeRole('${u._uid}', this.value)">
           <option value="dev" ${u.role==='dev'?'selected':''}>Desenvolvedor</option>
+          <option value="loremaker" ${u.role==='loremaker'?'selected':''}>Lore Maker</option>
+          <option value="builder" ${u.role==='builder'?'selected':''}>Builder</option>
           <option value="owner" ${u.role==='owner'?'selected':''}>Dono</option>
         </select>
       </td>
@@ -2904,7 +3277,7 @@ window.approveUser = async (uid) => {
   loadTeam();
 };
 window.changeRole = async (uid, newRole) => {
-  if(newRole !== 'dev' && newRole !== 'owner') return;
+  if(!['dev','owner','loremaker','builder'].includes(newRole)) return;
   await updateDoc(doc(db, "users", uid), { role: newRole });
   toast("Cargo actualizado.");
   loadTeam();
