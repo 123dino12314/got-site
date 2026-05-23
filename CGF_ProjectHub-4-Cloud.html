@@ -261,6 +261,23 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 /* Hide auth-gated elements until Firebase resolves session */
 .auth-write,.auth-owner{display:none;}
 
+/* SUBTASKS */
+.task-list{margin-top:0.6rem;border-top:1px solid var(--border);padding-top:0.6rem;}
+.task-item{display:flex;align-items:center;gap:0.5rem;padding:0.2rem 0;font-size:0.78rem;color:var(--fg2);}
+.task-item input[type=checkbox]{accent-color:var(--accent);width:14px;height:14px;cursor:pointer;flex-shrink:0;}
+.task-item.done-task>span{text-decoration:line-through;color:var(--fg3);}
+.task-del{background:none;border:none;color:transparent;cursor:pointer;font-size:0.7rem;margin-left:auto;padding:0 0.2rem;line-height:1;}
+.task-item:hover .task-del{color:var(--fg3);}
+.task-del:hover{color:var(--red) !important;}
+.task-add{display:flex;gap:0.4rem;margin-top:0.5rem;}
+.task-add .inp{font-size:0.78rem;padding:0.3rem 0.5rem;}
+
+/* HEADER USER + ONLINE */
+.hdr-user{font-size:0.72rem;color:var(--fg2);display:flex;align-items:center;gap:0.4rem;padding:0 0.25rem;}
+.hdr-user-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 2px rgba(34,197,94,0.2);}
+.hdr-online{font-size:0.65rem;color:var(--fg3);background:var(--bg3);padding:0.15rem 0.5rem;border-radius:8px;display:flex;align-items:center;gap:0.3rem;border:1px solid var(--border);}
+.hdr-online-dot{width:6px;height:6px;border-radius:50%;background:var(--green);}
+
 /* MISSING UTILITY CLASSES */
 .g1{display:grid;grid-template-columns:1fr;gap:0.75rem;margin-bottom:0.75rem;}
 .lbl{font-size:0.7rem;font-weight:600;color:var(--fg3);margin-bottom:0.3rem;display:block;}
@@ -275,6 +292,10 @@ tr:hover td{background:rgba(255,255,255,0.02);}
   <div class="hdr-left">
     <button class="hdr-burger" onclick="toggleSidebar()">☰</button>
     <div class="hdr-logo"><div class="hdr-dot"></div><span class="hdr-title">CGF Project Hub</span><span class="hdr-tag">v1.0</span></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:0.5rem;flex:1;justify-content:flex-end;margin-right:0.5rem;">
+    <div class="hdr-user" id="hdr-user" style="display:none;"><div class="hdr-user-dot"></div><span id="hdr-username"></span></div>
+    <div class="hdr-online" id="hdr-online" style="display:none;"><div class="hdr-online-dot"></div><span id="hdr-online-count">1</span> online</div>
   </div>
   <div class="hdr-actions">
     <button class="btn btn-ghost" onclick="showTutorial()">? Guia</button>
@@ -367,11 +388,17 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 <div class="panel" id="p-sys">
 <div class="pg-title">Sistemas</div>
 <div class="pg-sub">Todos os sistemas — clica para expandir, editar e alterar estado</div>
-<div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;flex-wrap:wrap;">
-  <button class="btn btn-sm" onclick="filterSys('all')" id="sf-all">Todos</button>
+<div style="display:flex;gap:0.5rem;margin-bottom:0.4rem;flex-wrap:wrap;">
+  <button class="btn btn-sm" onclick="filterSys('all')" id="sf-all">Todas as fases</button>
   <button class="btn btn-sm" onclick="filterSys(1)" id="sf-1">Fase 1</button>
   <button class="btn btn-sm" onclick="filterSys(2)" id="sf-2">Fase 2</button>
   <button class="btn btn-sm" onclick="filterSys(3)" id="sf-3">Fase 3</button>
+</div>
+<div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;flex-wrap:wrap;">
+  <button class="btn btn-sm" onclick="filterSysStatus('all')" id="ss-all">Todos os estados</button>
+  <button class="btn btn-sm" onclick="filterSysStatus('todo')" id="ss-todo">A Fazer</button>
+  <button class="btn btn-sm" onclick="filterSysStatus('wip')" id="ss-wip">Em Dev</button>
+  <button class="btn btn-sm" onclick="filterSysStatus('done')" id="ss-done">Completo</button>
 </div>
 <div class="search-wrap">
   <span class="search-icon">⌕</span>
@@ -706,22 +733,42 @@ function navFilterSys(phase){sysFilter=phase;nav('sys');}
 
 // ─── RENDER: SYSTEMS ─────────────────────────────────────
 let sysFilter='all';
+let sysStatusFilter='all';
 function filterSys(f){sysFilter=f;renderSys();}
+function filterSysStatus(f){sysStatusFilter=f;renderSys();}
+function getOpenSys(){return[...document.querySelectorAll('.sys.open')].map(el=>parseInt(el.id.slice(1))).filter(Boolean);}
 function renderSys(){
+  const open=getOpenSys();
   const list=document.getElementById('sys-list');
   const q=(document.getElementById('sys-search')?.value||'').toLowerCase().trim();
   let items=sysFilter==='all'?D.systems:D.systems.filter(s=>s.phase==sysFilter);
+  if(sysStatusFilter!=='all')items=items.filter(s=>s.status===sysStatusFilter);
   if(q)items=items.filter(s=>s.name.toLowerCase().includes(q)||s.desc.toLowerCase().includes(q));
-  // highlight active filter button
-  ['all',1,2,3].forEach(f=>{const el=document.getElementById('sf-'+(f==='all'?'all':f));if(el)el.style.borderColor=sysFilter==f?'var(--accent)':''});  
+  ['all',1,2,3].forEach(f=>{const el=document.getElementById('sf-'+(f==='all'?'all':f));if(el)el.style.borderColor=sysFilter==f?'var(--accent)':''});
+  ['all','todo','wip','done'].forEach(f=>{const el=document.getElementById('ss-'+f);if(el)el.style.borderColor=sysStatusFilter===f?'var(--accent)':''});
   const sl={done:'Completo',wip:'Em Dev',todo:'A Fazer',blocked:'Bloqueado'};
   const sb={done:'b-done',wip:'b-wip',todo:'b-todo',blocked:'b-blocked'};
   if(!items.length){list.innerHTML='<div class="empty"><div class="empty-icon">⚙</div>'+(q?'Nenhum sistema encontrado':'Nenhum sistema nesta fase')+'</div>';return;}
-  list.innerHTML=items.map(s=>`
-    <div class="sys" id="s${s.id}" onclick="togSys(${s.id})">
+  list.innerHTML=items.map(s=>{
+    const tasks=s.tasks||[];
+    const td=tasks.filter(t=>t.done).length;
+    const tasksHtml=`<div class="task-list">
+      <div class="field-l" style="margin-bottom:0.4rem;">Subtarefas <span style="font-weight:400;">${td}/${tasks.length}</span></div>
+      ${tasks.map(t=>`<div class="task-item${t.done?' done-task':''}" id="ti${s.id}-${t.id}">
+        <input type="checkbox"${t.done?' checked':''} onclick="event.stopPropagation();toggleTask(${s.id},${t.id})">
+        <span>${t.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>
+        <button class="task-del" onclick="event.stopPropagation();deleteTask(${s.id},${t.id})">✕</button>
+      </div>`).join('')}
+      <div class="task-add" onclick="event.stopPropagation()">
+        <input class="inp" id="ta${s.id}" placeholder="Nova subtarefa..." onkeydown="if(event.key==='Enter'){event.stopPropagation();addTask(${s.id});}">
+        <button class="btn btn-sm btn-accent" onclick="event.stopPropagation();addTask(${s.id})">+</button>
+      </div>
+    </div>`;
+    return`<div class="sys" id="s${s.id}" onclick="togSys(${s.id})">
       <div class="sys-h">
         <span class="badge b-phase">F${s.phase}</span>
         <span class="sys-name">${s.name}</span>
+        ${tasks.length?`<span style="font-size:0.65rem;color:var(--fg3);flex-shrink:0;">☑ ${td}/${tasks.length}</span>`:''}
         ${deadlineSpan(s.deadline)}
         <span class="badge ${sb[s.status]}">${sl[s.status]}</span>
         <span class="sys-chev">▼</span>
@@ -733,6 +780,7 @@ function renderSys(){
           <div class="field"><div class="field-l">Prazo</div><input class="inp" id="sdl${s.id}" value="${s.deadline||''}"></div>
           <div class="field"><div class="field-l">Fase</div><select class="sel" id="sp${s.id}"><option value="1"${s.phase===1?' selected':''}>Fase 1</option><option value="2"${s.phase===2?' selected':''}>Fase 2</option><option value="3"${s.phase===3?' selected':''}>Fase 3</option></select></div>
         </div>
+        ${tasksHtml}
         <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.5rem;">
           <button class="btn btn-sm" style="border-color:var(--green);color:var(--green);" onclick="chSys(${s.id},'done')">✓ Completo</button>
           <button class="btn btn-sm" style="border-color:var(--accent);color:var(--accent);" onclick="chSys(${s.id},'wip')">⚙ Em Dev</button>
@@ -741,13 +789,36 @@ function renderSys(){
           <button class="btn btn-sm btn-danger" onclick="delSys(${s.id})">Remover</button>
         </div>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
+  open.forEach(id=>{const el=document.getElementById('s'+id);if(el)el.classList.add('open');});
+}
+function addTask(sysId){
+  const inp=document.getElementById('ta'+sysId);if(!inp)return;
+  const text=inp.value.trim();if(!text)return;
+  const s=D.systems.find(x=>x.id===sysId);if(!s)return;
+  if(!s.tasks)s.tasks=[];
+  s.tasks.push({id:++D.nid,text,done:false});
+  inp.value='';renderSys();save();
+}
+function toggleTask(sysId,taskId){
+  const s=D.systems.find(x=>x.id===sysId);
+  const t=(s.tasks||[]).find(x=>x.id===taskId);if(!t)return;
+  t.done=!t.done;
+  const item=document.getElementById('ti'+sysId+'-'+taskId);
+  if(item){item.classList.toggle('done-task',t.done);item.querySelector('input[type=checkbox]').checked=t.done;}
+  save();
+}
+function deleteTask(sysId,taskId){
+  const s=D.systems.find(x=>x.id===sysId);if(!s)return;
+  s.tasks=(s.tasks||[]).filter(x=>x.id!==taskId);
+  renderSys();save();
 }
 function togSys(id){document.getElementById('s'+id).classList.toggle('open');}
 function saveSys(id){const s=D.systems.find(x=>x.id===id);s.desc=document.getElementById('sd'+id).value;s.integration=document.getElementById('si'+id).value;s.deadline=document.getElementById('sdl'+id).value;s.phase=parseInt(document.getElementById('sp'+id).value);save();toast('Sistema guardado.');}
 function chSys(id,st){D.systems.find(x=>x.id===id).status=st;renderSys();save();}
 function delSys(id){if(!confirm('Remover?'))return;D.systems=D.systems.filter(x=>x.id!==id);renderSys();save();}
-function addSys(){const n=document.getElementById('ms-name').value.trim();if(!n)return;D.systems.push({id:++D.nid,name:n,phase:parseInt(document.getElementById('ms-phase').value),status:document.getElementById('ms-st').value,deadline:document.getElementById('ms-deadline').value,desc:document.getElementById('ms-desc').value,integration:document.getElementById('ms-int').value});closeModal('m-sys');['ms-name','ms-desc','ms-int','ms-deadline'].forEach(x=>document.getElementById(x).value='');nav('sys');toast('Sistema adicionado.');save();}
+function addSys(){const n=document.getElementById('ms-name').value.trim();if(!n)return;D.systems.push({id:++D.nid,name:n,phase:parseInt(document.getElementById('ms-phase').value),status:document.getElementById('ms-st').value,deadline:document.getElementById('ms-deadline').value,desc:document.getElementById('ms-desc').value,integration:document.getElementById('ms-int').value,tasks:[]});closeModal('m-sys');['ms-name','ms-desc','ms-int','ms-deadline'].forEach(x=>document.getElementById(x).value='');nav('sys');toast('Sistema adicionado.');save();}
 
 // ─── RENDER: MODELER ─────────────────────────────────────
 function renderModel(){
@@ -1242,6 +1313,17 @@ document.addEventListener('input',e=>{
 // ─── BEFOREUNLOAD ────────────────────────────────────────
 window.addEventListener('beforeunload',e=>{if(document.querySelector('.sys.open'))e.preventDefault();});
 
+// ─── CURRENT USER DISPLAY ────────────────────────────────
+window.setCurrentUser = function(email) {
+  const name = email ? email.split('@')[0] : '';
+  document.getElementById('hdr-username').textContent = name;
+  document.getElementById('hdr-user').style.display = 'flex';
+};
+window.setOnlineCount = function(n) {
+  document.getElementById('hdr-online-count').textContent = n;
+  document.getElementById('hdr-online').style.display = 'flex';
+};
+
 // ─── INIT ────────────────────────────────────────────────
 load();renderDash();renderQuickActions();clearChat();updateSidebarCounts();
 // Show login by default — Firebase closes it once session is confirmed
@@ -1464,6 +1546,8 @@ function resetUI() {
   document.querySelectorAll('.auth-write, .auth-owner').forEach(el => el.style.display = 'none');
   document.getElementById('btn-change-pass').style.display = 'none';
   document.getElementById('btn-logout').style.display = 'none';
+  document.getElementById('hdr-user').style.display = 'none';
+  document.getElementById('hdr-online').style.display = 'none';
 }
 
 // ─── AUTH STATE CHANGE ───────────────────────────────────
@@ -1502,6 +1586,16 @@ onAuthStateChanged(auth, async (user) => {
   
   // Update last_online once on login
   await updateDoc(uDocRef, { last_online: new Date().toISOString() }).catch(() => {});
+
+  // Show current user in header
+  window.setCurrentUser(user.email);
+
+  // Keep last_online fresh + update online count every minute
+  updateOnlineCount();
+  setInterval(async () => {
+    if(auth.currentUser) await updateDoc(doc(db, "users", auth.currentUser.uid), { last_online: new Date().toISOString() }).catch(()=>{});
+    updateOnlineCount();
+  }, 60000);
   
   // Real-time listener for user role/status changes (e.g. owner approves a guest)
   userSub = onSnapshot(uDocRef, async (snap) => {
@@ -1550,6 +1644,17 @@ window.cloudSave = async (data) => {
     toast("Erro ao guardar na nuvem!");
   }
 };
+
+// ─── ONLINE COUNT ────────────────────────────────────────
+async function updateOnlineCount() {
+  try {
+    const snap = await getDocs(collection(db, "users"));
+    const now = new Date();
+    let count = 0;
+    snap.forEach(d => { const u = d.data(); if(u.last_online && (now - new Date(u.last_online)) < 300000) count++; });
+    window.setOnlineCount(count);
+  } catch(e) {}
+}
 
 // ─── TEAM MANAGEMENT ─────────────────────────────────────
 async function loadTeam(){
