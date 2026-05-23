@@ -272,6 +272,31 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .task-add{display:flex;gap:0.4rem;margin-top:0.5rem;}
 .task-add .inp{font-size:0.78rem;padding:0.3rem 0.5rem;}
 
+/* DRAG & DROP */
+.sys[draggable]{cursor:grab;}
+.sys.dragging{opacity:0.35;pointer-events:none;}
+.sys.drag-over{border-color:var(--accent) !important;box-shadow:0 0 0 2px rgba(245,158,11,0.15);}
+
+/* COMMENTS */
+.comment-section{margin-top:0.75rem;border-top:1px solid var(--border);padding-top:0.6rem;}
+.comment{padding:0.4rem 0;border-bottom:1px solid var(--border);}
+.comment:last-child{border-bottom:none;}
+.comment-meta{font-size:0.65rem;display:flex;gap:0.5rem;margin-bottom:0.15rem;}
+.comment-user{color:var(--accent);font-weight:600;}
+.comment-text{font-size:0.78rem;color:var(--fg2);line-height:1.5;}
+.comment-add{display:flex;gap:0.4rem;margin-top:0.5rem;}
+.comment-add .inp{font-size:0.78rem;padding:0.3rem 0.5rem;}
+
+/* CHANGELOG */
+.cl-item{display:flex;align-items:baseline;gap:0.5rem;padding:0.3rem 0;border-bottom:1px solid var(--border);font-size:0.78rem;}
+.cl-item:last-child{border-bottom:none;}
+.cl-who{color:var(--accent);font-weight:600;font-size:0.72rem;flex-shrink:0;}
+.cl-what{color:var(--fg2);flex:1;}
+.cl-when{font-size:0.65rem;color:var(--fg3);flex-shrink:0;}
+
+/* CHART */
+.chart-wrap svg{width:100%;height:110px;display:block;}
+
 /* HEADER USER + ONLINE */
 .hdr-user{font-size:0.72rem;color:var(--fg2);display:flex;align-items:center;gap:0.4rem;padding:0 0.25rem;}
 .hdr-user-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 2px rgba(34,197,94,0.2);}
@@ -300,6 +325,7 @@ tr:hover td{background:rgba(255,255,255,0.02);}
   <div class="hdr-actions">
     <button class="btn btn-ghost" onclick="showTutorial()">? Guia</button>
     <button class="btn" onclick="exportData()">↓ Exportar</button>
+    <button class="btn" onclick="exportPDF()" title="Exportar PDF">📄 PDF</button>
     <button class="btn btn-icon btn-ghost" onclick="exportJSON()" title="Backup JSON">💾</button>
     <button class="btn auth-owner" onclick="importData()">↑ Importar</button>
     <button class="btn auth-owner" id="btn-team" onclick="openModal('m-team')">👥 Equipa</button>
@@ -353,9 +379,20 @@ tr:hover td{background:rgba(255,255,255,0.02);}
   </div>
 </div>
 
-<div class="card">
-  <div class="card-title">Decisões Chave</div>
-  <div class="card-body" id="dash-decisions"></div>
+<div class="card" style="margin-bottom:0.75rem;">
+  <div class="card-title">Evolução do Progresso</div>
+  <div class="chart-wrap" id="dash-chart"></div>
+</div>
+
+<div class="g2">
+  <div class="card">
+    <div class="card-title">Decisões Chave</div>
+    <div class="card-body" id="dash-decisions"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Log de Alterações</div>
+    <div class="card-body" id="dash-changelog"><div style="color:var(--fg3);font-size:0.8rem;">A carregar...</div></div>
+  </div>
 </div>
 </div>
 
@@ -727,6 +764,8 @@ function renderDash(){
   document.getElementById('dash-dates').innerHTML=D.timeline.filter(t=>t.status!=='done').slice(0,5).map(t=>`<div style="margin-bottom:0.5rem;"><span class="badge ${t.status==='active'?'b-wip':'b-todo'}">${t.date}</span> <span style="margin-left:0.3rem;">${t.title}</span></div>`).join('');
   document.getElementById('dash-decisions').innerHTML=D.decisions.slice(0,4).map(d=>`<div style="margin-bottom:0.3rem;">◈ <strong>${d.title}</strong> — <span style="color:var(--fg3);">${d.reason}</span></div>`).join('');
   renderPhaseProgress();
+  renderProgressChart();
+  renderChangelog();
   updateSidebarCounts();
 }
 function navFilterSys(phase){sysFilter=phase;nav('sys');}
@@ -764,8 +803,23 @@ function renderSys(){
         <button class="btn btn-sm btn-accent" onclick="event.stopPropagation();addTask(${s.id})">+</button>
       </div>
     </div>`;
-    return`<div class="sys" id="s${s.id}" onclick="togSys(${s.id})">
+    const cmts=(window.allComments&&window.allComments[s.id])||[];
+    const commentsHtml=`<div class="comment-section">
+      <div class="field-l" style="margin-bottom:0.4rem;">Comentários <span style="font-weight:400;">(${cmts.length})</span></div>
+      ${cmts.length?cmts.map(c=>`<div class="comment"><div class="comment-meta"><span class="comment-user">${c.user}</span><span>${formatRelTime(c.date)}</span></div><div class="comment-text">${c.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`).join(''):'<div style="color:var(--fg3);font-size:0.75rem;padding:0.2rem 0;">Sem comentários ainda.</div>'}
+      <div class="comment-add" onclick="event.stopPropagation()">
+        <input class="inp" id="cm${s.id}" placeholder="Adicionar comentário..." onkeydown="if(event.key==='Enter'){event.stopPropagation();window.addComment&&window.addComment(${s.id});}">
+        <button class="btn btn-sm" onclick="event.stopPropagation();window.addComment&&window.addComment(${s.id})">Enviar</button>
+      </div>
+    </div>`;
+    return`<div class="sys" id="s${s.id}" draggable="true"
+      ondragstart="dragSysStart(event,${s.id})"
+      ondragover="dragSysOver(event,${s.id})"
+      ondrop="dragSysDrop(event,${s.id})"
+      ondragend="dragSysEnd()"
+      onclick="togSys(${s.id})">
       <div class="sys-h">
+        <span style="color:var(--fg3);font-size:0.75rem;cursor:grab;flex-shrink:0;" title="Arrastar para reordenar">⠿</span>
         <span class="badge b-phase">F${s.phase}</span>
         <span class="sys-name">${s.name}</span>
         ${tasks.length?`<span style="font-size:0.65rem;color:var(--fg3);flex-shrink:0;">☑ ${td}/${tasks.length}</span>`:''}
@@ -781,6 +835,7 @@ function renderSys(){
           <div class="field"><div class="field-l">Fase</div><select class="sel" id="sp${s.id}"><option value="1"${s.phase===1?' selected':''}>Fase 1</option><option value="2"${s.phase===2?' selected':''}>Fase 2</option><option value="3"${s.phase===3?' selected':''}>Fase 3</option></select></div>
         </div>
         ${tasksHtml}
+        ${commentsHtml}
         <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.5rem;">
           <button class="btn btn-sm" style="border-color:var(--green);color:var(--green);" onclick="chSys(${s.id},'done')">✓ Completo</button>
           <button class="btn btn-sm" style="border-color:var(--accent);color:var(--accent);" onclick="chSys(${s.id},'wip')">⚙ Em Dev</button>
@@ -816,9 +871,9 @@ function deleteTask(sysId,taskId){
 }
 function togSys(id){document.getElementById('s'+id).classList.toggle('open');}
 function saveSys(id){const s=D.systems.find(x=>x.id===id);s.desc=document.getElementById('sd'+id).value;s.integration=document.getElementById('si'+id).value;s.deadline=document.getElementById('sdl'+id).value;s.phase=parseInt(document.getElementById('sp'+id).value);save();toast('Sistema guardado.');}
-function chSys(id,st){D.systems.find(x=>x.id===id).status=st;renderSys();save();}
-function delSys(id){if(!confirm('Remover?'))return;D.systems=D.systems.filter(x=>x.id!==id);renderSys();save();}
-function addSys(){const n=document.getElementById('ms-name').value.trim();if(!n)return;D.systems.push({id:++D.nid,name:n,phase:parseInt(document.getElementById('ms-phase').value),status:document.getElementById('ms-st').value,deadline:document.getElementById('ms-deadline').value,desc:document.getElementById('ms-desc').value,integration:document.getElementById('ms-int').value,tasks:[]});closeModal('m-sys');['ms-name','ms-desc','ms-int','ms-deadline'].forEach(x=>document.getElementById(x).value='');nav('sys');toast('Sistema adicionado.');save();}
+function chSys(id,st){const s=D.systems.find(x=>x.id===id);s.status=st;renderSys();save();const ll={done:'Completo',wip:'Em Dev',todo:'A Fazer'};if(window.logChange)window.logChange(`Marcou "${s.name}" como ${ll[st]||st}`);}
+function delSys(id){if(!confirm('Remover?'))return;const s=D.systems.find(x=>x.id===id);D.systems=D.systems.filter(x=>x.id!==id);renderSys();save();if(window.logChange&&s)window.logChange(`Removeu o sistema "${s.name}"`);}
+function addSys(){const n=document.getElementById('ms-name').value.trim();if(!n)return;D.systems.push({id:++D.nid,name:n,phase:parseInt(document.getElementById('ms-phase').value),status:document.getElementById('ms-st').value,deadline:document.getElementById('ms-deadline').value,desc:document.getElementById('ms-desc').value,integration:document.getElementById('ms-int').value,tasks:[]});closeModal('m-sys');['ms-name','ms-desc','ms-int','ms-deadline'].forEach(x=>document.getElementById(x).value='');nav('sys');toast('Sistema adicionado.');save();if(window.logChange)window.logChange(`Adicionou o sistema "${n}"`);}
 
 // ─── RENDER: MODELER ─────────────────────────────────────
 function renderModel(){
@@ -1184,6 +1239,101 @@ async function sendAI(isRetry) {
 }
 function addMsg(r,t){const m=document.getElementById('ai-msgs');const d=document.createElement('div');d.className='ai-msg '+r;const label=r==='usr'?'Tu':aiLabels[aiRole];d.innerHTML=`<div><div class="ai-who">${label}</div><div class="ai-bubble">${r==='bot'?t:t.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`;m.appendChild(d);m.scrollTop=m.scrollHeight;}
 
+// ─── HELPERS ─────────────────────────────────────────────
+function formatRelTime(d){
+  const diff=Math.floor((Date.now()-new Date(d))/1000);
+  if(diff<60)return'agora';if(diff<3600)return Math.floor(diff/60)+'m';
+  if(diff<86400)return Math.floor(diff/3600)+'h';
+  return new Date(d).toLocaleDateString('pt-PT',{day:'2-digit',month:'short'});
+}
+
+// ─── PROGRESS CHART ──────────────────────────────────────
+function recordSnapshot(){
+  const done=D.systems.filter(s=>s.status==='done').length;
+  const pct=Math.round(done/D.systems.length*100);
+  const today=new Date().toISOString().slice(0,10);
+  let snaps=JSON.parse(localStorage.getItem('cgf_snaps')||'[]');
+  if(!snaps.length||snaps[snaps.length-1].date!==today){
+    snaps.push({date:today,pct});
+    if(snaps.length>60)snaps=snaps.slice(-60);
+    localStorage.setItem('cgf_snaps',JSON.stringify(snaps));
+  }
+}
+function renderProgressChart(){
+  const el=document.getElementById('dash-chart');if(!el)return;
+  recordSnapshot();
+  let snaps=JSON.parse(localStorage.getItem('cgf_snaps')||'[]');
+  const done=D.systems.filter(s=>s.status==='done').length;
+  const pct=Math.round(done/D.systems.length*100);
+  const today=new Date().toISOString().slice(0,10);
+  if(!snaps.length||snaps[snaps.length-1].date!==today)snaps=[...snaps,{date:today,pct}];
+  if(snaps.length<2){el.innerHTML=`<div style="color:var(--fg3);font-size:0.78rem;padding:0.5rem 0;">Sem dados históricos ainda — o gráfico aparece ao longo dos dias.</div>`;return;}
+  const W=500,H=100,PL=30,PR=10,PT=15,PB=20;
+  const iW=W-PL-PR,iH=H-PT-PB;
+  const xs=snaps.map((_,i)=>PL+i/(snaps.length-1)*iW);
+  const ys=snaps.map(s=>PT+iH-(s.pct/100)*iH);
+  const line=xs.map((x,i)=>`${i?'L':'M'}${x.toFixed(1)},${ys[i].toFixed(1)}`).join('');
+  const area=`M${xs[0].toFixed(1)},${(PT+iH).toFixed(1)}${line}L${xs[xs.length-1].toFixed(1)},${(PT+iH).toFixed(1)}Z`;
+  const dots=snaps.map((s,i)=>`<circle cx="${xs[i].toFixed(1)}" cy="${ys[i].toFixed(1)}" r="3" fill="var(--accent)" title="${s.date}: ${s.pct}%"/>`).join('');
+  const gridLines=[0,25,50,75,100].map(v=>{const y=(PT+iH-(v/100)*iH).toFixed(1);return`<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="var(--border)" stroke-width="1"/><text x="${(PL-3).toFixed(0)}" y="${(parseFloat(y)+3).toFixed(0)}" font-size="8" fill="var(--fg3)" text-anchor="end">${v}%</text>`;}).join('');
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:110px;">
+    <defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--accent)" stop-opacity="0.25"/><stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>
+    ${gridLines}
+    <path d="${area}" fill="url(#cg)"/>
+    <path d="${line}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    ${dots}
+    <text x="${xs[0].toFixed(1)}" y="${H}" font-size="8" fill="var(--fg3)" text-anchor="start">${snaps[0].date.slice(5)}</text>
+    <text x="${xs[xs.length-1].toFixed(1)}" y="${H}" font-size="8" fill="var(--fg3)" text-anchor="end">${snaps[snaps.length-1].date.slice(5)}</text>
+  </svg>`;
+}
+
+// ─── CHANGELOG ───────────────────────────────────────────
+window.changelogItems=[];
+function renderChangelog(){
+  const el=document.getElementById('dash-changelog');if(!el)return;
+  const items=window.changelogItems||[];
+  el.innerHTML=items.length?items.slice(0,15).map(c=>`<div class="cl-item"><span class="cl-who">${c.user||'?'}</span><span class="cl-what">${c.action}</span><span class="cl-when">${formatRelTime(c.date)}</span></div>`).join(''):`<div style="color:var(--fg3);font-size:0.78rem;">Sem alterações registadas.</div>`;
+}
+
+// ─── PDF EXPORT ──────────────────────────────────────────
+function exportPDF(){
+  const sl={done:'Completo',wip:'Em Dev',todo:'A Fazer',blocked:'Bloqueado'};
+  const sc={done:'#166534',wip:'#92400e',todo:'#6b7280',blocked:'#991b1b'};
+  const sb={done:'#dcfce7',wip:'#fef9c3',todo:'#f3f4f6',blocked:'#fee2e2'};
+  let body=`<h1 style="border-bottom:3px solid #f59e0b;padding-bottom:8px;font-size:22px;">CGF Project Hub</h1>
+  <p style="color:#6b7280;font-size:13px;">Exportado em ${new Date().toLocaleDateString('pt-PT',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})}</p>`;
+  [1,2,3].forEach(ph=>{
+    const items=D.systems.filter(s=>s.phase===ph);if(!items.length)return;
+    body+=`<h2 style="margin-top:22px;font-size:15px;color:#374151;border-left:4px solid #f59e0b;padding-left:8px;">Fase ${ph}</h2><table style="width:100%;border-collapse:collapse;margin-top:8px;font-size:12px;"><tr style="background:#f9fafb;"><th style="padding:6px 8px;text-align:left;border-bottom:2px solid #e5e7eb;">Sistema</th><th style="padding:6px 8px;text-align:left;border-bottom:2px solid #e5e7eb;">Estado</th><th style="padding:6px 8px;text-align:left;border-bottom:2px solid #e5e7eb;">Prazo</th></tr>`;
+    items.forEach(s=>{body+=`<tr><td style="padding:5px 8px;border-bottom:1px solid #f3f4f6;">${s.name}${s.tasks&&s.tasks.length?` <span style="color:#9ca3af;font-size:11px;">(${s.tasks.filter(t=>t.done).length}/${s.tasks.length} subtarefas)</span>`:''}</td><td style="padding:5px 8px;border-bottom:1px solid #f3f4f6;"><span style="background:${sb[s.status]||'#f3f4f6'};color:${sc[s.status]||'#6b7280'};padding:2px 6px;border-radius:4px;font-size:11px;font-weight:600;">${sl[s.status]||s.status}</span></td><td style="padding:5px 8px;border-bottom:1px solid #f3f4f6;color:#6b7280;">${s.deadline||'—'}</td></tr>`;});
+    body+='</table>';
+  });
+  body+=`<h2 style="margin-top:22px;font-size:15px;color:#374151;border-left:4px solid #f59e0b;padding-left:8px;">Calendário</h2><ul style="font-size:12px;color:#374151;line-height:1.8;">`;
+  D.timeline.forEach(t=>body+=`<li><strong>${t.date}</strong> — ${t.title}: <span style="color:#6b7280;">${t.desc}</span></li>`);
+  body+=`</ul><h2 style="margin-top:22px;font-size:15px;color:#374151;border-left:4px solid #f59e0b;padding-left:8px;">Decisões</h2><ul style="font-size:12px;color:#374151;line-height:1.8;">`;
+  D.decisions.forEach(d=>body+=`<li><strong>${d.title}</strong> — ${d.reason}</li>`);
+  body+='</ul>';
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>CGF Project Hub — Relatório</title><style>body{font-family:system-ui,Arial,sans-serif;margin:2.5cm;color:#111;line-height:1.6;}@media print{body{margin:1.5cm;}}</style></head><body>${body}</body></html>`);
+  w.document.close();setTimeout(()=>w.print(),400);
+}
+
+// ─── DRAG & DROP (SYSTEMS) ───────────────────────────────
+let _dragSysId=null;
+function dragSysStart(e,id){_dragSysId=id;e.dataTransfer.effectAllowed='move';setTimeout(()=>{const el=document.getElementById('s'+id);if(el)el.classList.add('dragging');},0);}
+function dragSysOver(e,id){e.preventDefault();e.dataTransfer.dropEffect='move';document.querySelectorAll('.sys.drag-over').forEach(el=>el.classList.remove('drag-over'));if(id!==_dragSysId){const el=document.getElementById('s'+id);if(el)el.classList.add('drag-over');}}
+function dragSysDrop(e,targetId){
+  e.preventDefault();
+  if(_dragSysId===null||_dragSysId===targetId)return;
+  const fi=D.systems.findIndex(s=>s.id===_dragSysId);
+  const ti=D.systems.findIndex(s=>s.id===targetId);
+  if(fi<0||ti<0)return;
+  const[moved]=D.systems.splice(fi,1);D.systems.splice(ti,0,moved);
+  if(window.logChange)window.logChange(`Reordenou "${moved.name}"`);
+  renderSys();save();toast('Ordem atualizada.');
+}
+function dragSysEnd(){_dragSysId=null;document.querySelectorAll('.sys.dragging,.sys.drag-over').forEach(el=>el.classList.remove('dragging','drag-over'));}
+
 // ─── EXPORT ──────────────────────────────────────────────
 function exportData(){
   const sl={done:'Completo',wip:'Em Dev',todo:'A Fazer'};
@@ -1334,7 +1484,7 @@ if(!localStorage.getItem('cgf_tut'))showTutorial();
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updatePassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, getDocs, updateDoc, addDoc, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDWOlV0QnecMwW60ix4ZOu86wCywrC9vLc",
@@ -1351,8 +1501,11 @@ const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
 let currentRole = 'guest';
+let currentUsername = '';
 let userSub = null;
 let dataSub = null;
+let commentsSub = null;
+let changelogSub = null;
 
 // Owner emails list
 const OWNER_EMAILS = ['dino5651@got.com', 'bernardinobravo9@gmail.com'];
@@ -1556,6 +1709,8 @@ onAuthStateChanged(auth, async (user) => {
   if (userSub) { userSub(); userSub = null; }
   if (dataSub) { dataSub(); dataSub = null; }
 
+  if(commentsSub){commentsSub();commentsSub=null;}
+  if(changelogSub){changelogSub();changelogSub=null;}
   if(!user) { resetUI(); return; }
 
   // User logged in — setup Firestore user doc
@@ -1588,7 +1743,29 @@ onAuthStateChanged(auth, async (user) => {
   await updateDoc(uDocRef, { last_online: new Date().toISOString() }).catch(() => {});
 
   // Show current user in header
+  currentUsername = user.email ? user.email.split('@')[0] : '';
   window.setCurrentUser(user.email);
+
+  // Comments real-time listener
+  if(commentsSub){commentsSub();commentsSub=null;}
+  commentsSub = onSnapshot(collection(db, "comments"), (snap) => {
+    window.allComments = {};
+    snap.forEach(d => {
+      const c = d.data();
+      if(!window.allComments[c.sysId]) window.allComments[c.sysId] = [];
+      window.allComments[c.sysId].push({...c, _id: d.id});
+    });
+    Object.keys(window.allComments).forEach(k => window.allComments[k].sort((a,b) => new Date(a.date)-new Date(b.date)));
+    if(document.getElementById('p-sys').classList.contains('active')) renderSys();
+  });
+
+  // Changelog real-time listener
+  if(changelogSub){changelogSub();changelogSub=null;}
+  changelogSub = onSnapshot(query(collection(db, "changelog"), orderBy("date","desc"), limit(20)), (snap) => {
+    window.changelogItems = [];
+    snap.forEach(d => window.changelogItems.push(d.data()));
+    renderChangelog();
+  });
 
   // Keep last_online fresh + update online count every minute
   updateOnlineCount();
@@ -1618,7 +1795,15 @@ onAuthStateChanged(auth, async (user) => {
   // Listen to remote project data
   dataSub = onSnapshot(doc(db, "projects", "cgf"), (dSnap) => {
     if(dSnap.exists()){
-      D = dSnap.data();
+      const incoming = dSnap.data();
+      // Real-time notification: someone else changed the data
+      if(incoming._lastBy && incoming._lastBy !== currentUsername && incoming._lastAt) {
+        const diff = Date.now() - new Date(incoming._lastAt).getTime();
+        if(diff < 25000) toast(`${incoming._lastBy} atualizou o projeto`);
+      }
+      // Strip metadata fields before storing in D
+      const {_lastBy, _lastAt, ...rest} = incoming;
+      D = rest;
       if(!D.nid) D.nid=100;
       if(!D.systems) D.systems=[];
       if(!D.assets) D.assets=[];
@@ -1628,7 +1813,6 @@ onAuthStateChanged(auth, async (user) => {
       renderSys();
       renderModel(); renderTL(); renderDec();
     } else {
-      // First time init
       window.cloudSave(D);
     }
   });
@@ -1638,11 +1822,39 @@ onAuthStateChanged(auth, async (user) => {
 window.cloudSave = async (data) => {
   if(currentRole !== 'owner' && currentRole !== 'dev') return;
   try {
-    await setDoc(doc(db, "projects", "cgf"), data);
+    await setDoc(doc(db, "projects", "cgf"), {
+      ...data,
+      _lastBy: currentUsername,
+      _lastAt: new Date().toISOString()
+    });
   } catch(e) {
     console.error("Cloud save error", e);
     toast("Erro ao guardar na nuvem!");
   }
+};
+
+// ─── COMMENTS ────────────────────────────────────────────
+window.addComment = async (sysId) => {
+  const inp = document.getElementById('cm'+sysId);
+  if(!inp) return;
+  const text = inp.value.trim();
+  if(!text || !currentUsername) return;
+  inp.value = '';
+  try {
+    await addDoc(collection(db, "comments"), {
+      sysId, user: currentUsername, text, date: new Date().toISOString()
+    });
+  } catch(e) { toast('Erro ao enviar comentário.'); }
+};
+
+// ─── CHANGELOG WRITER ────────────────────────────────────
+window.logChange = async (action) => {
+  if(!currentUsername) return;
+  try {
+    await addDoc(collection(db, "changelog"), {
+      user: currentUsername, action, date: new Date().toISOString()
+    });
+  } catch(e) {}
 };
 
 // ─── ONLINE COUNT ────────────────────────────────────────
