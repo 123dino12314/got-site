@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CGF · Project Hub</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%23f59e0b'/><text x='50' y='67' text-anchor='middle' font-size='48' font-weight='bold' fill='%2309090b'>C</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#09090b;--bg2:#18181b;--bg3:#27272a;--bg4:#3f3f46;
+  --fg:#fafafa;--fg2:#a1a1aa;--fg3:#71717a;
+  --accent:#f59e0b;--accent2:#d97706;--accent-bg:rgba(245,158,11,0.08);
+  --green:#22c55e;--green-bg:rgba(34,197,94,0.1);--green-bd:rgba(34,197,94,0.3);
+  --red:#ef4444;--red-bg:rgba(239,68,68,0.1);--red-bd:rgba(239,68,68,0.3);
+  --blue:#3b82f6;--blue-bg:rgba(59,130,246,0.1);--blue-bd:rgba(59,130,246,0.3);
+  --purple:#a855f7;
+  --border:#27272a;--border2:#3f3f46;
+  --radius:8px;--radius-sm:6px;
+  --sidebar:260px;--header:56px;
+  --shadow:0 1px 3px rgba(0,0,0,0.4);
+  --font:'Inter',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+html{font-size:14px;}
+body{font-family:var(--font);background:var(--bg);color:var(--fg);min-height:100vh;overflow-x:hidden;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px;}
+::selection{background:var(--accent);color:var(--bg);}
+a{color:var(--accent);text-decoration:none;}
+
+/* HEADER */
+.hdr{height:var(--header);background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(12px);background:rgba(24,24,27,0.85);}
+.hdr-left{display:flex;align-items:center;gap:0.75rem;}
+.hdr-burger{display:none;background:none;border:none;color:var(--fg2);font-size:1.2rem;cursor:pointer;padding:0.25rem;}
+.hdr-logo{display:flex;align-items:center;gap:0.5rem;}
+.hdr-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);}
+.hdr-title{font-weight:700;font-size:0.85rem;letter-spacing:-0.01em;}
+.hdr-tag{font-size:0.65rem;font-weight:500;color:var(--fg3);background:var(--bg3);padding:0.15rem 0.5rem;border-radius:10px;margin-left:0.25rem;}
+.hdr-actions{display:flex;gap:0.5rem;align-items:center;}
+
+/* BUTTONS */
+.btn{font-family:var(--font);font-size:0.75rem;font-weight:600;padding:0.4rem 0.85rem;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg3);color:var(--fg);cursor:pointer;transition:all 0.15s;display:inline-flex;align-items:center;gap:0.35rem;white-space:nowrap;}
+.btn:hover{background:var(--bg4);border-color:var(--fg3);}
+.btn-accent{background:var(--accent);color:var(--bg);border-color:var(--accent);}
+.btn-accent:hover{background:var(--accent2);border-color:var(--accent2);}
+.btn-ghost{background:transparent;border-color:transparent;}
+.btn-ghost:hover{background:var(--bg3);}
+.btn-danger{color:var(--red);border-color:var(--red-bd);}
+.btn-danger:hover{background:var(--red-bg);}
+.btn-sm{font-size:0.7rem;padding:0.25rem 0.55rem;}
+.btn-icon{padding:0.3rem;min-width:28px;justify-content:center;}
+
+/* LAYOUT */
+.app{display:flex;margin-top:var(--header);min-height:calc(100vh - var(--header));}
+
+/* SIDEBAR */
+.side{width:var(--sidebar);background:var(--bg2);border-right:1px solid var(--border);position:fixed;top:var(--header);bottom:0;left:0;overflow-y:auto;padding:0.75rem 0;transition:transform 0.25s;z-index:90;}
+.side-section{margin-bottom:0.5rem;}
+.side-label{font-size:0.65rem;font-weight:600;color:var(--fg3);text-transform:uppercase;letter-spacing:0.08em;padding:0.5rem 1rem 0.35rem;}
+.side-item{display:flex;align-items:center;gap:0.6rem;padding:0.5rem 1rem;cursor:pointer;color:var(--fg2);font-size:0.8rem;font-weight:500;transition:all 0.1s;border-left:2px solid transparent;margin:0 0.25rem;border-radius:0 var(--radius-sm) var(--radius-sm) 0;}
+.side-item:hover{color:var(--fg);background:var(--bg3);}
+.side-item.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-bg);}
+.side-icon{font-size:0.85rem;width:18px;text-align:center;opacity:0.7;}
+.side-item.active .side-icon{opacity:1;}
+
+/* MAIN */
+.main{margin-left:var(--sidebar);flex:1;padding:1.75rem 2rem;max-width:1100px;}
+
+/* SECTIONS */
+.panel{display:none;animation:fadeIn 0.2s;}
+.panel.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+.pg-title{font-size:1.35rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.15rem;}
+.pg-sub{font-size:0.8rem;color:var(--fg3);margin-bottom:1.75rem;}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.15rem;margin-bottom:0.75rem;}
+.card-title{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--fg3);margin-bottom:0.65rem;display:flex;align-items:center;justify-content:space-between;}
+.card-body{font-size:0.82rem;line-height:1.7;color:var(--fg2);}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;}
+
+/* STAT */
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;text-align:center;}
+.stat-n{font-size:1.8rem;font-weight:800;line-height:1;letter-spacing:-0.03em;}
+.stat-n.c-green{color:var(--green);}
+.stat-n.c-accent{color:var(--accent);}
+.stat-n.c-fg3{color:var(--fg3);}
+.stat-l{font-size:0.7rem;color:var(--fg3);margin-top:0.25rem;}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;font-size:0.65rem;font-weight:600;padding:0.15rem 0.45rem;border-radius:4px;letter-spacing:0.02em;}
+.b-done{background:var(--green-bg);color:var(--green);border:1px solid var(--green-bd);}
+.b-wip{background:var(--accent-bg);color:var(--accent);border:1px solid rgba(245,158,11,0.3);}
+.b-todo{background:rgba(161,161,170,0.08);color:var(--fg3);border:1px solid rgba(161,161,170,0.2);}
+.b-blocked{background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd);}
+.b-phase{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-bd);font-size:0.6rem;}
+
+/* FORM */
+.field{margin-bottom:0.75rem;}
+.field-l{font-size:0.7rem;font-weight:600;color:var(--fg3);margin-bottom:0.3rem;display:flex;justify-content:space-between;align-items:center;}
+.inp,.txta,.sel{width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--fg);font-family:var(--font);font-size:0.82rem;padding:0.45rem 0.65rem;border-radius:var(--radius-sm);outline:none;transition:border-color 0.15s;}
+.inp:focus,.txta:focus,.sel:focus{border-color:var(--accent);}
+.txta{resize:vertical;min-height:70px;line-height:1.6;}
+.sel{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2371717a'%3E%3Cpath d='M2 4l4 4 4-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.6rem center;}
+.sel option{background:var(--bg2);}
+
+/* SYSTEM ITEM */
+.sys{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:0.5rem;overflow:hidden;transition:border-color 0.15s;}
+.sys:hover{border-color:var(--border2);}
+.sys.open{border-color:var(--accent);border-color:rgba(245,158,11,0.3);}
+.sys-h{display:flex;align-items:center;gap:0.65rem;padding:0.75rem 1rem;cursor:pointer;}
+.sys-name{flex:1;font-size:0.85rem;font-weight:600;}
+.sys-chev{color:var(--fg3);font-size:0.6rem;transition:transform 0.2s;}
+.sys.open .sys-chev{transform:rotate(180deg);}
+.sys-body{display:none;padding:0 1rem 1rem;border-top:1px solid var(--border);}
+.sys.open .sys-body{display:block;}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:0.8rem;}
+th{font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--fg3);padding:0.55rem 0.75rem;text-align:left;border-bottom:1px solid var(--border2);background:var(--bg2);}
+td{padding:0.55rem 0.75rem;border-bottom:1px solid var(--border);color:var(--fg2);vertical-align:middle;}
+tr:hover td{background:rgba(255,255,255,0.02);}
+
+/* TIMELINE */
+.tl{position:relative;padding-left:1.75rem;}
+.tl::before{content:'';position:absolute;left:0.4rem;top:0;bottom:0;width:1px;background:var(--border2);}
+.tl-item{position:relative;margin-bottom:1.25rem;padding-bottom:0.25rem;}
+.tl-dot{position:absolute;left:-1.55rem;top:0.15rem;width:10px;height:10px;border-radius:50%;border:2px solid var(--border2);background:var(--bg);}
+.tl-dot.done{background:var(--green);border-color:var(--green);}
+.tl-dot.active{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 3px rgba(245,158,11,0.2);}
+.tl-date{font-size:0.7rem;font-weight:600;color:var(--fg3);margin-bottom:0.1rem;display:flex;align-items:center;gap:0.5rem;}
+.tl-title{font-size:0.88rem;font-weight:600;color:var(--fg);margin-bottom:0.1rem;}
+.tl-desc{font-size:0.78rem;color:var(--fg3);}
+.tl-edit{display:flex;gap:0.3rem;margin-top:0.3rem;}
+
+/* AI CHAT */
+.ai-box{display:flex;flex-direction:column;height:calc(100vh - var(--header) - 12rem);}
+.ai-msgs{flex:1;overflow-y:auto;padding:0.75rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius) var(--radius) 0 0;}
+.ai-msg{margin-bottom:0.75rem;display:flex;}
+.ai-msg.usr{justify-content:flex-end;}
+.ai-bubble{max-width:78%;padding:0.6rem 0.85rem;font-size:0.82rem;line-height:1.65;border-radius:var(--radius);white-space:pre-wrap;}
+.ai-msg.usr .ai-bubble{background:var(--accent-bg);border:1px solid rgba(245,158,11,0.2);color:var(--fg);}
+.ai-msg.bot .ai-bubble{background:var(--bg2);border:1px solid var(--border);color:var(--fg2);}
+.ai-who{font-size:0.6rem;font-weight:700;color:var(--fg3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.2rem;}
+.ai-bar{display:flex;gap:0.5rem;border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);background:var(--bg2);padding:0.5rem;}
+.ai-inp{flex:1;background:var(--bg);border:1px solid var(--border2);color:var(--fg);font-family:var(--font);font-size:0.82rem;padding:0.45rem 0.65rem;border-radius:var(--radius-sm);outline:none;}
+.ai-inp:focus{border-color:var(--accent);}
+
+/* AI ROLES */
+.ai-roles{display:flex;gap:0.35rem;margin-bottom:0.6rem;flex-wrap:wrap;}
+.ai-role{font-family:var(--font);font-size:0.72rem;font-weight:600;padding:0.4rem 0.75rem;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg2);color:var(--fg2);cursor:pointer;transition:all 0.15s;display:inline-flex;align-items:center;gap:0.35rem;}
+.ai-role:hover{background:var(--bg3);color:var(--fg);}
+.ai-role.active{background:var(--accent-bg);color:var(--accent);border-color:rgba(245,158,11,0.35);}
+.ai-role-icon{font-size:0.8rem;}
+
+/* AI QUICK ACTIONS */
+.ai-quick{display:flex;gap:0.35rem;margin-bottom:0.6rem;flex-wrap:wrap;}
+.ai-qbtn{font-family:var(--font);font-size:0.68rem;font-weight:500;padding:0.3rem 0.6rem;border-radius:12px;border:1px solid var(--border);background:var(--bg2);color:var(--fg3);cursor:pointer;transition:all 0.15s;}
+.ai-qbtn:hover{background:var(--bg3);color:var(--fg);border-color:var(--border2);}
+
+/* AI CLEAR BUTTON */
+.ai-clear-btn{font-size:0.85rem;color:var(--fg3);flex-shrink:0;}
+.ai-clear-btn:hover{color:var(--red);}
+
+/* AI BUBBLE MARKDOWN */
+.ai-bubble code{font-family:var(--mono);font-size:0.75rem;background:rgba(255,255,255,0.06);padding:0.1rem 0.35rem;border-radius:3px;border:1px solid rgba(255,255,255,0.08);}
+.ai-bubble pre{background:rgba(0,0,0,0.4);padding:0.6rem 0.75rem;border-radius:var(--radius-sm);overflow-x:auto;margin:0.4rem 0;border:1px solid var(--border);}
+.ai-bubble pre code{background:none;border:none;padding:0;font-size:0.73rem;line-height:1.6;}
+.ai-bubble strong{color:var(--fg);font-weight:700;}
+.ai-bubble ul,.ai-bubble ol{margin:0.3rem 0 0.3rem 1.2rem;}
+.ai-bubble li{margin-bottom:0.15rem;}
+.ai-bubble h3,.ai-bubble h4{color:var(--accent);font-size:0.82rem;margin:0.5rem 0 0.2rem;}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.modal-bg.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:1.5rem;width:92%;max-width:520px;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+.modal-t{font-size:1rem;font-weight:700;margin-bottom:1.25rem;}
+.modal-foot{display:flex;gap:0.5rem;justify-content:flex-end;margin-top:1.25rem;}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.25rem;right:1.25rem;background:var(--bg2);border:1px solid var(--accent);border-radius:var(--radius-sm);padding:0.65rem 1rem;font-size:0.8rem;color:var(--fg);z-index:300;transform:translateY(80px);opacity:0;transition:all 0.25s;box-shadow:var(--shadow);}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* TUTORIAL OVERLAY */
+.tut-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+.tut-bg.open{display:flex;}
+.tut{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);width:92%;max-width:560px;max-height:85vh;overflow-y:auto;}
+.tut-header{padding:1.5rem 1.5rem 0;text-align:center;}
+.tut-header h2{font-size:1.1rem;font-weight:800;margin-bottom:0.2rem;}
+.tut-header p{font-size:0.8rem;color:var(--fg3);}
+.tut-steps{padding:1.25rem 1.5rem;}
+.tut-step{display:flex;gap:0.85rem;margin-bottom:1.15rem;align-items:flex-start;}
+.tut-num{min-width:28px;height:28px;background:var(--accent);color:var(--bg);font-size:0.75rem;font-weight:800;display:flex;align-items:center;justify-content:center;border-radius:50%;}
+.tut-text h4{font-size:0.85rem;font-weight:700;margin-bottom:0.15rem;}
+.tut-text p{font-size:0.78rem;color:var(--fg2);line-height:1.6;}
+.tut-foot{padding:0.75rem 1.5rem 1.5rem;text-align:center;}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--fg3);font-size:0.85rem;}
+.empty-icon{font-size:2rem;margin-bottom:0.5rem;opacity:0.4;}
+
+/* DIVIDER */
+.hr{border:none;border-top:1px solid var(--border);margin:1.25rem 0;}
+
+/* MOBILE */
+@media(max-width:768px){
+  .side{transform:translateX(-100%);}
+  .side.open{transform:translateX(0);box-shadow:4px 0 20px rgba(0,0,0,0.5);}
+  .hdr-burger{display:block;}
+  .main{margin-left:0;padding:1.25rem 1rem;}
+  .g2,.g3,.g4{grid-template-columns:1fr;}
+  .hdr-tag{display:none;}
+  .mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:85;}
+  .mob-overlay.open{display:block;}
+  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table{min-width:480px;}
+}
+
+/* SEARCH */
+.search-wrap{position:relative;margin-bottom:0.75rem;}
+.search-inp{width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--fg);font-family:var(--font);font-size:0.82rem;padding:0.45rem 0.65rem 0.45rem 2rem;border-radius:var(--radius-sm);outline:none;transition:border-color 0.15s;}
+.search-inp:focus{border-color:var(--accent);}
+.search-icon{position:absolute;left:0.6rem;top:50%;transform:translateY(-50%);color:var(--fg3);font-size:0.8rem;pointer-events:none;}
+
+/* PROGRESS BAR ANIMATED */
+.prog-bar-inner{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:3px;transition:width 0.7s cubic-bezier(0.4,0,0.2,1);}
+
+/* CLICKABLE BADGE */
+.badge-link{cursor:pointer;transition:opacity 0.15s;}
+.badge-link:hover{opacity:0.75;}
+
+/* SIDEBAR COUNTS */
+.side-count{font-size:0.6rem;background:var(--bg4);color:var(--fg3);padding:0.05rem 0.35rem;border-radius:8px;margin-left:auto;}
+.side-item.active .side-count{background:rgba(245,158,11,0.15);color:var(--accent);}
+
+/* AI TYPING DOTS */
+.ai-thinking{display:inline-flex;align-items:center;gap:1px;color:var(--fg3);font-size:0.82rem;}
+.ai-dot{display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--fg3);margin-left:2px;animation:dotPulse 1.4s infinite ease-in-out both;}
+.ai-dot:nth-child(1){animation-delay:0s;}
+.ai-dot:nth-child(2){animation-delay:0.2s;}
+.ai-dot:nth-child(3){animation-delay:0.4s;}
+@keyframes dotPulse{0%,80%,100%{opacity:0.2;transform:scale(0.8);}40%{opacity:1;transform:scale(1.3);}}
+
+/* FIREBASE AUTH & TEAM */
+.auth-bg { background: rgba(0,0,0,0.85) !important; backdrop-filter: blur(8px); display: none; }
+.auth-bg.open { display: flex !important; }
+.team-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.8rem; }
+.team-table th, .team-table td { text-align: left; padding: 0.5rem; border-bottom: 1px solid var(--border); }
+.team-table th { color: var(--fg2); font-weight: 600; }
+.ro-disabled { opacity: 0.4; pointer-events: none; }
+.hide-guest { display: none; }
+
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-left">
+    <button class="hdr-burger" onclick="toggleSidebar()">☰</button>
+    <div class="hdr-logo"><div class="hdr-dot"></div><span class="hdr-title">CGF Project Hub</span><span class="hdr-tag">v1.0</span></div>
+  </div>
+  <div class="hdr-actions">
+    <button class="btn btn-ghost" onclick="showTutorial()">? Guia</button>
+    <button class="btn" onclick="exportData()">↓ Exportar</button>
+    <button class="btn btn-icon btn-ghost" onclick="exportJSON()" title="Backup JSON">💾</button>
+    <button class="btn auth-owner" onclick="importData()">↑ Importar</button>
+    <button class="btn auth-owner" id="btn-team" style="display:none;" onclick="openModal('m-team')">👥 Equipa</button>
+    <button class="btn" id="btn-change-pass" style="display:none;" onclick="openModal('m-password')">🔑 Senha</button>
+    <button class="btn" onclick="window.logoutUser()">Sair</button>
+    <button class="btn btn-accent auth-write" id="btn-add-sys" onclick="openModal('m-sys')">+ Sistema</button>
+  </div>
+</header>
+
+<div class="mob-overlay" id="mob-overlay" onclick="toggleSidebar()"></div>
+
+<div class="app">
+<nav class="side" id="sidebar">
+  <div class="side-section">
+    <div class="side-label">Geral</div>
+    <div class="side-item active" data-p="dash"><span class="side-icon">◈</span>Dashboard</div>
+    <div class="side-item" data-p="tl"><span class="side-icon">◷</span>Calendário</div>
+    <div class="side-item" data-p="phases"><span class="side-icon">◆</span>Fases</div>
+  </div>
+  <div class="side-section">
+    <div class="side-label">Produção</div>
+    <div class="side-item" data-p="sys"><span class="side-icon">⚙</span>Sistemas</div>
+    <div class="side-item" data-p="model"><span class="side-icon">◻</span>Modelador</div>
+  </div>
+  <div class="side-section">
+    <div class="side-label">Ferramentas</div>
+    <div class="side-item" data-p="ai"><span class="side-icon">✦</span>IA Assistente</div>
+    <div class="side-item" data-p="dec"><span class="side-icon">◎</span>Decisões</div>
+  </div>
+</nav>
+
+<div class="main">
+
+<!-- DASHBOARD -->
+<div class="panel active" id="p-dash">
+<div class="pg-title">Dashboard</div>
+<div class="pg-sub">Crônicas de Gelo e Fogo · RP/RPG · Verão 2026</div>
+
+<div class="g4" id="dash-stats"></div>
+<div class="g3" id="dash-phase-progress"></div>
+
+<div class="g2">
+  <div class="card">
+    <div class="card-title">Progresso Geral</div>
+    <div id="dash-progress"></div>
+    <div class="card-body" id="dash-summary" style="margin-top:0.75rem;"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Próximas Datas <button class="btn btn-sm btn-ghost" onclick="nav('tl')">Ver tudo →</button></div>
+    <div class="card-body" id="dash-dates"></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Decisões Chave</div>
+  <div class="card-body" id="dash-decisions"></div>
+</div>
+</div>
+
+<!-- TIMELINE -->
+<div class="panel" id="p-tl">
+<div class="pg-title">Calendário</div>
+<div class="pg-sub">Marcos do projecto — clica no ✎ para editar datas e conteúdo</div>
+<div class="tl" id="tl-list"></div>
+<hr class="hr">
+<div class="card">
+  <div class="card-title">Adicionar Marco</div>
+  <div class="g2">
+    <div class="field"><div class="field-l">Data</div><input class="inp" id="tl-i-date" placeholder="ex: 20 Jun"></div>
+    <div class="field"><div class="field-l">Estado</div><select class="sel" id="tl-i-st"><option value="">A Fazer</option><option value="active">Em Progresso</option><option value="done">Concluído</option></select></div>
+  </div>
+  <div class="field"><div class="field-l">Título</div><input class="inp" id="tl-i-title" placeholder="Nome do marco"></div>
+  <div class="field"><div class="field-l">Descrição</div><input class="inp" id="tl-i-desc" placeholder="Breve descrição"></div>
+  <button class="btn btn-accent" onclick="addTL()">Adicionar</button>
+</div>
+</div>
+
+<!-- PHASES -->
+<div class="panel" id="p-phases">
+<div class="pg-title">Fases do Projecto</div>
+<div class="pg-sub">Roadmap por fase — o que entra em cada uma</div>
+<div id="phases-content"></div>
+</div>
+
+<!-- SYSTEMS -->
+<div class="panel" id="p-sys">
+<div class="pg-title">Sistemas</div>
+<div class="pg-sub">Todos os sistemas — clica para expandir, editar e alterar estado</div>
+<div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;flex-wrap:wrap;">
+  <button class="btn btn-sm" onclick="filterSys('all')" id="sf-all">Todos</button>
+  <button class="btn btn-sm" onclick="filterSys(1)" id="sf-1">Fase 1</button>
+  <button class="btn btn-sm" onclick="filterSys(2)" id="sf-2">Fase 2</button>
+  <button class="btn btn-sm" onclick="filterSys(3)" id="sf-3">Fase 3</button>
+</div>
+<div class="search-wrap">
+  <span class="search-icon">⌕</span>
+  <input class="search-inp" id="sys-search" placeholder="Pesquisar sistemas..." oninput="renderSys()">
+</div>
+<div id="sys-list"></div>
+</div>
+
+<!-- MODELER -->
+<div class="panel" id="p-model">
+<div class="pg-title">Modelador</div>
+<div class="pg-sub">Assets 3D — prioridade, prazos e entregas</div>
+<div class="g3" id="model-stats"></div>
+<div style="margin-bottom:0.75rem;text-align:right;"><button class="btn btn-accent" onclick="openModal('m-asset')">+ Asset</button></div>
+<div class="table-wrap"><table><thead><tr><th>#</th><th>Asset</th><th>Categoria</th><th>Prazo</th><th>Estado</th><th>Ações</th></tr></thead><tbody id="model-table"></tbody></table></div>
+</div>
+
+<!-- AI -->
+<div class="panel" id="p-ai">
+<div class="pg-title">IA Assistente</div>
+<div class="pg-sub">Chat com memória de conversa · Muda de modo conforme o que precisas</div>
+
+<!-- Role Tabs -->
+<div class="ai-roles" id="ai-roles">
+  <button class="ai-role active" data-role="geral" onclick="switchRole('geral')"><span class="ai-role-icon">◈</span>Geral</button>
+  <button class="ai-role" data-role="prog" onclick="switchRole('prog')"><span class="ai-role-icon">⚙</span>Programador</button>
+  <button class="ai-role" data-role="model" onclick="switchRole('model')"><span class="ai-role-icon">◻</span>Modelador</button>
+  <button class="ai-role" data-role="ideias" onclick="switchRole('ideias')"><span class="ai-role-icon">✦</span>Ideias &amp; Design</button>
+</div>
+
+<!-- Quick Actions -->
+<div class="ai-quick" id="ai-quick"></div>
+
+<div class="ai-box">
+  <div class="ai-msgs" id="ai-msgs"></div>
+  <div class="ai-bar">
+    <button class="btn btn-icon btn-ghost ai-clear-btn" onclick="clearChat()" title="Limpar conversa">⟳</button>
+    <input class="ai-inp" id="ai-inp" placeholder="Escreve a tua pergunta..." onkeydown="if(event.key==='Enter')sendAI()">
+    <button class="btn btn-accent" onclick="sendAI()">Enviar</button>
+  </div>
+</div>
+<div style="margin-top:0.5rem;display:flex;justify-content:space-between;align-items:center;">
+  <span style="font-size:0.65rem;color:var(--fg3);" id="ai-status">Modo: Geral · <span id="ai-msg-count">0</span> mensagens</span>
+  <span style="font-size:0.65rem;color:var(--fg3);">Memória activa — a IA lembra o que disseste</span>
+</div>
+</div>
+
+<!-- DECISIONS -->
+<div class="panel" id="p-dec">
+<div class="pg-title">Registo de Decisões</div>
+<div class="pg-sub">Decisões tomadas — para não revisitar as mesmas questões</div>
+<div id="dec-list"></div>
+<hr class="hr">
+<div class="card">
+  <div class="card-title">Registar Decisão</div>
+  <div class="field"><div class="field-l">Decisão</div><input class="inp" id="dec-i-t" placeholder="O que foi decidido"></div>
+  <div class="field"><div class="field-l">Razão</div><textarea class="txta" id="dec-i-r" placeholder="Porquê esta decisão"></textarea></div>
+  <button class="btn btn-accent" onclick="addDec()">Registar</button>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- MODAL: ADD SYSTEM -->
+<div class="modal-bg" id="m-sys"><div class="modal">
+  <div class="modal-t">Adicionar Sistema</div>
+  <div class="field"><div class="field-l">Nome</div><input class="inp" id="ms-name" placeholder="ex: Sistema de Mestria"></div>
+  <div class="g2">
+    <div class="field"><div class="field-l">Fase</div><select class="sel" id="ms-phase"><option value="1">Fase 1</option><option value="2">Fase 2</option><option value="3">Fase 3</option></select></div>
+    <div class="field"><div class="field-l">Estado</div><select class="sel" id="ms-st"><option value="todo">A Fazer</option><option value="wip">Em Dev</option><option value="done">Completo</option></select></div>
+  </div>
+  <div class="field"><div class="field-l">Prazo</div><input class="inp" id="ms-deadline" placeholder="ex: 10 Jun"></div>
+  <div class="field"><div class="field-l">Descrição</div><textarea class="txta" id="ms-desc" placeholder="Como vai funcionar"></textarea></div>
+  <div class="field"><div class="field-l">Integração</div><textarea class="txta" id="ms-int" placeholder="Como liga ao que já existe"></textarea></div>
+  <div class="modal-foot"><button class="btn" onclick="closeModal('m-sys')">Cancelar</button><button class="btn btn-accent" onclick="addSys()">Adicionar</button></div>
+</div></div>
+
+<!-- MODAL: ADD ASSET -->
+<div class="modal-bg" id="m-asset"><div class="modal">
+  <div class="modal-t">Adicionar Asset</div>
+  <div class="field"><div class="field-l">Nome</div><input class="inp" id="ma-name" placeholder="ex: Espada de Aço Tier 2"></div>
+  <div class="g2">
+    <div class="field"><div class="field-l">Categoria</div><select class="sel" id="ma-cat"><option>Arma</option><option>Armadura</option><option>NPC / Personagem</option><option>Ambiente</option><option>Prop</option><option>UI</option><option>Outro</option></select></div>
+    <div class="field"><div class="field-l">Prazo</div><input class="inp" id="ma-dl" placeholder="ex: 10 Jun"></div>
+  </div>
+  <div class="field"><div class="field-l">Prioridade (1 = urgente)</div><input class="inp" type="number" id="ma-pri" value="1" min="1"></div>
+  <div class="modal-foot"><button class="btn" onclick="closeModal('m-asset')">Cancelar</button><button class="btn btn-accent" onclick="addAsset()">Adicionar</button></div>
+</div></div>
+
+<!-- MODAL: EDIT TIMELINE -->
+<div class="modal-bg" id="m-tl-edit"><div class="modal">
+  <div class="modal-t">Editar Marco</div>
+  <div class="g2">
+    <div class="field"><div class="field-l">Data</div><input class="inp" id="te-date"></div>
+    <div class="field"><div class="field-l">Estado</div><select class="sel" id="te-st"><option value="">A Fazer</option><option value="active">Em Progresso</option><option value="done">Concluído</option></select></div>
+  </div>
+  <div class="field"><div class="field-l">Título</div><input class="inp" id="te-title"></div>
+  <div class="field"><div class="field-l">Descrição</div><input class="inp" id="te-desc"></div>
+  <div class="modal-foot">
+    <button class="btn btn-danger" onclick="deleteTL()">Remover</button>
+    <button class="btn" onclick="closeModal('m-tl-edit')">Cancelar</button>
+    <button class="btn btn-accent" onclick="saveTLEdit()">Guardar</button>
+  </div>
+</div></div>
+
+<!-- TUTORIAL -->
+<div class="tut-bg" id="tut-bg">
+<div class="tut">
+  <div class="tut-header">
+    <h2>Bem-vindo ao Project Hub</h2>
+    <p>O centro de operações do Crônicas de Gelo e Fogo</p>
+  </div>
+  <div class="tut-steps">
+    <div class="tut-step"><div class="tut-num">1</div><div class="tut-text"><h4>Dashboard</h4><p>Visão geral do projecto — percentagem de progresso, próximas datas e decisões chave. Tudo se actualiza automaticamente.</p></div></div>
+    <div class="tut-step"><div class="tut-num">2</div><div class="tut-text"><h4>Sistemas</h4><p>Cada sistema do jogo está listado aqui. Clica num para expandir, editar a descrição, mudar o estado ou remover. Usa o botão "+ Sistema" para adicionar novos.</p></div></div>
+    <div class="tut-step"><div class="tut-num">3</div><div class="tut-text"><h4>Modelador</h4><p>Lista de assets 3D com prioridade e prazos. O modelador sabe exactamente o que fazer e por que ordem. Marca como entregue quando receberes.</p></div></div>
+    <div class="tut-step"><div class="tut-num">4</div><div class="tut-text"><h4>Calendário</h4><p>Marcos com datas editáveis. Clica no ✎ para mudar qualquer data ou conteúdo. Adiciona novos marcos na parte inferior.</p></div></div>
+    <div class="tut-step"><div class="tut-num">5</div><div class="tut-text"><h4>IA Assistente</h4><p>Chat com memória de conversa e 4 modos: <strong>Geral</strong> (visão geral), <strong>Programador</strong> (Luau, arquitectura, debugging), <strong>Modelador</strong> (specs, pipeline, prioridades) e <strong>Ideias</strong> (mecânicas, lore, game design). Usa os botões rápidos para perguntas comuns.</p></div></div>
+    <div class="tut-step"><div class="tut-num">6</div><div class="tut-text"><h4>Exportar</h4><p>O botão "↓ Exportar" gera um ficheiro .txt com todo o estado actual. Cola-o numa conversa com o Claude para análise completa e sugestões.</p></div></div>
+    <div class="tut-step"><div class="tut-num">7</div><div class="tut-text"><h4>Decisões</h4><p>Regista aqui todas as decisões importantes. Evita voltar ao mesmo assunto semanas depois — está tudo documentado.</p></div></div>
+  </div>
+  <div class="tut-foot"><button class="btn btn-accent" onclick="closeTutorial()">Entendi, vamos começar</button></div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- MODAL: LOGIN -->
+<div class="modal-bg auth-bg" id="m-login" style="z-index: 9999;">
+  <div class="modal">
+    <div class="modal-h"><h2>Entrar no Project Hub</h2></div>
+    <div class="modal-b">
+      <div class="g1" style="gap:1rem;">
+        <div><label class="lbl">Utilizador ou E-mail</label><input type="text" id="auth-email" class="inp" placeholder="Ex: dino5651"></div>
+        <div><label class="lbl">Senha</label><input type="password" id="auth-pass" class="inp" placeholder="••••••••"></div>
+        <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+          <button class="btn btn-accent" style="flex:1;" onclick="window.loginUser()">Entrar</button>
+          <button class="btn" style="flex:1;" onclick="window.registerUser()">Criar Conta</button>
+        </div>
+        <div id="auth-error" style="color:var(--red);font-size:0.8rem;text-align:center;margin-top:0.5rem;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: PASSWORD CHANGE -->
+<div class="modal-bg" id="m-password">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-h" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <h2>Alterar Senha</h2>
+      <button class="btn btn-sm btn-icon" onclick="closeModal('m-password')">✕</button>
+    </div>
+    <div class="modal-b">
+      <div class="field">
+        <div class="field-l">Nova Senha</div>
+        <input type="password" id="new-password" class="inp" placeholder="Mínimo 6 caracteres">
+      </div>
+      <div class="field">
+        <div class="field-l">Confirmar Nova Senha</div>
+        <input type="password" id="confirm-password" class="inp" placeholder="Repita a nova senha">
+      </div>
+      <div id="password-error" style="color:var(--red);font-size:0.8rem;margin-bottom:0.5rem;"></div>
+      <button class="btn btn-accent" style="width:100%;justify-content:center;" onclick="window.changePassword()">Atualizar Senha</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: TEAM -->
+<div class="modal-bg" id="m-team">
+  <div class="modal" style="max-width:600px;">
+    <div class="modal-h">
+      <h2>Gestão da Equipa</h2>
+      <button class="btn btn-sm btn-icon" onclick="closeModal('m-team')">✕</button>
+    </div>
+    <div class="modal-b">
+      <table class="team-table">
+        <thead><tr><th>Email</th><th>Função</th><th>Último Acesso</th><th>Ações</th></tr></thead>
+        <tbody id="team-list"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="import-file" accept=".json" style="display:none;" onchange="handleImport(event)">
+
+<script>
+// ─── DATA ────────────────────────────────────────────────
+let D={
+  systems:[
+    {id:1,name:'Profissões (7)',phase:1,status:'done',deadline:'',desc:'Ferreiro, Pescador, Fazendeiro, Lenhador, Minerador, Cozinheiro, Mercador. Todos funcionais com XP, níveis e discipulado.',integration:'Base da economia. Ferreiro→Armas, Cozinheiro→Comida/Stamina.'},
+    {id:2,name:'Economia + Copper',phase:1,status:'done',deadline:'',desc:'Estrelas de Cobre. Imposto 10% ao Cofre. NPCs Mira e Alden como fallback. Dirty cache para impostos.',integration:'Liga a todas as profissões e GoldCloaks (salários).'},
+    {id:3,name:'GoldCloaks',phase:1,status:'done',deadline:'',desc:'Hierarquia: Recruta→Soldado→Capitão→Lorde Comandante. Painel de gestão. Roster, rank.',integration:'Liga à Reputação, Prisão (futuro), Economia (salários).'},
+    {id:4,name:'Fé dos Sete',phase:1,status:'done',deadline:'',desc:'Oswin como Septão NPC. Redenção de reputação. Oferendas. Cerimónias.',integration:'Liga à Reputação. Percurso de Septon integra aqui.'},
+    {id:5,name:'Armaduras + Durabilidade',phase:1,status:'done',deadline:'',desc:'Tiers de qualidade. Durabilidade que degrada por uso. Sincronização com inventário.',integration:'Liga ao Ferreiro e Combate.'},
+    {id:6,name:'Reputação',phase:1,status:'done',deadline:'',desc:'Honrado/Neutro/Desonrado. Afecta acesso a GoldCloaks e serviços.',integration:'Liga à Fé (redenção), GoldCloaks (recrutamento), comércio.'},
+    {id:7,name:'Quadro de Rumores',phase:1,status:'done',deadline:'',desc:'Quadro físico no mapa com informações de lore e hints para jogadores.',integration:'Liga às SSUs e ao worldbuilding.'},
+    {id:8,name:'Combate',phase:1,status:'wip',deadline:'27-28 Mai',desc:'Parry, Block, Combos, Dash implementados. Falta integração com armaduras e hitboxes server-side.',integration:'Liga a Armaduras, Cavaleiro, Torneios, Atributos RPG.'},
+    {id:9,name:'Sistema de Atributos RPG',phase:1,status:'wip',deadline:'Jun',desc:'Força, Destreza, Resistência, Magia, Stamina. Progressão por uso (Skyrim-style). Desbloqueiam perks.',integration:'Liga ao Combate, Profissões, Criação de Personagem.'},
+    {id:10,name:'Criação de Personagem',phase:1,status:'wip',deadline:'Jun',desc:'Escolha de origem + aparência + atributos iniciais. Onboarding do jogador novo.',integration:'Liga a Atributos RPG, Profissões, primeira experiência do jogador.'},
+    {id:11,name:'Percurso do Cavaleiro',phase:1,status:'todo',deadline:'Jun',desc:'NPC aceita escudeiros. Treino por uso. Cerimónia em sept com timer. Tag Cavaleiro Andante.',integration:'Liga ao Combate, Fé (cerimónia), Reputação.'},
+    {id:12,name:'Festivais dos Sete',phase:1,status:'todo',deadline:'Jun',desc:'7 buffs rotativos semanais. Dia do Guerreiro, Dia do Ferreiro, etc.',integration:'Liga à Fé dos Sete e às Profissões.'},
+    {id:13,name:'Dados na Taverna',phase:1,status:'todo',deadline:'Jun',desc:'Item dado jogável. Apostas em Copper entre jogadores. Hazard, Passe-Dix, Raffle.',integration:'Liga à Economia (transferências de Copper).'},
+    {id:14,name:'Caça',phase:1,status:'todo',deadline:'Jun',desc:'Actividade na área de exploração. Drop de carne, couro, ossos.',integration:'Liga ao Cozinheiro (receitas) e Ferreiro (couro).'},
+    {id:15,name:'Septon / Septa (percurso)',phase:1,status:'todo',deadline:'Jun',desc:'Percurso de identidade da Fé. Casamentos, investiduras, bênçãos.',integration:'Liga à Fé dos Sete (Oswin como mentor).'},
+    {id:16,name:'Maestre + Elos',phase:2,status:'todo',deadline:'',desc:'Biblioteca física. Sistema de elos da corrente. Cada disciplina desbloqueia perks.',integration:'Liga a Fé, Economia, Medicina.'},
+    {id:17,name:'Flea Bottom (zona crime)',phase:2,status:'todo',deadline:'',desc:'Zona distinta com regras diferentes. Mercado negro, apostas, menos jurisdição.',integration:'Liga aos GoldCloaks, Contrabando, Economia.'},
+    {id:18,name:'Contrabando',phase:2,status:'todo',deadline:'',desc:'Entrar mercadoria pelo porto sem imposto. Inspecções aleatórias.',integration:'Liga à Economia e GoldCloaks.'},
+    {id:19,name:'Reputação por Bairro',phase:2,status:'todo',deadline:'',desc:'Rep separada por zona: Red Keep, Mercado, Flea Bottom, Docas.',integration:'Liga à Reputação actual (expande).'},
+    {id:20,name:'Torneios Automáticos',phase:2,status:'todo',deadline:'',desc:'Brackets semanais. Prize pool. Jousting + melee + archery.',integration:'Liga ao Combate e Cavaleiro.'},
+    {id:21,name:'Casas Nobres',phase:3,status:'todo',deadline:'',desc:'Player-founded. Sigilo, palavras, terras. Vassalagem.',integration:'Liga a Política, Economia, Cavaleiro.'},
+    {id:22,name:'Pequeno Conselho',phase:3,status:'todo',deadline:'',desc:'Cargos com perks. Mão, Mestre das Moedas, Mestre das Leis, etc.',integration:'Liga a Casas Nobres e GoldCloaks.'},
+    {id:23,name:'Kingsguard',phase:3,status:'todo',deadline:'',desc:'7 slots. Aplicação RP-driven. Abdica de tudo. Endgame de prestígio.',integration:'Liga ao Cavaleiro e Combate.'},
+  ],
+  timeline:[
+    {id:1,date:'Concluído',status:'done',title:'Profissões + Economia + GoldCloaks + Fé',desc:'Base do servidor implementada e funcional'},
+    {id:2,date:'Concluído',status:'done',title:'Armaduras + Durabilidade + Reputação',desc:'Ferreiro completo, tiers de qualidade, sistema de reputação'},
+    {id:3,date:'27-28 Mai',status:'active',title:'Combate Beta',desc:'Parry, block, combos, dash — entrega do programador'},
+    {id:4,date:'Jun (1ª semana)',status:'',title:'Atributos RPG + Criação de Personagem',desc:'Força, Destreza, Resistência, Magia, Stamina + onboarding'},
+    {id:5,date:'Jun (2ª semana)',status:'',title:'Cavaleiro + Festivais + Dados',desc:'Percurso do cavaleiro, 7 buffs semanais, jogos de taverna'},
+    {id:6,date:'Jun (3ª semana)',status:'',title:'Testes Completos',desc:'Sessão com testers, relatório de bugs, ajustes'},
+    {id:7,date:'~15 Jun',status:'',title:'Lançamento Exclusivo',desc:'Abertura para comunidade seleccionada — foco em testar progressão RPG'},
+  ],
+  assets:[
+    {id:1,name:'Espada Comum — Tier 1',cat:'Arma',deadline:'5 Jun',priority:1,status:'todo'},
+    {id:2,name:'Espada de Aço — Tier 2',cat:'Arma',deadline:'5 Jun',priority:2,status:'todo'},
+    {id:3,name:'Armadura de Couro — Tier 1',cat:'Armadura',deadline:'8 Jun',priority:3,status:'todo'},
+    {id:4,name:'Armadura de Malha — Tier 2',cat:'Armadura',deadline:'10 Jun',priority:4,status:'todo'},
+    {id:5,name:'Armadura de Placa — Tier 3',cat:'Armadura',deadline:'12 Jun',priority:5,status:'todo'},
+    {id:6,name:'Escudo Redondo',cat:'Arma',deadline:'8 Jun',priority:3,status:'todo'},
+    {id:7,name:'Machado de Batalha',cat:'Arma',deadline:'10 Jun',priority:6,status:'todo'},
+    {id:8,name:'Arco + Flechas',cat:'Arma',deadline:'12 Jun',priority:7,status:'todo'},
+    {id:9,name:'Dado (prop taverna)',cat:'Prop',deadline:'5 Jun',priority:1,status:'todo'},
+  ],
+  decisions:[
+    {id:1,title:'Universo próprio com base GOT',reason:'Mais liberdade criativa. O lore de GOT é a fundação mas o mundo é nosso.',date:'Mai 2026'},
+    {id:2,title:'RP/RPG híbrido — Skyrim + Witcher',reason:'Profissões integram com RPG. Sem classes fixas — identidade emerge do comportamento.',date:'Mai 2026'},
+    {id:3,title:'Progressão por uso (use-based)',reason:'Luta → Força sobe. Forja → Destreza sobe. Natural, sem grind forçado.',date:'Mai 2026'},
+    {id:4,title:'Atributos: Força, Destreza, Resistência, Magia, Stamina',reason:'Core stats do RPG. Podem ser ajustados mas esta é a base definida.',date:'Mai 2026'},
+    {id:5,title:'Lançamento exclusivo verão 2026, público 2027',reason:'Testar progressão com grupo selecto. Mais saudável para o produto.',date:'Mai 2026'},
+    {id:6,title:'Profissões não saem — integram com RPG',reason:'Meses de trabalho funcional. Ferreiro→Armas, Cozinheiro→Stamina.',date:'Mai 2026'},
+  ],
+  nid:100
+};
+
+// ─── NAV ─────────────────────────────────────────────────
+document.querySelectorAll('.side-item').forEach(el=>{
+  el.addEventListener('click',()=>nav(el.dataset.p));
+});
+function nav(p){
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.side-item').forEach(x=>x.classList.remove('active'));
+  document.getElementById('p-'+p).classList.add('active');
+  document.querySelector(`[data-p="${p}"]`).classList.add('active');
+  if(p==='sys')renderSys();
+  if(p==='model')renderModel();
+  if(p==='tl')renderTL();
+  if(p==='dec')renderDec();
+  if(p==='dash')renderDash();
+  if(p==='phases')renderPhases();
+  if(window.innerWidth<769){document.getElementById('sidebar').classList.remove('open');document.getElementById('mob-overlay').classList.remove('open');}
+}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('mob-overlay').classList.toggle('open');}
+
+// ─── RENDER: DASHBOARD ───────────────────────────────────
+function renderDash(){
+  const done=D.systems.filter(s=>s.status==='done').length;
+  const wip=D.systems.filter(s=>s.status==='wip').length;
+  const todo=D.systems.filter(s=>s.status==='todo'||s.status==='blocked').length;
+  const pct=Math.round(done/D.systems.length*100);
+  document.getElementById('dash-stats').innerHTML=`
+    <div class="stat"><div class="stat-n c-green">${done}</div><div class="stat-l">Completos</div></div>
+    <div class="stat"><div class="stat-n c-accent">${wip}</div><div class="stat-l">Em Dev</div></div>
+    <div class="stat"><div class="stat-n c-fg3">${todo}</div><div class="stat-l">Por Fazer</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--fg);">${pct}%</div><div class="stat-l">Progresso</div></div>`;
+  // Barra de progresso com animação ao entrar
+  document.getElementById('dash-progress').innerHTML=`<div style="height:6px;background:var(--bg);border-radius:3px;overflow:hidden;"><div class="prog-bar-inner" id="prog-bar"></div></div>`;
+  requestAnimationFrame(()=>setTimeout(()=>{const b=document.getElementById('prog-bar');if(b)b.style.width=pct+'%';},50));
+  const sl={done:'Feito',wip:'Em Dev',todo:'A Fazer'};
+  document.getElementById('dash-summary').innerHTML=
+    D.systems.filter(s=>s.status==='done').map(s=>`<div style="margin-bottom:0.3rem;"><span class="badge b-done badge-link" onclick="navFilterSys(${s.phase})" title="Ver Fase ${s.phase}">Feito</span> <span style="margin-left:0.3rem;">${s.name}</span></div>`).join('')+
+    D.systems.filter(s=>s.status==='wip').map(s=>`<div style="margin-bottom:0.3rem;"><span class="badge b-wip badge-link" onclick="navFilterSys(${s.phase})" title="Ver Fase ${s.phase}">Em Dev</span> <span style="margin-left:0.3rem;">${s.name}${s.deadline?' — '+s.deadline:''}</span></div>`).join('')+
+    D.systems.filter(s=>s.status==='todo'&&s.phase===1).map(s=>`<div style="margin-bottom:0.3rem;"><span class="badge b-todo badge-link" onclick="navFilterSys(${s.phase})" title="Ver Fase ${s.phase}">A Fazer</span> <span style="margin-left:0.3rem;">${s.name}</span></div>`).join('');
+  document.getElementById('dash-dates').innerHTML=D.timeline.filter(t=>t.status!=='done').slice(0,5).map(t=>`<div style="margin-bottom:0.5rem;"><span class="badge ${t.status==='active'?'b-wip':'b-todo'}">${t.date}</span> <span style="margin-left:0.3rem;">${t.title}</span></div>`).join('');
+  document.getElementById('dash-decisions').innerHTML=D.decisions.slice(0,4).map(d=>`<div style="margin-bottom:0.3rem;">◈ <strong>${d.title}</strong> — <span style="color:var(--fg3);">${d.reason}</span></div>`).join('');
+  renderPhaseProgress();
+  updateSidebarCounts();
+}
+function navFilterSys(phase){sysFilter=phase;nav('sys');}
+
+// ─── RENDER: SYSTEMS ─────────────────────────────────────
+let sysFilter='all';
+function filterSys(f){sysFilter=f;renderSys();}
+function renderSys(){
+  const list=document.getElementById('sys-list');
+  const q=(document.getElementById('sys-search')?.value||'').toLowerCase().trim();
+  let items=sysFilter==='all'?D.systems:D.systems.filter(s=>s.phase==sysFilter);
+  if(q)items=items.filter(s=>s.name.toLowerCase().includes(q)||s.desc.toLowerCase().includes(q));
+  // highlight active filter button
+  ['all',1,2,3].forEach(f=>{const el=document.getElementById('sf-'+(f==='all'?'all':f));if(el)el.style.borderColor=sysFilter==f?'var(--accent)':''});  
+  const sl={done:'Completo',wip:'Em Dev',todo:'A Fazer',blocked:'Bloqueado'};
+  const sb={done:'b-done',wip:'b-wip',todo:'b-todo',blocked:'b-blocked'};
+  if(!items.length){list.innerHTML='<div class="empty"><div class="empty-icon">⚙</div>'+(q?'Nenhum sistema encontrado':'Nenhum sistema nesta fase')+'</div>';return;}
+  list.innerHTML=items.map(s=>`
+    <div class="sys" id="s${s.id}" onclick="togSys(${s.id})">
+      <div class="sys-h">
+        <span class="badge b-phase">F${s.phase}</span>
+        <span class="sys-name">${s.name}</span>
+        ${deadlineSpan(s.deadline)}
+        <span class="badge ${sb[s.status]}">${sl[s.status]}</span>
+        <span class="sys-chev">▼</span>
+      </div>
+      <div class="sys-body" onclick="event.stopPropagation()">
+        <div class="field"><div class="field-l">Descrição</div><textarea class="txta" id="sd${s.id}">${s.desc}</textarea></div>
+        <div class="field"><div class="field-l">Integração</div><textarea class="txta" id="si${s.id}">${s.integration}</textarea></div>
+        <div class="g2">
+          <div class="field"><div class="field-l">Prazo</div><input class="inp" id="sdl${s.id}" value="${s.deadline||''}"></div>
+          <div class="field"><div class="field-l">Fase</div><select class="sel" id="sp${s.id}"><option value="1"${s.phase===1?' selected':''}>Fase 1</option><option value="2"${s.phase===2?' selected':''}>Fase 2</option><option value="3"${s.phase===3?' selected':''}>Fase 3</option></select></div>
+        </div>
+        <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.5rem;">
+          <button class="btn btn-sm" style="border-color:var(--green);color:var(--green);" onclick="chSys(${s.id},'done')">✓ Completo</button>
+          <button class="btn btn-sm" style="border-color:var(--accent);color:var(--accent);" onclick="chSys(${s.id},'wip')">⚙ Em Dev</button>
+          <button class="btn btn-sm" onclick="chSys(${s.id},'todo')">○ A Fazer</button>
+          <button class="btn btn-sm btn-accent" onclick="saveSys(${s.id})">Guardar</button>
+          <button class="btn btn-sm btn-danger" onclick="delSys(${s.id})">Remover</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function togSys(id){document.getElementById('s'+id).classList.toggle('open');}
+function saveSys(id){const s=D.systems.find(x=>x.id===id);s.desc=document.getElementById('sd'+id).value;s.integration=document.getElementById('si'+id).value;s.deadline=document.getElementById('sdl'+id).value;s.phase=parseInt(document.getElementById('sp'+id).value);save();toast('Sistema guardado.');}
+function chSys(id,st){D.systems.find(x=>x.id===id).status=st;renderSys();save();}
+function delSys(id){if(!confirm('Remover?'))return;D.systems=D.systems.filter(x=>x.id!==id);renderSys();save();}
+function addSys(){const n=document.getElementById('ms-name').value.trim();if(!n)return;D.systems.push({id:++D.nid,name:n,phase:parseInt(document.getElementById('ms-phase').value),status:document.getElementById('ms-st').value,deadline:document.getElementById('ms-deadline').value,desc:document.getElementById('ms-desc').value,integration:document.getElementById('ms-int').value});closeModal('m-sys');['ms-name','ms-desc','ms-int','ms-deadline'].forEach(x=>document.getElementById(x).value='');nav('sys');toast('Sistema adicionado.');save();}
+
+// ─── RENDER: MODELER ─────────────────────────────────────
+function renderModel(){
+  const d=D.assets.filter(a=>a.status==='done').length;
+  const w=D.assets.filter(a=>a.status==='wip').length;
+  const t=D.assets.filter(a=>a.status==='todo').length;
+  document.getElementById('model-stats').innerHTML=`
+    <div class="stat"><div class="stat-n c-green">${d}</div><div class="stat-l">Entregues</div></div>
+    <div class="stat"><div class="stat-n c-accent">${w}</div><div class="stat-l">Em Produção</div></div>
+    <div class="stat"><div class="stat-n c-fg3">${t}</div><div class="stat-l">Por Fazer</div></div>`;
+  const sb={done:'b-done',wip:'b-wip',todo:'b-todo'};
+  const sl={done:'Entregue',wip:'Em Prod.',todo:'A Fazer'};
+  const sorted=[...D.assets].sort((a,b)=>a.priority-b.priority);
+  document.getElementById('model-table').innerHTML=sorted.map(a=>`<tr>
+    <td style="font-weight:700;color:var(--accent);">#${a.priority}</td>
+    <td style="font-weight:600;color:var(--fg);">${a.name}</td>
+    <td>${a.cat}</td>
+    <td>${deadlineInput(a.id,a.deadline)}</td>
+    <td><span class="badge ${sb[a.status]}">${sl[a.status]}</span></td>
+    <td style="white-space:nowrap;">
+      <button class="btn btn-sm btn-icon" style="border-color:var(--green);color:var(--green);" onclick="chAsset(${a.id},'done')">✓</button>
+      <button class="btn btn-sm btn-icon" style="border-color:var(--accent);color:var(--accent);" onclick="chAsset(${a.id},'wip')">⚙</button>
+      <button class="btn btn-sm btn-icon btn-danger" onclick="delAsset(${a.id})">✕</button>
+    </td>
+  </tr>`).join('');
+}
+function chAsset(id,st){D.assets.find(x=>x.id===id).status=st;renderModel();save();}
+function delAsset(id){D.assets=D.assets.filter(x=>x.id!==id);renderModel();save();}
+function addAsset(){const n=document.getElementById('ma-name').value.trim();if(!n)return;D.assets.push({id:++D.nid,name:n,cat:document.getElementById('ma-cat').value,deadline:document.getElementById('ma-dl').value,priority:parseInt(document.getElementById('ma-pri').value)||99,status:'todo'});closeModal('m-asset');document.getElementById('ma-name').value='';renderModel();toast('Asset adicionado.');save();}
+
+// ─── RENDER: TIMELINE ────────────────────────────────────
+let editTLId=null;
+function renderTL(){
+  document.getElementById('tl-list').innerHTML=D.timeline.map(t=>`
+    <div class="tl-item">
+      <div class="tl-dot ${t.status}"></div>
+      <div class="tl-date">${t.date} <button class="btn btn-sm btn-ghost" style="font-size:0.65rem;padding:0.1rem 0.3rem;" onclick="editTL(${t.id})">✎</button></div>
+      <div class="tl-title">${t.title}</div>
+      <div class="tl-desc">${t.desc}</div>
+    </div>`).join('');
+}
+function editTL(id){
+  editTLId=id;const t=D.timeline.find(x=>x.id===id);
+  document.getElementById('te-date').value=t.date;
+  document.getElementById('te-st').value=t.status;
+  document.getElementById('te-title').value=t.title;
+  document.getElementById('te-desc').value=t.desc;
+  openModal('m-tl-edit');
+}
+function saveTLEdit(){
+  const t=D.timeline.find(x=>x.id===editTLId);
+  t.date=document.getElementById('te-date').value;
+  t.status=document.getElementById('te-st').value;
+  t.title=document.getElementById('te-title').value;
+  t.desc=document.getElementById('te-desc').value;
+  closeModal('m-tl-edit');renderTL();save();toast('Marco actualizado.');
+}
+function deleteTL(){D.timeline=D.timeline.filter(x=>x.id!==editTLId);closeModal('m-tl-edit');renderTL();save();toast('Marco removido.');}
+function addTL(){
+  const t=document.getElementById('tl-i-title').value.trim();if(!t)return;
+  D.timeline.push({id:++D.nid,date:document.getElementById('tl-i-date').value,status:document.getElementById('tl-i-st').value,title:t,desc:document.getElementById('tl-i-desc').value});
+  ['tl-i-date','tl-i-title','tl-i-desc'].forEach(x=>document.getElementById(x).value='');
+  renderTL();save();toast('Marco adicionado.');
+}
+
+// ─── RENDER: PHASES ──────────────────────────────────────
+function renderPhases(){
+  const phases=[{n:1,title:'Fase 1 — Porto Real + Exploração',sub:'Verão 2026',accent:true},{n:2,title:'Fase 2 — Winterfell + Expansão',sub:'Após validação Fase 1'},{n:3,title:'Fase 3 — Política + Endgame',sub:'2027'}];
+  const sb={done:'b-done',wip:'b-wip',todo:'b-todo',blocked:'b-blocked'};
+  const sl={done:'Feito',wip:'Em Dev',todo:'A Fazer',blocked:'Bloqueado'};
+  document.getElementById('phases-content').innerHTML=phases.map(ph=>{
+    const items=D.systems.filter(s=>s.phase===ph.n);
+    return`<div class="card" style="margin-bottom:0.75rem;${ph.accent?'border-color:rgba(245,158,11,0.3);':''}">
+      <div class="card-title" style="${ph.accent?'color:var(--accent);':''}">${ph.title}<span style="font-weight:400;font-size:0.6rem;text-transform:none;letter-spacing:0;color:var(--fg3);margin-left:0.5rem;">${ph.sub}</span></div>
+      <div class="card-body">${items.map(s=>`<div style="margin-bottom:0.3rem;"><span class="badge ${sb[s.status]}">${sl[s.status]}</span> <span style="margin-left:0.3rem;">${s.name}${s.deadline?' — '+s.deadline:''}</span></div>`).join('')}</div>
+    </div>`;
+  }).join('');
+}
+
+// ─── RENDER: DECISIONS ───────────────────────────────────
+function renderDec(){
+  document.getElementById('dec-list').innerHTML=D.decisions.map(d=>`
+    <div class="card" style="margin-bottom:0.5rem;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div><strong>${d.title}</strong><div style="font-size:0.8rem;color:var(--fg3);margin-top:0.2rem;">${d.reason}</div></div>
+        <div style="display:flex;gap:0.3rem;align-items:center;flex-shrink:0;">
+          <span style="font-size:0.65rem;color:var(--fg3);">${d.date}</span>
+          <button class="btn btn-sm btn-icon btn-danger" onclick="delDec(${d.id})">✕</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function addDec(){const t=document.getElementById('dec-i-t').value.trim();if(!t)return;const now=new Date();const m=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];D.decisions.push({id:++D.nid,title:t,reason:document.getElementById('dec-i-r').value,date:`${m[now.getMonth()]} ${now.getFullYear()}`});document.getElementById('dec-i-t').value='';document.getElementById('dec-i-r').value='';renderDec();save();toast('Decisão registada.');}
+function delDec(id){D.decisions=D.decisions.filter(x=>x.id!==id);renderDec();save();}
+
+// ─── AI ──────────────────────────────────────────────────
+let aiRole='geral';
+let aiHistory=[];
+const aiWelcome={
+  geral:'Olá. Tenho contexto completo do projecto — sistemas, prazos, decisões, assets. Pergunta o que precisares.',
+  prog:'Modo Programador activo. Posso ajudar com arquitectura Luau/Roblox, debugging, integração de sistemas, estrutura de módulos, networking. Manda código ou descreve o problema.',
+  model:'Modo Modelador activo. Posso ajudar com prioridades de assets, especificações técnicas (poly count, textures, rigs), pipeline de entrega, e referências visuais para cada peça.',
+  ideias:'Modo Ideias & Design activo. Vamos explorar mecânicas, loops de gameplay, narrativa, progressão, eventos. Posso propor features novas, analisar se encaixam no que já existe, e ajudar a expandir o GDD.'
+};
+const aiLabels={geral:'Assistente CGF',prog:'Assistente · Programador',model:'Assistente · Modelador',ideias:'Assistente · Ideias'};
+const quickActions={
+  geral:[
+    {label:'Estado do projecto',msg:'Dá-me um resumo rápido do estado actual do projecto — o que está feito, o que falta, e os próximos passos.'},
+    {label:'Próximos prazos',msg:'Quais são os prazos mais urgentes e o que precisa de ser feito primeiro?'},
+    {label:'Riscos e bloqueios',msg:'Analisa possíveis riscos ou bloqueios no plano actual. O que pode atrasar o lançamento?'},
+    {label:'Prioridades Fase 1',msg:'Qual deve ser a ordem de prioridade para fechar tudo da Fase 1?'}
+  ],
+  prog:[
+    {label:'Arquitectura Combate',msg:'Sugere uma arquitectura em Luau para o sistema de combate — módulos, comunicação server/client, hitbox validation.'},
+    {label:'Atributos RPG — estrutura',msg:'Como estruturar o sistema de atributos RPG (Força, Destreza, Resistência, Magia, Stamina) em módulos Luau? Progressão por uso estilo Skyrim.'},
+    {label:'Integrar sistemas',msg:'Como os sistemas actuais (profissões, economia, reputação) devem comunicar entre si? Propõe uma arquitectura de eventos/módulos.'},
+    {label:'Anti-exploit',msg:'Quais são os pontos mais vulneráveis a exploits no projecto actual e como proteger?'},
+    {label:'Debugging help',msg:'Tenho um bug — vou descrever o comportamento. Ajuda-me a diagnosticar.'}
+  ],
+  model:[
+    {label:'Lista de prioridades',msg:'Dá-me a lista de assets por ordem de prioridade com specs técnicas recomendadas (polycount, textures, estilo).'},
+    {label:'Specs armas tier 1-2',msg:'Quais devem ser as specs técnicas para as armas Tier 1 e Tier 2? Polycount, texture resolution, estilo visual.'},
+    {label:'Specs armaduras',msg:'Specs técnicas para as armaduras dos 3 tiers — couro, malha e placa. Como devem diferir visualmente?'},
+    {label:'Pipeline de entrega',msg:'Sugere um pipeline de entrega eficiente: formatos, naming convention, organização de ficheiros, checklist de qualidade.'},
+    {label:'Referências visuais',msg:'Que referências visuais devo seguir para manter consistência com o estilo GOT/medieval do projecto?'}
+  ],
+  ideias:[
+    {label:'Mecânicas novas',msg:'Sugere 3-5 mecânicas que encaixariam bem no projecto actual, considerando o que já está feito e o tema medieval/RPG.'},
+    {label:'Loop de gameplay',msg:'Analisa o core gameplay loop actual. O que faz o jogador querer continuar a jogar? Onde estão as lacunas?'},
+    {label:'Eventos sazonais',msg:'Propõe ideias de eventos sazonais/temporários que façam sentido no universo de Gelo e Fogo e usem os sistemas existentes.'},
+    {label:'Monetização',msg:'Ideias de monetização éticas para Roblox que não sejam pay-to-win e respeitem o espírito RPG do jogo.'},
+    {label:'Narrativa / Lore',msg:'Ajuda a expandir o lore do universo próprio — facções, conflitos, personagens NPC que enriqueçam o mundo.'},
+    {label:'Onboarding',msg:'Como deve ser a primeira hora de um jogador novo? Propõe um fluxo de onboarding que ensine sem ser tutorial forçado.'}
+  ]
+};
+
+function switchRole(role){
+  aiRole=role;
+  document.querySelectorAll('.ai-role').forEach(b=>b.classList.toggle('active',b.dataset.role===role));
+  renderQuickActions();
+  clearChat();
+}
+function renderQuickActions(){
+  const acts=quickActions[aiRole]||[];
+  document.getElementById('ai-quick').innerHTML=acts.map(a=>`<button class="ai-qbtn" onclick="sendQuick(this)" data-msg="${a.msg.replace(/"/g,'&quot;')}">${a.label}</button>`).join('');
+}
+function sendQuick(btn){
+  document.getElementById('ai-inp').value=btn.dataset.msg;
+  sendAI();
+}
+function clearChat(){
+  aiHistory=[];
+  const msgs=document.getElementById('ai-msgs');
+  msgs.innerHTML='';
+  // Mensagem de boas-vindas não entra no histórico (não é enviada ao modelo)
+  addMsg('bot',aiWelcome[aiRole]);
+  updateMsgCount();
+}
+function updateMsgCount(){
+  const c=aiHistory.filter(m=>m.role==='user').length;
+  document.getElementById('ai-msg-count').textContent=c;
+  const labels={geral:'Geral',prog:'Programador',model:'Modelador',ideias:'Ideias'};
+  document.getElementById('ai-status').innerHTML=`Modo: ${labels[aiRole]} · <span id="ai-msg-count">${c}</span> mensagens`;
+}
+
+function buildSystemPrompt(){
+  const base=`És o assistente técnico do projecto "Crônicas de Gelo e Fogo" — um RP/RPG no Roblox inspirado em GOT (211 AC) mas com universo próprio.
+
+ESTADO DO PROJECTO:
+- Sistemas completos: ${D.systems.filter(s=>s.status==='done').map(s=>s.name).join(', ')}
+- Em desenvolvimento: ${D.systems.filter(s=>s.status==='wip').map(s=>s.name+(s.deadline?' (prazo: '+s.deadline+')':'')).join(', ')}
+- A fazer Fase 1: ${D.systems.filter(s=>s.status==='todo'&&s.phase===1).map(s=>s.name).join(', ')}
+- A fazer Fase 2: ${D.systems.filter(s=>s.status==='todo'&&s.phase===2).map(s=>s.name).join(', ')}
+- A fazer Fase 3: ${D.systems.filter(s=>s.status==='todo'&&s.phase===3).map(s=>s.name).join(', ')}
+
+DETALHES DOS SISTEMAS:
+${D.systems.map(s=>`[${s.status.toUpperCase()}] ${s.name} (Fase ${s.phase}): ${s.desc} | Integração: ${s.integration}`).join('\n')}
+
+ASSETS DO MODELADOR:
+${D.assets.map(a=>`#${a.priority} ${a.name} (${a.cat}) — Prazo: ${a.deadline} — Estado: ${a.status}`).join('\n')}
+
+CALENDÁRIO:
+${D.timeline.map(t=>`[${t.status||'todo'}] ${t.date} — ${t.title}: ${t.desc}`).join('\n')}
+
+DECISÕES TOMADAS:
+${D.decisions.map(d=>`- ${d.title}: ${d.reason}`).join('\n')}
+
+REFERÊNCIAS: Skyrim (progressão por uso), Witcher 3 (mundo/narrativa), GTA RP (interacção social)
+ATRIBUTOS: Força, Destreza, Resistência, Magia, Stamina (progressão por uso, sem classes)
+LANÇAMENTO: Exclusivo Jun 2026 (testers). Público 2027.
+PLATAFORMA: Roblox (Luau)`;
+
+  const roleCtx={
+    geral:`\n\nResponde conciso, técnico, directo. Português. Sem emojis. Podes usar markdown para estruturar (negrito, listas, blocos de código).`,
+    prog:`\n\nMODO PROGRAMADOR ACTIVO.
+Foco: Luau, Roblox Studio, arquitectura de sistemas, módulos, RemoteEvents/Functions, ReplicatedStorage vs ServerStorage, anti-exploit, optimização.
+Quando o utilizador partilhar código, analisa e sugere melhorias.
+Quando pedir arquitectura, propõe estrutura de módulos com nomes concretos.
+Usa blocos de código Luau. Sê directo e técnico. Português. Sem emojis.
+O projecto usa ModuleScripts organizados, comunicação server-client via RemoteEvents.`,
+    model:`\n\nMODO MODELADOR ACTIVO.
+Foco: Assets 3D para Roblox, prioridades de produção, specs técnicas (polycount, textures, UV, rigging), pipeline de entrega, naming conventions, consistência visual medieval.
+Considera as limitações do Roblox (MeshParts, SurfaceAppearance, streaming).
+Quando der specs, sê concreto: "Espada Tier 1: ~800 tris, 256x256 texture, sem rig."
+Português. Sem emojis. Directo.`,
+    ideias:`\n\nMODO IDEIAS & DESIGN ACTIVO.
+Foco: Game design, mecânicas, loops de gameplay, progressão, narrativa, eventos, monetização, UX, worldbuilding.
+Quando propuseres features, analisa sempre: como integra com o que já existe? Qual o custo de dev? Vale a pena para Fase 1 ou adia para depois?
+Sê criativo mas prático. Fundamenta as ideias no que o projecto já tem.
+Português. Sem emojis. Estrutura as propostas com prós, contras e integração.`
+  };
+  return base+(roleCtx[aiRole]||roleCtx.geral);
+}
+
+function parseMD(text){
+  let h=text;
+  h=h.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  // code blocks
+  h=h.replace(/```(\w*)\n([\s\S]*?)```/g,(m,lang,code)=>`<pre><code>${code.trim()}</code></pre>`);
+  // inline code
+  h=h.replace(/`([^`]+)`/g,'<code>$1</code>');
+  // bold
+  h=h.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+  // h4
+  h=h.replace(/^#### (.+)$/gm,'<h4>$1</h4>');
+  // h3
+  h=h.replace(/^### (.+)$/gm,'<h3>$1</h3>');
+  // unordered list
+  h=h.replace(/^- (.+)$/gm,'<li>$1</li>');
+  h=h.replace(/((?:<li>.*<\/li>\n?)+)/g,'<ul>$1</ul>');
+  // numbered list
+  h=h.replace(/^\d+\. (.+)$/gm,'<li>$1</li>');
+  return h;
+}
+
+const GEMINI_KEY='AIzaSyAItVoWBWWJxwT_EI-oW42SZu47DpAul0w';
+const GEMINI_URL='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+GEMINI_KEY;
+
+async function sendAI(){
+  const inp=document.getElementById('ai-inp');const msg=inp.value.trim();if(!msg)return;inp.value='';
+  addMsg('usr',msg);
+  aiHistory.push({role:'user',parts:[{text:msg}]});
+  updateMsgCount();
+  addMsg('bot','<span class="ai-thinking">A pensar<span class="ai-dot"></span><span class="ai-dot"></span><span class="ai-dot"></span></span>');
+
+  const sysPrompt=buildSystemPrompt();
+  // Mantém últimas 20 mensagens para não exceder tokens
+  const hist=aiHistory.slice(-20);
+
+  try{
+    const r=await fetch(GEMINI_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        system_instruction:{parts:[{text:sysPrompt}]},
+        contents:hist,
+        generationConfig:{maxOutputTokens:2048,temperature:0.7}
+      })
+    });
+    const d=await r.json();
+    if(d.error){throw new Error(d.error.message);}
+    const t=d.candidates?.[0]?.content?.parts?.[0]?.text||'Sem resposta.';
+    aiHistory.push({role:'model',parts:[{text:t}]});
+    const lastBot=document.querySelector('.ai-msg.bot:last-child .ai-bubble');
+    if(lastBot) lastBot.innerHTML=parseMD(t);
+  }catch(e){
+    const lastBot=document.querySelector('.ai-msg.bot:last-child .ai-bubble');
+    if(lastBot) lastBot.innerHTML='Erro de ligação: '+e.message+'. Verifica a consola.';
+    console.error(e);
+  }
+}
+function addMsg(r,t){const m=document.getElementById('ai-msgs');const d=document.createElement('div');d.className='ai-msg '+r;const label=r==='usr'?'Tu':aiLabels[aiRole];d.innerHTML=`<div><div class="ai-who">${label}</div><div class="ai-bubble">${r==='bot'?t:t.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`;m.appendChild(d);m.scrollTop=m.scrollHeight;}
+
+// ─── EXPORT ──────────────────────────────────────────────
+function exportData(){
+  const sl={done:'Completo',wip:'Em Dev',todo:'A Fazer'};
+  let txt=`# CRÔNICAS DE GELO E FOGO — ESTADO DO PROJECTO\nData: ${new Date().toLocaleDateString('pt-PT')}\n\n`;
+  [1,2,3].forEach(ph=>{
+    const items=D.systems.filter(s=>s.phase===ph);
+    if(items.length){txt+=`## FASE ${ph}\n`;items.forEach(s=>{txt+=`[${sl[s.status]||s.status}] ${s.name}${s.deadline?' — Prazo: '+s.deadline:''}\n  Desc: ${s.desc}\n  Integração: ${s.integration}\n\n`;});}
+  });
+  txt+=`## ASSETS MODELADOR\n`;D.assets.sort((a,b)=>a.priority-b.priority).forEach(a=>{txt+=`[${sl[a.status]}] #${a.priority} ${a.name} (${a.cat}) — Prazo: ${a.deadline}\n`;});
+  txt+=`\n## CALENDÁRIO\n`;D.timeline.forEach(t=>{txt+=`[${t.status==='done'?'✓':t.status==='active'?'►':'○'}] ${t.date} — ${t.title}: ${t.desc}\n`;});
+  txt+=`\n## DECISÕES\n`;D.decisions.forEach(d=>{txt+=`- ${d.title}: ${d.reason} (${d.date})\n`;});
+  txt+=`\n## NOTAS\nCola este texto numa conversa com o Claude para contexto completo.\n`;
+  const b=new Blob([txt],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`CGF_Estado_${new Date().toISOString().slice(0,10)}.txt`;a.click();toast('Estado exportado.');
+}
+
+// ─── MODAL / TOAST / SAVE ────────────────────────────────
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-bg').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');});});
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+function save(){ updateSidebarCounts(); if(window.cloudSave) window.cloudSave(D); }
+function load(){ /* Handled by Firebase */ }
+
+// ─── TUTORIAL ────────────────────────────────────────────
+function showTutorial(){document.getElementById('tut-bg').classList.add('open');}
+function closeTutorial(){document.getElementById('tut-bg').classList.remove('open');localStorage.setItem('cgf_tut','1');}
+
+// ─── HELPERS ─────────────────────────────────────────────
+function isOverdue(dl){
+  if(!dl)return false;
+  const ms={Jan:0,Fev:1,Mar:2,Abr:3,Mai:4,Jun:5,Jul:6,Ago:7,Set:8,Out:9,Nov:10,Dez:11};
+  const parts=dl.trim().split(/[\s\-\/]+/);
+  let day=null,month=null;
+  for(const p of parts){if(ms[p]!==undefined)month=ms[p];else{const n=parseInt(p);if(!isNaN(n)&&n>=1&&n<=31)day=n;}}
+  if(month===null)return false;
+  if(day===null)day=28;
+  const now=new Date();
+  return now>new Date(now.getFullYear(),month,day,23,59,59);
+}
+function deadlineSpan(dl){
+  if(!dl)return '';
+  const od=isOverdue(dl);
+  return `<span style="font-size:0.7rem;color:${od?'var(--red)':'var(--fg3)'};">⏱ ${dl}${od?' ⚠':''}</span>`;
+}
+function deadlineInput(id,dl){
+  const od=isOverdue(dl);
+  return `<input class="inp" style="width:80px;padding:0.2rem 0.4rem;font-size:0.75rem;${od?'border-color:var(--red);color:var(--red);':''}" value="${dl}" onchange="D.assets.find(x=>x.id===${id}).deadline=this.value;save();renderModel();">`;
+}
+
+function renderPhaseProgress(){
+  const el=document.getElementById('dash-phase-progress');if(!el)return;
+  const phases=[{n:1,name:'Fase 1',color:'var(--accent)'},{n:2,name:'Fase 2',color:'var(--blue)'},{n:3,name:'Fase 3',color:'var(--purple)'}];
+  el.innerHTML=phases.map(ph=>{
+    const items=D.systems.filter(s=>s.phase===ph.n);
+    const done=items.filter(s=>s.status==='done').length;
+    const pct=items.length?Math.round(done/items.length*100):0;
+    return`<div class="card" style="padding:0.75rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
+        <span style="font-size:0.72rem;font-weight:700;color:var(--fg2);cursor:pointer;" onclick="navFilterSys(${ph.n})">${ph.name}</span>
+        <span style="font-size:0.72rem;font-weight:700;color:${ph.color};">${done}/${items.length}</span>
+      </div>
+      <div style="height:4px;background:var(--bg);border-radius:2px;overflow:hidden;">
+        <div class="prog-bar-inner" data-w="${pct}" style="background:${ph.color};"></div>
+      </div>
+    </div>`;
+  }).join('');
+  setTimeout(()=>{el.querySelectorAll('.prog-bar-inner').forEach(b=>b.style.width=b.dataset.w+'%');},80);
+}
+
+function updateSidebarCounts(){
+  const counts={
+    sys:`${D.systems.filter(s=>s.status==='done').length}/${D.systems.length}`,
+    model:`${D.assets.filter(a=>a.status==='done').length}/${D.assets.length}`,
+    tl:D.timeline.filter(t=>t.status!=='done').length,
+    dec:D.decisions.length
+  };
+  Object.entries(counts).forEach(([key,val])=>{
+    const item=document.querySelector(`[data-p="${key}"]`);if(!item)return;
+    let span=item.querySelector('.side-count');
+    if(!span){span=document.createElement('span');span.className='side-count';item.appendChild(span);}
+    span.textContent=val;
+  });
+}
+
+// ─── IMPORT / EXPORT JSON ────────────────────────────────
+function exportJSON(){
+  const b=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);
+  a.download=`CGF_Backup_${new Date().toISOString().slice(0,10)}.json`;a.click();
+  toast('Backup JSON exportado.');
+}
+function importData(){document.getElementById('import-file').click();}
+function handleImport(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      const data=JSON.parse(ev.target.result);
+      if(data.systems&&data.timeline&&data.assets&&data.decisions){
+        D=data;
+        if(!D.nid)D.nid=Math.max(...[...D.systems,...D.timeline,...D.assets,...D.decisions].map(x=>x.id||0))+1;
+        save();nav('dash');toast('Dados restaurados com sucesso!');
+      }else{toast('Ficheiro inválido — estrutura incorrecta.');}
+    }catch(err){toast('Erro ao ler ficheiro — JSON inválido.');}
+  };
+  reader.readAsText(file);e.target.value='';
+}
+
+// ─── KEYBOARD SHORTCUTS ──────────────────────────────────
+const navKeys={1:'dash',2:'tl',3:'phases',4:'sys',5:'model',6:'ai',7:'dec'};
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')return;
+  if(e.key==='Escape'){document.querySelectorAll('.modal-bg.open:not(#m-login)').forEach(m=>m.classList.remove('open'));document.getElementById('tut-bg').classList.remove('open');return;}
+  if(e.key==='/'){e.preventDefault();const s=document.getElementById('sys-search');if(s){nav('sys');setTimeout(()=>s.focus(),100);}return;}
+  if(navKeys[e.key])nav(navKeys[e.key]);
+});
+
+// ─── AUTO-SAVE DEBOUNCE ──────────────────────────────────
+let _ast=null;
+document.addEventListener('input',e=>{
+  if(e.target.closest('.sys-body')){
+    clearTimeout(_ast);
+    _ast=setTimeout(()=>{const el=e.target.closest('.sys');if(el){const id=parseInt(el.id.replace('s',''));if(id)saveSys(id);}},1500);
+  }
+});
+
+// ─── BEFOREUNLOAD ────────────────────────────────────────
+window.addEventListener('beforeunload',e=>{if(document.querySelector('.sys.open'))e.preventDefault();});
+
+// ─── INIT ────────────────────────────────────────────────
+load();renderDash();renderQuickActions();clearChat();updateSidebarCounts();
+if(!localStorage.getItem('cgf_tut'))showTutorial();
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDWOlV0QnecMwW60ix4ZOu86wCywrC9vLc",
+  authDomain: "cgf-projecthub.firebaseapp.com",
+  projectId: "cgf-projecthub",
+  storageBucket: "cgf-projecthub.firebasestorage.app",
+  messagingSenderId: "592638617488",
+  appId: "1:592638617488:web:25cc7ff0c679d8c814f515"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentRole = 'guest';
+
+// Helper to normalize username/email input
+const getEmail = (val) => {
+  const trimmed = val.trim();
+  if(!trimmed) return '';
+  return trimmed.includes('@') ? trimmed : `${trimmed}@got.com`;
+};
+
+window.loginUser = async () => {
+  const emailInput = document.getElementById('auth-email').value;
+  const e = getEmail(emailInput);
+  const p = document.getElementById('auth-pass').value;
+  
+  if(!e || !p) {
+    document.getElementById('auth-error').textContent = "Por favor preencha todos os campos.";
+    return;
+  }
+  
+  try {
+    await signInWithEmailAndPassword(auth, e, p);
+    document.getElementById('auth-error').textContent = '';
+  } catch(err) {
+    // If logging in as dino5651 and user doesn't exist, auto-create it as owner!
+    if (e.toLowerCase() === 'dino5651@got.com') {
+      try {
+        const res = await createUserWithEmailAndPassword(auth, e, p);
+        await setDoc(doc(db, "users", res.user.uid), {
+          email: e,
+          role: 'owner',
+          status: 'active',
+          last_online: new Date().toISOString()
+        });
+        document.getElementById('auth-error').textContent = '';
+        toast("Conta de Dono auto-criada e logada com sucesso!");
+        return;
+      } catch(regErr) {
+        console.error("Auto-registration error for dino5651", regErr);
+      }
+    }
+    document.getElementById('auth-error').textContent = "Utilizador/E-mail ou senha inválidos.";
+  }
+};
+
+window.registerUser = async () => {
+  const emailInput = document.getElementById('auth-email').value;
+  const e = getEmail(emailInput);
+  const p = document.getElementById('auth-pass').value;
+  
+  if(!e || !p) {
+    document.getElementById('auth-error').textContent = "Por favor preencha todos os campos.";
+    return;
+  }
+  
+  try {
+    const res = await createUserWithEmailAndPassword(auth, e, p);
+    const role = (e.toLowerCase() === 'dino5651@got.com') ? 'owner' : 'guest';
+    await setDoc(doc(db, "users", res.user.uid), {
+      email: e,
+      role: role,
+      status: 'active',
+      last_online: new Date().toISOString()
+    });
+    document.getElementById('auth-error').textContent = '';
+  } catch(err) {
+    document.getElementById('auth-error').textContent = "Erro ao criar conta: " + err.message;
+  }
+};
+
+window.changePassword = async () => {
+  const newPass = document.getElementById('new-password').value;
+  const confPass = document.getElementById('confirm-password').value;
+  const errorEl = document.getElementById('password-error');
+  
+  if (!newPass) {
+    errorEl.textContent = "Introduza a nova senha.";
+    return;
+  }
+  if (newPass.length < 6) {
+    errorEl.textContent = "A senha deve ter pelo menos 6 caracteres.";
+    return;
+  }
+  if (newPass !== confPass) {
+    errorEl.textContent = "As senhas não coincidem.";
+    return;
+  }
+  
+  try {
+    if (auth.currentUser) {
+      await updatePassword(auth.currentUser, newPass);
+      errorEl.textContent = "";
+      document.getElementById('new-password').value = "";
+      document.getElementById('confirm-password').value = "";
+      closeModal('m-password');
+      toast("Senha alterada com sucesso!");
+    } else {
+      errorEl.textContent = "Utilizador não autenticado.";
+    }
+  } catch(err) {
+    if (err.code === 'auth/requires-recent-login') {
+      errorEl.textContent = "Sessão expirou. Por favor saia e entre novamente para alterar a senha.";
+    } else {
+      errorEl.textContent = "Erro: " + err.message;
+    }
+  }
+};
+
+window.logoutUser = async () => { await signOut(auth); };
+
+onAuthStateChanged(auth, async (user) => {
+  const mLogin = document.getElementById('m-login');
+  if(!user){
+    mLogin.classList.add('open');
+    document.querySelectorAll('.auth-write, .auth-owner').forEach(el=>el.style.display='none');
+    document.getElementById('btn-change-pass').style.display = 'none';
+    return;
+  }
+  
+  // User logged in
+  const udoc = await getDoc(doc(db, "users", user.uid));
+  let udata = udoc.data();
+  
+  // Backup logic: force role owner for dino5651
+  const isDino = user.email && user.email.toLowerCase() === 'dino5651@got.com';
+  
+  if(!udata){
+    udata = {
+      email: user.email,
+      role: isDino ? 'owner' : 'guest',
+      status: 'active',
+      last_online: new Date().toISOString()
+    };
+    await setDoc(doc(db, "users", user.uid), udata);
+  } else if (isDino && udata.role !== 'owner') {
+    udata.role = 'owner';
+    await updateDoc(doc(db, "users", user.uid), { role: 'owner' });
+  }
+  
+  if(udata.status === 'banned'){
+    document.getElementById('auth-error').textContent = "Esta conta foi banida.";
+    await signOut(auth);
+    return;
+  }
+  
+  // Success
+  mLogin.classList.remove('open');
+  currentRole = udata.role;
+  
+  // Update last online
+  await updateDoc(doc(db, "users", user.uid), { last_online: new Date().toISOString() });
+  
+  // Apply role UI
+  if(currentRole === 'owner') document.querySelectorAll('.auth-owner').forEach(el=>el.style.display='inline-flex');
+  else document.querySelectorAll('.auth-owner').forEach(el=>el.style.display='none');
+  
+  if(currentRole === 'owner' || currentRole === 'dev'){
+    document.querySelectorAll('.auth-write').forEach(el=>el.style.display='inline-flex');
+  } else {
+    document.querySelectorAll('.auth-write').forEach(el=>el.style.display='none');
+    toast("Modo Visitante: Apenas leitura.");
+  }
+  
+  // Load Team if owner
+  if(currentRole === 'owner') loadTeam();
+
+  // Listen to remote data
+  onSnapshot(doc(db, "projects", "cgf"), (dSnap) => {
+    if(dSnap.exists()){
+      D = dSnap.data();
+      if(!D.nid) D.nid=100;
+      if(!D.systems) D.systems=[];
+      if(!D.assets) D.assets=[];
+      if(!D.timeline) D.timeline=[];
+      if(!D.decisions) D.decisions=[];
+      renderDash(); updateSidebarCounts();
+      const st=document.getElementById('sys-search'); if(st) renderSys(sysFilter, st.value);
+      renderModel(); renderTL(); renderDec();
+    } else {
+      // First time init
+      window.cloudSave(D);
+    }
+  });
+});
+
+window.cloudSave = async (data) => {
+  if(currentRole !== 'owner' && currentRole !== 'dev') return; // Guests can't save
+  try {
+    await setDoc(doc(db, "projects", "cgf"), data);
+  } catch(e) {
+    console.error("Cloud save error", e);
+    toast("Erro ao guardar na nuvem!");
+  }
+};
+
+async function loadTeam(){
+  const snap = await getDocs(collection(db, "users"));
+  const html = [];
+  snap.forEach(d => {
+    const u = d.data();
+    const id = d.id;
+    const dStr = new Date(u.last_online).toLocaleString('pt-PT');
+    html.push(`<tr>
+      <td>${u.email}</td>
+      <td>
+        <select class="inp" style="padding:0.2rem;font-size:0.75rem;" onchange="window.changeRole('${id}', this.value)">
+          <option value="guest" ${u.role==='guest'?'selected':''}>Visitante</option>
+          <option value="dev" ${u.role==='dev'?'selected':''}>Dev</option>
+          <option value="owner" ${u.role==='owner'?'selected':''}>Dono</option>
+        </select>
+      </td>
+      <td>${dStr}</td>
+      <td>
+        <button class="btn btn-sm ${u.status==='banned'?'btn-accent':'btn-danger'}" onclick="window.toggleBan('${id}', '${u.status}')">
+          ${u.status==='banned'?'Desbanir':'Banir'}
+        </button>
+      </td>
+    </tr>`);
+  });
+  document.getElementById('team-list').innerHTML = html.join('');
+}
+
+window.changeRole = async (uid, newRole) => {
+  await updateDoc(doc(db, "users", uid), { role: newRole });
+  toast("Função actualizada.");
+};
+
+window.toggleBan = async (uid, currStatus) => {
+  const ns = currStatus === 'banned' ? 'active' : 'banned';
+  await updateDoc(doc(db, "users", uid), { status: ns });
+  toast("Estado actualizado.");
+  loadTeam();
+};
+</script>
+
+</body>
+</html>
