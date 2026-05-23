@@ -1244,6 +1244,8 @@ window.addEventListener('beforeunload',e=>{if(document.querySelector('.sys.open'
 
 // ─── INIT ────────────────────────────────────────────────
 load();renderDash();renderQuickActions();clearChat();updateSidebarCounts();
+// Show login by default — Firebase closes it once session is confirmed
+resetUI();
 if(!localStorage.getItem('cgf_tut'))showTutorial();
 </script>
 
@@ -1469,14 +1471,22 @@ onAuthStateChanged(auth, async (user) => {
   // Clean up previous listeners
   if (userSub) { userSub(); userSub = null; }
   if (dataSub) { dataSub(); dataSub = null; }
-  
+
   if(!user) { resetUI(); return; }
-  
+
   // User logged in — setup Firestore user doc
   const uDocRef = doc(db, "users", user.uid);
-  const udoc = await getDoc(uDocRef);
-  let udata = udoc.data();
   const ownerFlag = isOwnerEmail(user.email);
+  let udata;
+  try {
+    const udoc = await getDoc(uDocRef);
+    udata = udoc.data();
+  } catch(e) {
+    console.error("Firestore getDoc failed:", e);
+    // Fallback: if owner email, grant owner UI; otherwise show login
+    if(ownerFlag) { applyRoleUI('owner'); } else { resetUI(); }
+    return;
+  }
   
   if(!udata) {
     udata = {
