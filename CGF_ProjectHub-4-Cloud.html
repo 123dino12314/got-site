@@ -1212,6 +1212,7 @@ window.loginUser = async () => {
   try {
     await signInWithEmailAndPassword(auth, e, p);
     errEl.textContent = '';
+    location.reload();
   } catch(err) {
     // Auto-create owner accounts on first login attempt
     if (isOwnerEmail(e)) {
@@ -1222,6 +1223,7 @@ window.loginUser = async () => {
         });
         errEl.textContent = '';
         toast("Conta de Dono criada com sucesso!");
+        setTimeout(() => { location.reload(); }, 1500);
         return;
       } catch(regErr) {
         console.error("Auto-registration error", regErr);
@@ -1236,6 +1238,7 @@ window.loginWithGoogle = async () => {
   try {
     await signInWithPopup(auth, googleProvider);
     // onAuthStateChanged will handle the rest
+    location.reload();
   } catch(err) {
     if (err.code === 'auth/popup-closed-by-user') return;
     const errEl = document.getElementById('auth-error');
@@ -1263,6 +1266,9 @@ window.registerUser = async () => {
     });
     errEl.textContent = '';
     toast(role === 'owner' ? "Conta de Dono criada!" : "Conta criada! A aguardar aprovação.");
+    setTimeout(() => {
+      location.reload();
+    }, 1500);
   } catch(err) {
     if (err.code === 'auth/email-already-in-use') {
       errEl.textContent = "Este utilizador já existe. Vai ao separador Entrar.";
@@ -1307,6 +1313,7 @@ window.logoutUser = async () => {
   if (userSub) { userSub(); userSub = null; }
   if (dataSub) { dataSub(); dataSub = null; }
   await signOut(auth); 
+  location.reload();
 };
 
 // ─── APPLY ROLE UI ───────────────────────────────────────
