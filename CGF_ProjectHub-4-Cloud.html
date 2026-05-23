@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CGF · Project Hub</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%23f59e0b'/><text x='50' y='67' text-anchor='middle' font-size='48' font-weight='bold' fill='%2309090b'>C</text></svg>">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
@@ -309,9 +309,450 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .modal-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
 .modal-h h2{font-size:1rem;font-weight:700;margin:0;}
 
+/* ═══════════════════════════════════════════════════════════
+   PUBLIC LANDING — Medieval / GOT-inspired player view
+   ═══════════════════════════════════════════════════════════ */
+:root{
+  --gold:#c9a961;
+  --gold-bright:#e8c878;
+  --gold-deep:#8e7339;
+  --parchment:#1a1612;
+  --parchment-2:#211c16;
+  --ink:#0a0807;
+  --ash:#71655a;
+  --blood:#7a1f1f;
+  --serif:'Cinzel',serif;
+  --body-serif:'EB Garamond',Georgia,serif;
+}
+
+/* Body modes */
+body.view-public{background:var(--ink);overflow-x:hidden;}
+body.view-public .hdr,
+body.view-public .app,
+body.view-public .mob-overlay,
+body.view-public .modal-bg.auth-bg#m-pending{display:none !important;}
+
+body.view-dev .landing{display:none !important;}
+
+/* When public view + login is forced for non-devs, we hide landing entirely */
+body.view-public.show-login .landing-hero,
+body.view-public.show-login .landing-section{filter:blur(2px) brightness(0.4);pointer-events:none;}
+
+/* ─── LANDING SHELL ─── */
+.landing{font-family:var(--body-serif);color:#d8cdb5;background:var(--ink);}
+.landing *{box-sizing:border-box;}
+
+/* TOP NAV */
+.l-nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:1.1rem 2.25rem;backdrop-filter:blur(14px);background:linear-gradient(to bottom,rgba(10,8,7,0.85),rgba(10,8,7,0.4));border-bottom:1px solid rgba(201,169,97,0.12);transition:all 0.25s;}
+.l-nav.scrolled{padding:0.7rem 2.25rem;background:rgba(10,8,7,0.95);border-bottom-color:rgba(201,169,97,0.25);}
+.l-brand{display:flex;align-items:center;gap:0.85rem;cursor:default;}
+.l-sigil{width:40px;height:40px;flex-shrink:0;}
+.l-brand-text{display:flex;flex-direction:column;line-height:1;}
+.l-brand-name{font-family:var(--serif);font-weight:600;font-size:0.95rem;letter-spacing:0.18em;color:var(--gold-bright);text-transform:uppercase;}
+.l-brand-sub{font-family:var(--body-serif);font-style:italic;font-size:0.75rem;color:var(--ash);margin-top:3px;letter-spacing:0.02em;}
+.l-nav-links{display:flex;align-items:center;gap:2rem;}
+.l-nav-link{font-family:var(--serif);font-weight:500;font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:#a8997b;text-decoration:none;cursor:pointer;transition:color 0.2s;padding:0.5rem 0;position:relative;}
+.l-nav-link:hover{color:var(--gold-bright);}
+.l-nav-link::after{content:'';position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);width:0;height:1px;background:var(--gold);transition:width 0.25s;}
+.l-nav-link:hover::after{width:100%;}
+.l-dev-btn{font-family:var(--serif);font-weight:600;font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-bright);background:transparent;border:1px solid rgba(201,169,97,0.4);padding:0.6rem 1.1rem;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.5rem;}
+.l-dev-btn:hover{background:rgba(201,169,97,0.08);border-color:var(--gold);color:#fff;}
+.l-dev-btn svg{width:13px;height:13px;}
+.l-burger{display:none;background:none;border:1px solid rgba(201,169,97,0.4);color:var(--gold-bright);width:36px;height:36px;align-items:center;justify-content:center;cursor:pointer;border-radius:4px;}
+.l-nav-links.l-nav-open{display:flex;flex-direction:column;position:absolute;top:60px;left:0;right:0;background:rgba(9,9,11,0.97);padding:1.5rem;gap:1.2rem;z-index:999;border-bottom:1px solid rgba(201,169,97,0.2);}
+
+/* HERO */
+.landing-hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:8rem 2rem 4rem;overflow:hidden;background:radial-gradient(ellipse at center top,#1f1812 0%,#0e0a07 55%,#070504 100%);}
+.hero-bg-pattern{position:absolute;inset:0;opacity:0.07;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath d='M40 5 L48 25 L70 28 L52 44 L58 68 L40 56 L22 68 L28 44 L10 28 L32 25 Z' fill='none' stroke='%23c9a961' stroke-width='0.6'/%3E%3Ccircle cx='40' cy='40' r='3' fill='%23c9a961'/%3E%3C/svg%3E");}
+.hero-bg-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 30%,rgba(0,0,0,0.7) 100%);pointer-events:none;}
+.hero-flame-l,.hero-flame-r{position:absolute;top:50%;width:1px;height:280px;transform:translateY(-50%);background:linear-gradient(to bottom,transparent,var(--gold-deep),transparent);opacity:0.5;}
+.hero-flame-l{left:8%;}.hero-flame-r{right:8%;}
+.hero-inner{position:relative;z-index:2;text-align:center;max-width:920px;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:0.8rem;font-family:var(--serif);font-size:0.7rem;letter-spacing:0.4em;color:var(--gold);text-transform:uppercase;margin-bottom:2.2rem;}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';width:36px;height:1px;background:var(--gold-deep);}
+.hero-title{font-family:var(--serif);font-weight:600;font-size:clamp(2.4rem,6vw,4.8rem);line-height:1.05;letter-spacing:0.05em;color:#f5ebd0;margin:0 0 0.8rem;text-shadow:0 2px 30px rgba(201,169,97,0.15);}
+.hero-title .amp{color:var(--gold);font-style:italic;font-weight:400;font-family:var(--body-serif);font-size:0.85em;letter-spacing:0;margin:0 0.15em;display:inline-block;transform:translateY(-0.08em);}
+.hero-tagline{font-family:var(--body-serif);font-style:italic;font-size:clamp(1rem,1.6vw,1.3rem);color:#b8a888;max-width:620px;margin:0 auto 2.8rem;line-height:1.55;}
+.hero-divider{display:flex;align-items:center;justify-content:center;gap:1rem;margin:0 auto 3rem;max-width:340px;}
+.hero-divider-line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--gold-deep),transparent);}
+.hero-divider-icon{color:var(--gold);font-size:0.9rem;}
+
+/* HERO STATUS CARD */
+.hero-status{display:inline-flex;align-items:center;gap:0;margin-top:1rem;padding:0;border:1px solid rgba(201,169,97,0.25);background:rgba(20,16,12,0.6);backdrop-filter:blur(8px);}
+.hero-status-cell{padding:1rem 1.5rem;border-right:1px solid rgba(201,169,97,0.15);text-align:center;min-width:140px;}
+.hero-status-cell:last-child{border-right:none;}
+.hero-status-label{font-family:var(--serif);font-size:0.62rem;letter-spacing:0.22em;color:var(--ash);text-transform:uppercase;margin-bottom:0.45rem;}
+.hero-status-value{font-family:var(--serif);font-weight:600;font-size:1.5rem;color:var(--gold-bright);line-height:1;letter-spacing:0.02em;}
+.hero-status-value.sm{font-size:0.95rem;font-weight:500;color:#e0d4b8;}
+.hero-status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold);animation:pulse 2s infinite;margin-right:0.4rem;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.45;}}
+
+.hero-scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);color:var(--ash);font-family:var(--serif);font-size:0.62rem;letter-spacing:0.32em;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:0.5rem;animation:floatY 2.5s ease-in-out infinite;}
+@keyframes floatY{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(8px);}}
+.hero-scroll-hint::after{content:'';width:1px;height:30px;background:linear-gradient(to bottom,var(--gold-deep),transparent);}
+
+/* SECTIONS */
+.landing-section{position:relative;padding:6rem 2rem;max-width:1200px;margin:0 auto;}
+.section-head{text-align:center;margin-bottom:3.5rem;}
+.section-eyebrow{font-family:var(--serif);font-size:0.66rem;letter-spacing:0.4em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;justify-content:center;gap:0.8rem;}
+.section-eyebrow::before,.section-eyebrow::after{content:'';width:30px;height:1px;background:var(--gold-deep);}
+.section-title{font-family:var(--serif);font-weight:600;font-size:clamp(1.6rem,3.2vw,2.4rem);letter-spacing:0.04em;color:#f0e4c5;margin:0 0 0.9rem;line-height:1.15;}
+.section-sub{font-family:var(--body-serif);font-style:italic;font-size:1.05rem;color:#9c8d70;max-width:580px;margin:0 auto;line-height:1.55;}
+
+/* OVERVIEW STATS */
+.l-overview{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(201,169,97,0.15);border:1px solid rgba(201,169,97,0.2);}
+.l-ov-cell{background:linear-gradient(180deg,#15110c 0%,#0e0b08 100%);padding:2rem 1.3rem;text-align:center;position:relative;transition:background 0.25s;}
+.l-ov-cell:hover{background:linear-gradient(180deg,#1a150f 0%,#13100b 100%);}
+.l-ov-icon{font-size:1.3rem;color:var(--gold);margin-bottom:0.65rem;font-family:var(--serif);}
+.l-ov-num{font-family:var(--serif);font-weight:600;font-size:2.6rem;color:var(--gold-bright);line-height:1;letter-spacing:0.02em;margin-bottom:0.4rem;}
+.l-ov-label{font-family:var(--serif);font-size:0.62rem;letter-spacing:0.25em;color:#8c7e62;text-transform:uppercase;}
+
+/* PROGRESS RING */
+.l-progress-wrap{display:grid;grid-template-columns:280px 1fr;gap:3.5rem;align-items:center;padding:3rem 2.5rem;background:linear-gradient(135deg,rgba(30,24,18,0.6),rgba(15,12,9,0.6));border:1px solid rgba(201,169,97,0.18);position:relative;margin-bottom:3rem;}
+.l-progress-wrap::before,.l-progress-wrap::after{content:'';position:absolute;width:14px;height:14px;border:1px solid var(--gold);}
+.l-progress-wrap::before{top:-1px;left:-1px;border-right:none;border-bottom:none;}
+.l-progress-wrap::after{bottom:-1px;right:-1px;border-left:none;border-top:none;}
+.l-ring{position:relative;width:240px;height:240px;margin:0 auto;}
+.l-ring svg{transform:rotate(-90deg);}
+.l-ring-bg{fill:none;stroke:rgba(201,169,97,0.12);stroke-width:6;}
+.l-ring-fg{fill:none;stroke:url(#ringGrad);stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset 1.5s cubic-bezier(0.4,0,0.2,1);}
+.l-ring-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.l-ring-num{font-family:var(--serif);font-weight:600;font-size:3.4rem;color:var(--gold-bright);line-height:1;}
+.l-ring-label{font-family:var(--serif);font-size:0.62rem;letter-spacing:0.28em;color:var(--ash);text-transform:uppercase;margin-top:0.5rem;}
+.l-progress-info h3{font-family:var(--serif);font-weight:600;font-size:1.4rem;color:#f0e4c5;margin:0 0 0.6rem;letter-spacing:0.03em;}
+.l-progress-info p{font-family:var(--body-serif);font-size:1.02rem;color:#a89a7e;line-height:1.65;margin:0 0 1.2rem;}
+.l-phase-bars{display:flex;flex-direction:column;gap:0.85rem;}
+.l-phase-bar{display:grid;grid-template-columns:90px 1fr 60px;gap:1rem;align-items:center;}
+.l-phase-bar-label{font-family:var(--serif);font-size:0.7rem;letter-spacing:0.15em;color:#b8a888;text-transform:uppercase;}
+.l-phase-bar-track{height:5px;background:rgba(201,169,97,0.08);position:relative;overflow:hidden;}
+.l-phase-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold-deep),var(--gold-bright));transition:width 1.2s cubic-bezier(0.4,0,0.2,1);}
+.l-phase-bar-count{font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--gold);text-align:right;}
+
+/* CURRENT WORK / "Em Forja" */
+.l-current-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.4rem;}
+.l-current-card{background:linear-gradient(180deg,#1c1611 0%,#13100b 100%);border:1px solid rgba(201,169,97,0.18);padding:1.6rem 1.5rem;position:relative;transition:all 0.25s;overflow:hidden;}
+.l-current-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:0;background:linear-gradient(180deg,var(--gold-bright),var(--gold-deep));transition:height 0.3s;}
+.l-current-card:hover{border-color:rgba(201,169,97,0.4);transform:translateY(-3px);}
+.l-current-card:hover::before{height:100%;}
+.l-current-card-head{display:flex;justify-content:space-between;align-items:start;margin-bottom:1rem;gap:0.8rem;}
+.l-current-card-name{font-family:var(--serif);font-weight:600;font-size:1.1rem;color:#f0e4c5;letter-spacing:0.03em;line-height:1.3;}
+.l-current-pill{font-family:var(--serif);font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;padding:0.25rem 0.55rem;border:1px solid currentColor;color:var(--gold-bright);background:rgba(201,169,97,0.06);white-space:nowrap;flex-shrink:0;}
+.l-current-card-desc{font-family:var(--body-serif);font-size:0.95rem;color:#a89a7e;line-height:1.55;margin-bottom:1.1rem;}
+.l-current-card-foot{display:flex;justify-content:space-between;align-items:center;padding-top:1rem;border-top:1px solid rgba(201,169,97,0.1);font-family:var(--serif);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;}
+.l-current-foot-label{color:var(--ash);}
+.l-current-foot-val{color:var(--gold-bright);}
+
+/* TIMELINE — Saga */
+.l-saga{position:relative;max-width:780px;margin:0 auto;padding-left:0;}
+.l-saga::before{content:'';position:absolute;left:14px;top:14px;bottom:14px;width:1px;background:linear-gradient(to bottom,transparent,var(--gold-deep) 10%,var(--gold-deep) 90%,transparent);}
+.l-saga-item{position:relative;padding-left:60px;margin-bottom:2.5rem;}
+.l-saga-item:last-child{margin-bottom:0;}
+.l-saga-dot{position:absolute;left:0;top:0;width:28px;height:28px;border:1px solid var(--gold-deep);background:var(--ink);display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:var(--serif);font-size:0.7rem;transform:rotate(45deg);}
+.l-saga-dot > span{transform:rotate(-45deg);}
+.l-saga-dot.done{background:var(--gold-deep);border-color:var(--gold);color:var(--ink);}
+.l-saga-dot.active{background:transparent;border-color:var(--gold-bright);color:var(--gold-bright);box-shadow:0 0 0 4px rgba(232,200,120,0.12);animation:dotPulseGold 2.4s infinite;}
+@keyframes dotPulseGold{0%,100%{box-shadow:0 0 0 4px rgba(232,200,120,0.12);}50%{box-shadow:0 0 0 8px rgba(232,200,120,0.04);}}
+.l-saga-date{font-family:var(--serif);font-size:0.65rem;letter-spacing:0.25em;color:var(--gold);text-transform:uppercase;margin-bottom:0.4rem;}
+.l-saga-date.done-d{color:#7d6f54;}
+.l-saga-title{font-family:var(--serif);font-weight:600;font-size:1.15rem;color:#f0e4c5;letter-spacing:0.03em;margin-bottom:0.4rem;}
+.l-saga-title.done-t{color:#9c8d70;}
+.l-saga-desc{font-family:var(--body-serif);font-size:0.98rem;color:#a89a7e;line-height:1.6;}
+
+/* PHASES — Three Pillars */
+.l-pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+.l-pillar{background:linear-gradient(180deg,rgba(28,22,16,0.6) 0%,rgba(15,12,9,0.6) 100%);border:1px solid rgba(201,169,97,0.18);padding:2.2rem 1.8rem;position:relative;transition:all 0.3s;}
+.l-pillar.featured{border-color:rgba(201,169,97,0.45);background:linear-gradient(180deg,rgba(40,30,20,0.7) 0%,rgba(20,16,12,0.7) 100%);}
+.l-pillar:hover{transform:translateY(-4px);border-color:rgba(201,169,97,0.4);}
+.l-pillar-num{font-family:var(--serif);font-weight:600;font-size:0.7rem;letter-spacing:0.32em;color:var(--gold);text-transform:uppercase;margin-bottom:0.5rem;}
+.l-pillar-title{font-family:var(--serif);font-weight:600;font-size:1.3rem;color:#f0e4c5;letter-spacing:0.03em;margin-bottom:0.4rem;line-height:1.25;}
+.l-pillar-when{font-family:var(--body-serif);font-style:italic;font-size:0.92rem;color:var(--gold-deep);margin-bottom:1.4rem;}
+.l-pillar-progress{display:flex;align-items:center;gap:0.8rem;margin-bottom:1.4rem;}
+.l-pillar-bar{flex:1;height:4px;background:rgba(201,169,97,0.1);overflow:hidden;}
+.l-pillar-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold-deep),var(--gold-bright));transition:width 1.2s ease-out;}
+.l-pillar-count{font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--gold);}
+.l-pillar-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.55rem;}
+.l-pillar-list li{font-family:var(--body-serif);font-size:0.92rem;color:#9c8d70;display:flex;align-items:start;gap:0.55rem;line-height:1.45;}
+.l-pillar-list li::before{content:'◆';color:var(--gold-deep);font-size:0.6rem;margin-top:0.35rem;flex-shrink:0;}
+.l-pillar-list li.done-li{color:#7d6f54;text-decoration:line-through;text-decoration-color:rgba(125,111,84,0.4);}
+.l-pillar-list li.done-li::before{color:var(--gold);}
+.l-pillar-more{font-family:var(--serif);font-size:0.65rem;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;margin-top:0.9rem;padding-top:0.9rem;border-top:1px solid rgba(201,169,97,0.12);}
+
+/* COMPLETED — Cofre */
+.l-vault{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:0.8rem;}
+.l-vault-item{padding:0.95rem 1.1rem;border:1px solid rgba(201,169,97,0.15);background:rgba(20,16,12,0.4);display:flex;align-items:center;gap:0.7rem;transition:all 0.2s;}
+.l-vault-item:hover{border-color:rgba(201,169,97,0.35);background:rgba(28,22,16,0.6);}
+.l-vault-icon{color:var(--gold);font-size:0.85rem;flex-shrink:0;}
+.l-vault-name{font-family:var(--body-serif);font-size:0.95rem;color:#d8cdb5;line-height:1.25;}
+
+/* DECISIONS — Tomos */
+.l-tomos{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.3rem;}
+.l-tomo{background:linear-gradient(135deg,rgba(28,22,16,0.7),rgba(15,12,9,0.7));border:1px solid rgba(201,169,97,0.15);padding:1.7rem 1.6rem;position:relative;}
+.l-tomo::before{content:'❝';position:absolute;top:-12px;left:1.2rem;font-family:Georgia,serif;font-size:3rem;color:var(--gold-deep);background:var(--ink);padding:0 0.3rem;line-height:1;}
+.l-tomo-title{font-family:var(--serif);font-weight:600;font-size:1.05rem;color:#f0e4c5;letter-spacing:0.02em;margin:0.4rem 0 0.6rem;line-height:1.35;}
+.l-tomo-reason{font-family:var(--body-serif);font-style:italic;font-size:0.97rem;color:#a89a7e;line-height:1.6;}
+
+/* COUNTDOWN */
+.l-countdown{padding:3rem 2rem;text-align:center;background:linear-gradient(180deg,rgba(30,22,15,0.5),rgba(15,12,9,0.5));border:1px solid rgba(201,169,97,0.2);position:relative;margin-bottom:3rem;}
+.l-countdown-label{font-family:var(--serif);font-size:0.66rem;letter-spacing:0.35em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem;}
+.l-countdown-title{font-family:var(--serif);font-weight:600;font-size:1.6rem;color:#f0e4c5;margin-bottom:2rem;letter-spacing:0.04em;}
+.l-countdown-grid{display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;}
+.l-cd-cell{min-width:90px;text-align:center;}
+.l-cd-num{font-family:var(--serif);font-weight:600;font-size:2.8rem;color:var(--gold-bright);line-height:1;letter-spacing:0.02em;}
+.l-cd-label{font-family:var(--serif);font-size:0.62rem;letter-spacing:0.22em;color:var(--ash);text-transform:uppercase;margin-top:0.6rem;}
+
+/* FOOTER */
+.l-foot{padding:4rem 2rem 2.5rem;border-top:1px solid rgba(201,169,97,0.15);text-align:center;background:#070504;}
+.l-foot-sigil{margin-bottom:1.4rem;display:flex;justify-content:center;}
+.l-foot-text{font-family:var(--body-serif);font-style:italic;color:#7d6f54;font-size:1rem;line-height:1.65;max-width:520px;margin:0 auto 1.5rem;}
+.l-foot-cta{display:inline-flex;align-items:center;gap:0.6rem;font-family:var(--serif);font-size:0.7rem;letter-spacing:0.22em;color:var(--gold-bright);text-transform:uppercase;border:1px solid rgba(201,169,97,0.35);padding:0.85rem 1.6rem;cursor:pointer;background:transparent;transition:all 0.2s;}
+.l-foot-cta:hover{background:rgba(201,169,97,0.08);border-color:var(--gold);}
+.l-foot-meta{margin-top:2.5rem;font-family:var(--serif);font-size:0.62rem;letter-spacing:0.22em;color:#4d4537;text-transform:uppercase;}
+
+/* SECTION DIVIDER ORNAMENT */
+.l-ornament{display:flex;align-items:center;justify-content:center;gap:1.2rem;margin:2rem auto;max-width:420px;}
+.l-ornament-line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--gold-deep),transparent);}
+.l-ornament-icon{color:var(--gold);font-size:1rem;}
+
+/* ANIMATE IN */
+.fadeUp{opacity:0;transform:translateY(20px);transition:all 0.7s cubic-bezier(0.4,0,0.2,1);}
+.fadeUp.visible{opacity:1;transform:translateY(0);}
+
+/* MOBILE */
+@media(max-width:900px){
+  .l-nav-links{display:none;}
+  .l-burger{display:flex;}
+  .l-progress-wrap{grid-template-columns:1fr;gap:2rem;padding:2rem 1.5rem;}
+  .l-pillars{grid-template-columns:1fr;}
+  .l-overview{grid-template-columns:repeat(2,1fr);}
+  .hero-status{flex-direction:column;width:100%;max-width:320px;}
+  .hero-status-cell{border-right:none;border-bottom:1px solid rgba(201,169,97,0.15);width:100%;}
+  .hero-status-cell:last-child{border-bottom:none;}
+  .landing-section{padding:4rem 1.25rem;}
+  .l-nav{padding:0.9rem 1.25rem;}
+  .l-foot{padding:3rem 1.25rem 2rem;}
+}
+
 </style>
 </head>
-<body>
+<body class="view-public">
+
+<!-- ═══════════════════════════════════════════════════════════
+     PUBLIC LANDING — Player-facing view of project progress
+     ═══════════════════════════════════════════════════════════ -->
+<div class="landing">
+
+  <!-- NAV -->
+  <nav class="l-nav" id="l-nav">
+    <div class="l-brand">
+      <svg class="l-sigil" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="sigilGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#e8c878"/>
+            <stop offset="100%" stop-color="#8e7339"/>
+          </linearGradient>
+        </defs>
+        <!-- Outer ring -->
+        <circle cx="30" cy="30" r="27" fill="none" stroke="url(#sigilGrad)" stroke-width="1.2"/>
+        <circle cx="30" cy="30" r="24" fill="none" stroke="#c9a961" stroke-width="0.4" opacity="0.5"/>
+        <!-- Flame / wolf-tear shape: stylized -->
+        <path d="M30 10 C 22 18, 22 28, 30 32 C 38 28, 38 18, 30 10 Z" fill="url(#sigilGrad)" opacity="0.85"/>
+        <!-- Ice shard mirror -->
+        <path d="M30 50 C 22 42, 22 32, 30 28 C 38 32, 38 42, 30 50 Z" fill="none" stroke="#c9a961" stroke-width="1"/>
+        <!-- Center crossing -->
+        <circle cx="30" cy="30" r="2.2" fill="#e8c878"/>
+        <line x1="6" y1="30" x2="14" y2="30" stroke="#c9a961" stroke-width="0.6"/>
+        <line x1="46" y1="30" x2="54" y2="30" stroke="#c9a961" stroke-width="0.6"/>
+      </svg>
+      <div class="l-brand-text">
+        <span class="l-brand-name">Crônicas de Gelo e Fogo</span>
+        <span class="l-brand-sub">Roblox · 211 AC · Universo Próprio</span>
+      </div>
+    </div>
+    <div class="l-nav-links">
+      <a class="l-nav-link" onclick="scrollToSection('sec-saga')">A Saga</a>
+      <a class="l-nav-link" onclick="scrollToSection('sec-forja')">Em Forja</a>
+      <a class="l-nav-link" onclick="scrollToSection('sec-pillars')">As Três Fases</a>
+      <a class="l-nav-link" onclick="scrollToSection('sec-cofre')">O Cofre</a>
+      <a class="l-nav-link" onclick="scrollToSection('sec-tomos')">Tomos</a>
+    </div>
+    <button class="l-dev-btn" onclick="openDevLogin()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1L3 5v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V5l-9-4z"/></svg>
+      Sou Dev
+    </button>
+    <button class="l-burger" onclick="toggleLandingNav()" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="landing-hero">
+    <div class="hero-bg-pattern"></div>
+    <div class="hero-bg-vignette"></div>
+    <div class="hero-flame-l"></div>
+    <div class="hero-flame-r"></div>
+
+    <div class="hero-inner">
+      <div class="hero-eyebrow fadeUp">Estado da Coroa · Mai 2026</div>
+      <h1 class="hero-title fadeUp">Crônicas de Gelo <span class="amp">&amp;</span> Fogo</h1>
+      <p class="hero-tagline fadeUp">Onde a forja não pára, a sept se ergue, e o reino se constrói pedra a pedra. Acompanha aqui cada passo desta saga — entre o cobre, o aço e a fé dos Sete.</p>
+
+      <div class="hero-divider fadeUp">
+        <div class="hero-divider-line"></div>
+        <span class="hero-divider-icon">❖</span>
+        <div class="hero-divider-line"></div>
+      </div>
+
+      <div class="hero-status fadeUp">
+        <div class="hero-status-cell">
+          <div class="hero-status-label">Progresso</div>
+          <div class="hero-status-value" id="hero-pct">—</div>
+        </div>
+        <div class="hero-status-cell">
+          <div class="hero-status-label">Fase Actual</div>
+          <div class="hero-status-value">I</div>
+        </div>
+        <div class="hero-status-cell">
+          <div class="hero-status-label">Lançamento</div>
+          <div class="hero-status-value sm">Verão 2026<br><span style="font-size:0.7rem;color:var(--ash);font-weight:400;">Exclusivo</span></div>
+        </div>
+        <div class="hero-status-cell">
+          <div class="hero-status-label"><span class="hero-status-dot"></span>Em Forja Agora</div>
+          <div class="hero-status-value sm" id="hero-wip">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-scroll-hint">Desce · A Saga</div>
+  </section>
+
+  <!-- OVERVIEW STATS -->
+  <section class="landing-section" style="padding-top:5rem;padding-bottom:3rem;">
+    <div class="l-overview fadeUp" id="lp-overview">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+  <!-- PROGRESS RING + PHASE BREAKDOWN -->
+  <section class="landing-section" style="padding-top:1rem;padding-bottom:4rem;">
+    <div class="l-progress-wrap fadeUp">
+      <div class="l-ring">
+        <svg width="240" height="240" viewBox="0 0 240 240">
+          <defs>
+            <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#e8c878"/>
+              <stop offset="100%" stop-color="#8e7339"/>
+            </linearGradient>
+          </defs>
+          <circle class="l-ring-bg" cx="120" cy="120" r="105"/>
+          <circle class="l-ring-fg" id="lp-ring-fg" cx="120" cy="120" r="105" stroke-dasharray="659.7" stroke-dashoffset="659.7"/>
+        </svg>
+        <div class="l-ring-inner">
+          <div class="l-ring-num" id="lp-ring-num">—%</div>
+          <div class="l-ring-label">Da Saga</div>
+        </div>
+      </div>
+      <div class="l-progress-info">
+        <h3>O Reino Constrói-se a Cada Dia</h3>
+        <p>Cada sistema completo aproxima-nos da abertura das muralhas. Aqui vês quanto já foi forjado em cada fase do projecto.</p>
+        <div class="l-phase-bars" id="lp-phase-bars">
+          <!-- populated by JS -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COUNTDOWN -->
+  <section class="landing-section" style="padding-top:0;padding-bottom:4rem;">
+    <div class="l-countdown fadeUp">
+      <div class="l-countdown-label">Abertura das Muralhas</div>
+      <div class="l-countdown-title">Lançamento Exclusivo · 15 Junho 2026</div>
+      <div class="l-countdown-grid" id="lp-countdown">
+        <!-- populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- CURRENT WORK — "Em Forja" -->
+  <section class="landing-section" id="sec-forja">
+    <div class="section-head fadeUp">
+      <div class="section-eyebrow">Capítulo Presente</div>
+      <h2 class="section-title">Em Forja Agora</h2>
+      <p class="section-sub">Aquilo que os mestres-artesãos martelam neste preciso momento. Cada peça aqui está a aproximar-se do reino.</p>
+    </div>
+    <div class="l-current-grid fadeUp" id="lp-current">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+  <!-- SAGA / TIMELINE -->
+  <section class="landing-section" id="sec-saga">
+    <div class="section-head fadeUp">
+      <div class="section-eyebrow">O Caminho</div>
+      <h2 class="section-title">A Saga em Marcos</h2>
+      <p class="section-sub">Onde estivemos, onde estamos, e para onde caminhamos. As datas que dão forma à viagem.</p>
+    </div>
+    <div class="l-saga fadeUp" id="lp-saga">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+  <!-- THREE PHASES -->
+  <section class="landing-section" id="sec-pillars">
+    <div class="section-head fadeUp">
+      <div class="section-eyebrow">A Grande Obra</div>
+      <h2 class="section-title">Três Fases, Um Reino</h2>
+      <p class="section-sub">A construção do projecto está dividida em três grandes capítulos. Cada um expande o anterior, cada um amadurece o seguinte.</p>
+    </div>
+    <div class="l-pillars fadeUp" id="lp-pillars">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+  <!-- COMPLETED — "Cofre" -->
+  <section class="landing-section" id="sec-cofre">
+    <div class="section-head fadeUp">
+      <div class="section-eyebrow">Já Selado</div>
+      <h2 class="section-title">O Cofre dos Sistemas Forjados</h2>
+      <p class="section-sub">Tudo o que já está pronto, testado e implementado no reino. As bases sólidas onde tudo o resto assenta.</p>
+    </div>
+    <div class="l-vault fadeUp" id="lp-vault">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+  <!-- DECISIONS — "Tomos" -->
+  <section class="landing-section" id="sec-tomos">
+    <div class="section-head fadeUp">
+      <div class="section-eyebrow">Os Tomos do Maestre</div>
+      <h2 class="section-title">Decisões que Moldam o Reino</h2>
+      <p class="section-sub">Os princípios fundadores. Aquilo que define que tipo de jogo queremos — e o que escolhemos não ser.</p>
+    </div>
+    <div class="l-tomos fadeUp" id="lp-tomos">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="l-foot">
+    <div class="l-foot-sigil">
+      <svg width="50" height="50" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="30" cy="30" r="27" fill="none" stroke="#8e7339" stroke-width="1"/>
+        <path d="M30 10 C 22 18, 22 28, 30 32 C 38 28, 38 18, 30 10 Z" fill="#8e7339" opacity="0.7"/>
+        <path d="M30 50 C 22 42, 22 32, 30 28 C 38 32, 38 42, 30 50 Z" fill="none" stroke="#8e7339" stroke-width="1"/>
+      </svg>
+    </div>
+    <p class="l-foot-text">"Da forja sai o aço; do aço sai a coroa; da coroa, a história."<br>— Volta em breve. O reino cresce todos os dias.</p>
+    <button class="l-foot-cta" onclick="openDevLogin()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1L3 5v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V5l-9-4z"/></svg>
+      Entrar como Dev
+    </button>
+    <div class="l-foot-meta">CGF Project Hub · v1.0 · <span id="lp-foot-update">—</span></div>
+  </footer>
+
+</div>
+<!-- ═══════════════════════════════════════════════════════════
+     END PUBLIC LANDING
+     ═══════════════════════════════════════════════════════════ -->
 
 <header class="hdr">
   <div class="hdr-left">
@@ -1476,9 +1917,240 @@ window.setOnlineCount = function(n) {
 
 // ─── INIT ────────────────────────────────────────────────
 load();renderDash();renderQuickActions();clearChat();updateSidebarCounts();
-// Show login by default — Firebase closes it once session is confirmed
-resetUI();
-if(!localStorage.getItem('cgf_tut'))showTutorial();
+// Render landing first (with defaults), Firebase will refresh when data syncs
+renderLanding();
+// Default to landing view — onAuthStateChanged in the module below will call resetUI() once Firebase resolves
+document.body.classList.add('view-public');
+document.body.classList.remove('view-dev');
+
+// ═══════════════════════════════════════════════════════════
+// PUBLIC LANDING — render functions
+// ═══════════════════════════════════════════════════════════
+function openDevLogin(){
+  document.getElementById('m-login').classList.add('open');
+  document.body.classList.add('show-login');
+}
+function closeDevLogin(){
+  document.getElementById('m-login').classList.remove('open');
+  document.body.classList.remove('show-login');
+}
+function scrollToSection(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  document.querySelector('.l-nav-links')?.classList.remove('l-nav-open');
+  window.scrollTo({top:el.offsetTop-70,behavior:'smooth'});
+}
+function toggleLandingNav(){
+  document.querySelector('.l-nav-links')?.classList.toggle('l-nav-open');
+}
+
+function escHTML(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// Parse a "DD Mmm" or "Mmm" Portuguese date (current year, with rollover) → Date
+function parseDeadline(dl){
+  if(!dl)return null;
+  const ms={Jan:0,Fev:1,Mar:2,Abr:3,Mai:4,Jun:5,Jul:6,Ago:7,Set:8,Out:9,Nov:10,Dez:11};
+  const parts=dl.trim().split(/[\s\-\/]+/);
+  let day=null,month=null;
+  for(const p of parts){if(ms[p]!==undefined)month=ms[p];else{const n=parseInt(p);if(!isNaN(n)&&n>=1&&n<=31)day=n;}}
+  if(month===null)return null;
+  if(day===null)day=15;
+  const now=new Date();
+  let y=now.getFullYear();
+  const d=new Date(y,month,day);
+  if(d.getTime()<now.getTime()-7*86400000)d.setFullYear(y+1);
+  return d;
+}
+
+function humanizeDeadline(dl){
+  const d=parseDeadline(dl);
+  if(!d)return dl||'Sem prazo';
+  const now=new Date();
+  const days=Math.ceil((d-now)/86400000);
+  if(days<0)return dl+' · atrasado';
+  if(days===0)return'Hoje';
+  if(days===1)return'Amanhã';
+  if(days<14)return`Em ${days} dias`;
+  if(days<60)return`Em ${Math.round(days/7)} semanas`;
+  return`Em ${Math.round(days/30)} meses`;
+}
+
+function renderLanding(){
+  if(!document.querySelector('.landing'))return;
+  const done=D.systems.filter(s=>s.status==='done').length;
+  const wip=D.systems.filter(s=>s.status==='wip').length;
+  const total=D.systems.length;
+  const pct=total?Math.round(done/total*100):0;
+
+  // Hero
+  document.getElementById('hero-pct').textContent=pct+'%';
+  const wipList=D.systems.filter(s=>s.status==='wip');
+  document.getElementById('hero-wip').innerHTML=wipList.length
+    ? escHTML(wipList[0].name)+(wipList.length>1?` <span style="font-size:0.75rem;color:var(--ash);">+${wipList.length-1}</span>`:'')
+    : 'A preparar próximo capítulo';
+
+  // Overview stats
+  const totalAssets=D.assets.length;
+  const doneAssets=D.assets.filter(a=>a.status==='done').length;
+  const milestones=D.timeline.length;
+  const completedMilestones=D.timeline.filter(t=>t.status==='done').length;
+  document.getElementById('lp-overview').innerHTML=`
+    <div class="l-ov-cell"><div class="l-ov-icon">⚔</div><div class="l-ov-num">${total}</div><div class="l-ov-label">Sistemas</div></div>
+    <div class="l-ov-cell"><div class="l-ov-icon">✦</div><div class="l-ov-num">${done}</div><div class="l-ov-label">Forjados</div></div>
+    <div class="l-ov-cell"><div class="l-ov-icon">◆</div><div class="l-ov-num">${wip}</div><div class="l-ov-label">Em Forja</div></div>
+    <div class="l-ov-cell"><div class="l-ov-icon">❖</div><div class="l-ov-num">${completedMilestones}/${milestones}</div><div class="l-ov-label">Marcos</div></div>
+  `;
+
+  // Progress ring
+  const circ=2*Math.PI*105;
+  const offset=circ-(pct/100)*circ;
+  setTimeout(()=>{
+    const ringFg=document.getElementById('lp-ring-fg');
+    if(ringFg)ringFg.style.strokeDashoffset=offset;
+    document.getElementById('lp-ring-num').textContent=pct+'%';
+  },300);
+
+  // Phase bars
+  const phases=[1,2,3];
+  document.getElementById('lp-phase-bars').innerHTML=phases.map(p=>{
+    const items=D.systems.filter(s=>s.phase===p);
+    const d=items.filter(s=>s.status==='done').length;
+    const pp=items.length?Math.round(d/items.length*100):0;
+    return`<div class="l-phase-bar"><div class="l-phase-bar-label">Fase ${['I','II','III'][p-1]}</div><div class="l-phase-bar-track"><div class="l-phase-bar-fill" style="width:0%" data-w="${pp}"></div></div><div class="l-phase-bar-count">${d}/${items.length}</div></div>`;
+  }).join('');
+  setTimeout(()=>{document.querySelectorAll('.l-phase-bar-fill').forEach(b=>b.style.width=b.dataset.w+'%');},400);
+
+  // Countdown
+  const launch=new Date(2026,5,15);
+  const now=new Date();
+  let diff=Math.max(0,launch-now);
+  const days=Math.floor(diff/86400000);
+  const hours=Math.floor((diff%86400000)/3600000);
+  const mins=Math.floor((diff%3600000)/60000);
+  const secs=Math.floor((diff%60000)/1000);
+  document.getElementById('lp-countdown').innerHTML=`
+    <div class="l-cd-cell"><div class="l-cd-num">${String(days).padStart(2,'0')}</div><div class="l-cd-label">Dias</div></div>
+    <div class="l-cd-cell"><div class="l-cd-num">${String(hours).padStart(2,'0')}</div><div class="l-cd-label">Horas</div></div>
+    <div class="l-cd-cell"><div class="l-cd-num">${String(mins).padStart(2,'0')}</div><div class="l-cd-label">Minutos</div></div>
+    <div class="l-cd-cell"><div class="l-cd-num">${String(secs).padStart(2,'0')}</div><div class="l-cd-label">Segundos</div></div>
+  `;
+
+  // Current work (wip systems + nearest todo with deadline)
+  const currentItems=[...D.systems.filter(s=>s.status==='wip')];
+  if(currentItems.length<3){
+    const upcoming=D.systems.filter(s=>s.status==='todo'&&s.deadline).slice(0,3-currentItems.length);
+    currentItems.push(...upcoming);
+  }
+  if(!currentItems.length){
+    document.getElementById('lp-current').innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--ash);font-family:var(--body-serif);font-style:italic;">A forja repousa. Próximo capítulo a ser preparado.</div>`;
+  }else{
+    document.getElementById('lp-current').innerHTML=currentItems.slice(0,6).map(s=>{
+      const isWip=s.status==='wip';
+      return`<div class="l-current-card">
+        <div class="l-current-card-head">
+          <div class="l-current-card-name">${escHTML(s.name)}</div>
+          <div class="l-current-pill">${isWip?'Em Forja':'A Caminho'}</div>
+        </div>
+        <div class="l-current-card-desc">${escHTML((s.desc||'').slice(0,180))}${s.desc&&s.desc.length>180?'…':''}</div>
+        <div class="l-current-card-foot">
+          <span class="l-current-foot-label">Fase ${['I','II','III'][s.phase-1]||'?'}</span>
+          <span class="l-current-foot-val">${s.deadline?humanizeDeadline(s.deadline):'A definir'}</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Saga (timeline)
+  document.getElementById('lp-saga').innerHTML=D.timeline.map((t,i)=>{
+    const st=t.status==='done'?'done':t.status==='active'?'active':'';
+    return`<div class="l-saga-item">
+      <div class="l-saga-dot ${st}"><span>${st==='done'?'✓':String(i+1).padStart(2,'0')}</span></div>
+      <div class="l-saga-date ${st==='done'?'done-d':''}">${escHTML(t.date)}</div>
+      <div class="l-saga-title ${st==='done'?'done-t':''}">${escHTML(t.title)}</div>
+      <div class="l-saga-desc">${escHTML(t.desc)}</div>
+    </div>`;
+  }).join('');
+
+  // Pillars / phases
+  const phaseDef=[
+    {n:1,title:'Porto Real & Exploração',when:'Verão 2026',featured:true,more:'Capítulo de abertura'},
+    {n:2,title:'Winterfell & Expansão',when:'Após validação',featured:false,more:'Capítulo de expansão'},
+    {n:3,title:'Política & Endgame',when:'2027',featured:false,more:'Capítulo de prestígio'},
+  ];
+  document.getElementById('lp-pillars').innerHTML=phaseDef.map(ph=>{
+    const items=D.systems.filter(s=>s.phase===ph.n);
+    const d=items.filter(s=>s.status==='done').length;
+    const pp=items.length?Math.round(d/items.length*100):0;
+    const sample=items.slice(0,5);
+    const more=items.length-sample.length;
+    return`<div class="l-pillar ${ph.featured?'featured':''}">
+      <div class="l-pillar-num">Fase ${['I','II','III'][ph.n-1]}</div>
+      <div class="l-pillar-title">${ph.title}</div>
+      <div class="l-pillar-when">${ph.when}</div>
+      <div class="l-pillar-progress"><div class="l-pillar-bar"><div class="l-pillar-bar-fill" style="width:0%" data-w="${pp}"></div></div><span class="l-pillar-count">${d}/${items.length}</span></div>
+      <ul class="l-pillar-list">${sample.map(s=>`<li class="${s.status==='done'?'done-li':''}">${escHTML(s.name)}</li>`).join('')}</ul>
+      ${more>0?`<div class="l-pillar-more">+ ${more} ${more===1?'outro sistema':'outros sistemas'}</div>`:''}
+    </div>`;
+  }).join('');
+  setTimeout(()=>{document.querySelectorAll('.l-pillar-bar-fill').forEach(b=>b.style.width=b.dataset.w+'%');},600);
+
+  // Vault (completed)
+  const completed=D.systems.filter(s=>s.status==='done');
+  if(!completed.length){
+    document.getElementById('lp-vault').innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--ash);font-family:var(--body-serif);font-style:italic;">O cofre ainda aguarda os primeiros tesouros.</div>`;
+  }else{
+    document.getElementById('lp-vault').innerHTML=completed.map(s=>`<div class="l-vault-item"><span class="l-vault-icon">✦</span><span class="l-vault-name">${escHTML(s.name.replace(/\s*\(\d+\)\s*/,''))}</span></div>`).join('');
+  }
+
+  // Tomos (decisions)
+  document.getElementById('lp-tomos').innerHTML=D.decisions.slice(0,6).map(d=>`<div class="l-tomo"><div class="l-tomo-title">${escHTML(d.title)}</div><div class="l-tomo-reason">${escHTML(d.reason)}</div></div>`).join('');
+
+  // Footer meta
+  document.getElementById('lp-foot-update').textContent='Última actualização · '+new Date().toLocaleDateString('pt-PT',{day:'2-digit',month:'long',year:'numeric'});
+}
+
+// Countdown updater
+setInterval(()=>{
+  if(document.body.classList.contains('view-public')){
+    const el=document.getElementById('lp-countdown');
+    if(!el)return;
+    const launch=new Date(2026,5,15);
+    const now=new Date();
+    let diff=Math.max(0,launch-now);
+    const days=Math.floor(diff/86400000);
+    const hours=Math.floor((diff%86400000)/3600000);
+    const mins=Math.floor((diff%3600000)/60000);
+    const secs=Math.floor((diff%60000)/1000);
+    const cells=el.querySelectorAll('.l-cd-num');
+    if(cells.length===4){
+      cells[0].textContent=String(days).padStart(2,'0');
+      cells[1].textContent=String(hours).padStart(2,'0');
+      cells[2].textContent=String(mins).padStart(2,'0');
+      cells[3].textContent=String(secs).padStart(2,'0');
+    }
+  }
+},1000);
+
+// Scroll effects
+window.addEventListener('scroll',()=>{
+  const nav=document.getElementById('l-nav');
+  if(!nav)return;
+  nav.classList.toggle('scrolled',window.scrollY>40);
+},{passive:true});
+
+// IntersectionObserver for fadeUp
+const _io=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');_io.unobserve(e.target);}});
+},{threshold:0.12,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.fadeUp').forEach(el=>_io.observe(el));
+
+// Close login modal on outside click & ESC
+document.getElementById('m-login').addEventListener('click',e=>{
+  if(e.target.id==='m-login'&&document.body.classList.contains('view-public'))closeDevLogin();
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&document.body.classList.contains('view-public')&&document.getElementById('m-login').classList.contains('open'))closeDevLogin();
+});
 </script>
 
 <script type="module">
@@ -1671,30 +2343,48 @@ function applyRoleUI(role) {
   
   // Close login modal
   mLogin.classList.remove('open');
+  document.body.classList.remove('show-login');
   
-  // Show logout + change password buttons
-  document.getElementById('btn-change-pass').style.display = 'inline-flex';
-  document.getElementById('btn-logout').style.display = 'inline-flex';
-  
-  // Apply owner UI
-  if(role === 'owner') {
-    document.querySelectorAll('.auth-owner').forEach(el => el.style.display = 'inline-flex');
-  } else {
-    document.querySelectorAll('.auth-owner').forEach(el => el.style.display = 'none');
-  }
-  
-  // Apply write UI + pending
+  // Owner/dev → switch to dev view. Otherwise stay on public landing.
   if(role === 'owner' || role === 'dev') {
-    document.querySelectorAll('.auth-write').forEach(el => el.style.display = 'inline-flex');
+    document.body.classList.remove('view-public');
+    document.body.classList.add('view-dev');
     mPending.classList.remove('open');
+
+    // Show logout + change password buttons
+    document.getElementById('btn-change-pass').style.display = 'inline-flex';
+    document.getElementById('btn-logout').style.display = 'inline-flex';
+
+    if(role === 'owner') {
+      document.querySelectorAll('.auth-owner').forEach(el => el.style.display = 'inline-flex');
+    } else {
+      document.querySelectorAll('.auth-owner').forEach(el => el.style.display = 'none');
+    }
+    document.querySelectorAll('.auth-write').forEach(el => el.style.display = 'inline-flex');
+
+    // Show tutorial first time
+    if(!localStorage.getItem('cgf_tut')) showTutorial();
   } else {
+    // Guest/anonymous → keep landing view
+    document.body.classList.add('view-public');
+    document.body.classList.remove('view-dev');
     document.querySelectorAll('.auth-write').forEach(el => el.style.display = 'none');
-    mPending.classList.add('open');
+    document.querySelectorAll('.auth-owner').forEach(el => el.style.display = 'none');
+    // If user just tried to log in and is now stuck as guest, show pending
+    if(auth.currentUser && !auth.currentUser.isAnonymous) {
+      mPending.classList.add('open');
+    } else {
+      mPending.classList.remove('open');
+    }
   }
 }
 
 function resetUI() {
-  document.getElementById('m-login').classList.add('open');
+  // Public landing is the default — do NOT auto-open login modal
+  document.body.classList.add('view-public');
+  document.body.classList.remove('view-dev');
+  document.getElementById('m-login').classList.remove('open');
+  document.body.classList.remove('show-login');
   document.getElementById('m-pending').classList.remove('open');
   document.querySelectorAll('.auth-write, .auth-owner').forEach(el => el.style.display = 'none');
   document.getElementById('btn-change-pass').style.display = 'none';
@@ -1812,6 +2502,7 @@ onAuthStateChanged(auth, async (user) => {
       renderDash(); updateSidebarCounts();
       renderSys();
       renderModel(); renderTL(); renderDec();
+      renderLanding();
     } else {
       window.cloudSave(D);
     }
