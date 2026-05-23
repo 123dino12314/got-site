@@ -308,6 +308,26 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .lbl{font-size:0.7rem;font-weight:600;color:var(--fg3);margin-bottom:0.3rem;display:block;}
 .modal-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
 .modal-h h2{font-size:1rem;font-weight:700;margin:0;}
+/* NOTIFICATIONS */
+.notif-wrap{position:relative;}
+.notif-btn{background:none;border:none;color:var(--fg2);font-size:1rem;cursor:pointer;padding:0.25rem 0.45rem;border-radius:var(--radius);line-height:1;}
+.notif-btn:hover{background:var(--bg3);color:var(--fg);}
+.notif-badge{position:absolute;top:1px;right:1px;background:var(--red);color:#fff;font-size:0.5rem;font-weight:700;min-width:14px;height:14px;border-radius:7px;display:flex;align-items:center;justify-content:center;padding:0 2px;pointer-events:none;}
+.notif-panel{position:fixed;top:calc(var(--header) + 6px);right:1rem;width:300px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);z-index:500;box-shadow:0 8px 24px rgba(0,0,0,0.5);max-height:380px;overflow-y:auto;display:none;}
+.notif-panel.open{display:block;}
+.notif-panel-hd{font-size:0.68rem;font-weight:700;color:var(--fg3);padding:0.55rem 0.75rem;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:0.07em;}
+.notif-item{display:flex;gap:0.5rem;align-items:flex-start;padding:0.55rem 0.75rem;border-bottom:1px solid var(--border);}
+.notif-item:last-child{border-bottom:none;}
+.notif-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:0.28rem;}
+.notif-dot.overdue{background:var(--red);}
+.notif-dot.soon{background:var(--accent);}
+.notif-i-name{font-size:0.78rem;color:var(--fg);font-weight:500;}
+.notif-i-sub{font-size:0.67rem;color:var(--fg3);margin-top:0.08rem;}
+/* USER AVATAR */
+.u-av{width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:0.58rem;font-weight:700;color:#fff;flex-shrink:0;vertical-align:middle;}
+/* SYS HISTORY */
+.sys-hist{border-top:1px solid var(--border);margin-top:0.75rem;padding-top:0.5rem;}
+.sys-hist-row{display:flex;gap:0.4rem;align-items:center;font-size:0.7rem;color:var(--fg3);padding:0.12rem 0;}
 
 /* ═══════════════════════════════════════════════════════════
    PUBLIC LANDING — Medieval / GOT-inspired player view
@@ -760,9 +780,16 @@ body.view-public.show-login .landing-section{filter:blur(2px) brightness(0.4);po
     <div class="hdr-logo"><div class="hdr-dot"></div><span class="hdr-title">CGF Project Hub</span><span class="hdr-tag">v1.0</span></div>
   </div>
   <div style="display:flex;align-items:center;gap:0.5rem;flex:1;justify-content:flex-end;margin-right:0.5rem;">
-    <div class="hdr-user" id="hdr-user" style="display:none;"><div class="hdr-user-dot"></div><span id="hdr-username"></span></div>
+    <div class="hdr-user" id="hdr-user" style="display:none;"><div class="hdr-user-dot"></div><span id="hdr-username" style="cursor:pointer;" onclick="openRename()" title="Clica para mudar nome"></span> <span style="font-size:0.65rem;color:var(--fg3);">✏</span></div>
     <div class="hdr-online" id="hdr-online" style="display:none;"><div class="hdr-online-dot"></div><span id="hdr-online-count">1</span> online</div>
     <span id="save-indicator" style="font-size:0.7rem;transition:color 0.3s;"></span>
+    <div class="notif-wrap auth-write" id="notif-wrap" style="display:none;">
+      <button class="notif-btn" onclick="toggleNotifPanel()" title="Alertas de prazo">🔔<span class="notif-badge" id="notif-count" style="display:none;"></span></button>
+      <div class="notif-panel" id="notif-panel">
+        <div class="notif-panel-hd">Alertas de Prazo</div>
+        <div id="notif-list"><div style="padding:0.8rem;color:var(--fg3);font-size:0.78rem;text-align:center;">Sem alertas.</div></div>
+      </div>
+    </div>
   </div>
   <div class="hdr-actions">
     <button class="btn btn-ghost" onclick="showTutorial()">? Guia</button>
@@ -847,7 +874,7 @@ body.view-public.show-login .landing-section{filter:blur(2px) brightness(0.4);po
 <div class="card">
   <div class="card-title">Adicionar Marco</div>
   <div class="g2">
-    <div class="field"><div class="field-l">Data</div><input class="inp" id="tl-i-date" placeholder="ex: 20 Jun"></div>
+    <div class="field"><div class="field-l">Data</div><input class="inp" type="date" id="tl-i-date"></div>
     <div class="field"><div class="field-l">Estado</div><select class="sel" id="tl-i-st"><option value="">A Fazer</option><option value="active">Em Progresso</option><option value="done">Concluído</option></select></div>
   </div>
   <div class="field"><div class="field-l">Título</div><input class="inp" id="tl-i-title" placeholder="Nome do marco"></div>
@@ -957,7 +984,7 @@ body.view-public.show-login .landing-section{filter:blur(2px) brightness(0.4);po
     <div class="field"><div class="field-l">Fase</div><select class="sel" id="ms-phase"><option value="1">Fase 1</option><option value="2">Fase 2</option><option value="3">Fase 3</option></select></div>
     <div class="field"><div class="field-l">Estado</div><select class="sel" id="ms-st"><option value="todo">A Fazer</option><option value="wip">Em Dev</option><option value="done">Completo</option></select></div>
   </div>
-  <div class="field"><div class="field-l">Prazo</div><input class="inp" id="ms-deadline" placeholder="ex: 10 Jun"></div>
+  <div class="field"><div class="field-l">Prazo</div><input class="inp" type="date" id="ms-deadline"></div>
   <div class="field"><div class="field-l">Descrição</div><textarea class="txta" id="ms-desc" placeholder="Como vai funcionar"></textarea></div>
   <div class="field"><div class="field-l">Integração</div><textarea class="txta" id="ms-int" placeholder="Como liga ao que já existe"></textarea></div>
   <div class="modal-foot"><button class="btn" onclick="closeModal('m-sys')">Cancelar</button><button class="btn btn-accent" onclick="addSys()">Adicionar</button></div>
@@ -969,17 +996,28 @@ body.view-public.show-login .landing-section{filter:blur(2px) brightness(0.4);po
   <div class="field"><div class="field-l">Nome</div><input class="inp" id="ma-name" placeholder="ex: Espada de Aço Tier 2"></div>
   <div class="g2">
     <div class="field"><div class="field-l">Categoria</div><select class="sel" id="ma-cat"><option>Arma</option><option>Armadura</option><option>NPC / Personagem</option><option>Ambiente</option><option>Prop</option><option>UI</option><option>Outro</option></select></div>
-    <div class="field"><div class="field-l">Prazo</div><input class="inp" id="ma-dl" placeholder="ex: 10 Jun"></div>
+    <div class="field"><div class="field-l">Prazo</div><input class="inp" type="date" id="ma-dl"></div>
   </div>
   <div class="field"><div class="field-l">Prioridade (1 = urgente)</div><input class="inp" type="number" id="ma-pri" value="1" min="1"></div>
   <div class="modal-foot"><button class="btn" onclick="closeModal('m-asset')">Cancelar</button><button class="btn btn-accent" onclick="addAsset()">Adicionar</button></div>
+</div></div>
+
+<!-- MODAL: RENAME -->
+<div class="modal-bg" id="m-rename"><div class="modal" style="max-width:360px;">
+  <div class="modal-t">Mudar Nome de Utilizador</div>
+  <div class="field"><div class="field-l">Nome exibido</div><input class="inp" id="rename-inp" placeholder="Ex: Dino" maxlength="20"></div>
+  <div style="font-size:0.72rem;color:var(--fg3);margin-bottom:0.75rem;">Aparece nos comentários e no changelog.</div>
+  <div class="modal-foot">
+    <button class="btn" onclick="closeModal('m-rename')">Cancelar</button>
+    <button class="btn btn-accent" onclick="window.saveDisplayName()">Guardar</button>
+  </div>
 </div></div>
 
 <!-- MODAL: EDIT TIMELINE -->
 <div class="modal-bg" id="m-tl-edit"><div class="modal">
   <div class="modal-t">Editar Marco</div>
   <div class="g2">
-    <div class="field"><div class="field-l">Data</div><input class="inp" id="te-date"></div>
+    <div class="field"><div class="field-l">Data</div><input class="inp" type="date" id="te-date"></div>
     <div class="field"><div class="field-l">Estado</div><select class="sel" id="te-st"><option value="">A Fazer</option><option value="active">Em Progresso</option><option value="done">Concluído</option></select></div>
   </div>
   <div class="field"><div class="field-l">Título</div><input class="inp" id="te-title"></div>
@@ -1248,12 +1286,14 @@ function renderSys(){
     const cmts=(window.allComments&&window.allComments[s.id])||[];
     const commentsHtml=`<div class="comment-section">
       <div class="field-l" style="margin-bottom:0.4rem;">Comentários <span style="font-weight:400;">(${cmts.length})</span></div>
-      ${cmts.length?cmts.map(c=>`<div class="comment"><div class="comment-meta"><span class="comment-user">${c.user}</span><span>${formatRelTime(c.date)}</span></div><div class="comment-text">${c.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`).join(''):'<div style="color:var(--fg3);font-size:0.75rem;padding:0.2rem 0;">Sem comentários ainda.</div>'}
+      ${cmts.length?cmts.map(c=>`<div class="comment"><div class="comment-meta"><span style="display:flex;align-items:center;gap:0.3rem;">${userAvatar(c.user)}<span class="comment-user" style="color:${userColor(c.user)};">${c.user}</span></span><span>${formatRelTime(c.date)}</span></div><div class="comment-text">${c.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`).join(''):'<div style="color:var(--fg3);font-size:0.75rem;padding:0.2rem 0;">Sem comentários ainda.</div>'}
       <div class="comment-add" onclick="event.stopPropagation()">
         <input class="inp" id="cm${s.id}" placeholder="Adicionar comentário..." onkeydown="if(event.key==='Enter'){event.stopPropagation();window.addComment&&window.addComment(${s.id});}">
         <button class="btn btn-sm" onclick="event.stopPropagation();window.addComment&&window.addComment(${s.id})">Enviar</button>
       </div>
     </div>`;
+    const hist=(window.changelogItems||[]).filter(c=>c.sysId===s.id).slice(0,5);
+    const histHtml=hist.length?`<div class="sys-hist"><div class="field-l" style="margin-bottom:0.3rem;">Histórico</div>${hist.map(c=>`<div class="sys-hist-row">${userAvatar(c.user)}<span style="color:${userColor(c.user)};font-weight:600;">${c.user}</span> — ${c.action}<span style="margin-left:auto;">${formatRelTime(c.date)}</span></div>`).join('')}</div>`:'';
     return`<div class="sys" id="s${s.id}" draggable="true"
       ondragstart="dragSysStart(event,${s.id})"
       ondragover="dragSysOver(event,${s.id})"
@@ -1273,11 +1313,12 @@ function renderSys(){
         <div class="field"><div class="field-l">Descrição</div><textarea class="txta" id="sd${s.id}">${s.desc}</textarea></div>
         <div class="field"><div class="field-l">Integração</div><textarea class="txta" id="si${s.id}">${s.integration}</textarea></div>
         <div class="g2">
-          <div class="field"><div class="field-l">Prazo</div><input class="inp" id="sdl${s.id}" value="${s.deadline||''}"></div>
+          <div class="field"><div class="field-l">Prazo</div><input class="inp" type="date" id="sdl${s.id}" value="${toISODate(s.deadline)}"></div>
           <div class="field"><div class="field-l">Fase</div><select class="sel" id="sp${s.id}"><option value="1"${s.phase===1?' selected':''}>Fase 1</option><option value="2"${s.phase===2?' selected':''}>Fase 2</option><option value="3"${s.phase===3?' selected':''}>Fase 3</option></select></div>
         </div>
         ${tasksHtml}
         ${commentsHtml}
+        ${histHtml}
         <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.5rem;">
           <button class="btn btn-sm" style="border-color:var(--green);color:var(--green);" onclick="chSys(${s.id},'done')">✓ Completo</button>
           <button class="btn btn-sm" style="border-color:var(--accent);color:var(--accent);" onclick="chSys(${s.id},'wip')">⚙ Em Dev</button>
@@ -1312,10 +1353,10 @@ function deleteTask(sysId,taskId){
   renderSys();save();
 }
 function togSys(id){document.getElementById('s'+id).classList.toggle('open');}
-function saveSys(id){const s=D.systems.find(x=>x.id===id);s.desc=document.getElementById('sd'+id).value;s.integration=document.getElementById('si'+id).value;s.deadline=document.getElementById('sdl'+id).value;s.phase=parseInt(document.getElementById('sp'+id).value);save();toast('Sistema guardado.');}
-function chSys(id,st){const s=D.systems.find(x=>x.id===id);s.status=st;renderSys();save();const ll={done:'Completo',wip:'Em Dev',todo:'A Fazer'};if(window.logChange)window.logChange(`Marcou "${s.name}" como ${ll[st]||st}`);}
+function chSys(id,st){const s=D.systems.find(x=>x.id===id);s.status=st;renderSys();save();const ll={done:'Completo',wip:'Em Dev',todo:'A Fazer'};if(window.logChange)window.logChange(`Marcou "${s.name}" como ${ll[st]||st}`,id);}
 function delSys(id){if(!confirm('Remover?'))return;const s=D.systems.find(x=>x.id===id);D.systems=D.systems.filter(x=>x.id!==id);renderSys();save();if(window.logChange&&s)window.logChange(`Removeu o sistema "${s.name}"`);}
-function addSys(){const n=document.getElementById('ms-name').value.trim();if(!n)return;D.systems.push({id:++D.nid,name:n,phase:parseInt(document.getElementById('ms-phase').value),status:document.getElementById('ms-st').value,deadline:document.getElementById('ms-deadline').value,desc:document.getElementById('ms-desc').value,integration:document.getElementById('ms-int').value,tasks:[]});closeModal('m-sys');['ms-name','ms-desc','ms-int','ms-deadline'].forEach(x=>document.getElementById(x).value='');nav('sys');toast('Sistema adicionado.');save();if(window.logChange)window.logChange(`Adicionou o sistema "${n}"`);}
+function saveSys(id){const s=D.systems.find(x=>x.id===id);s.desc=document.getElementById('sd'+id).value;s.integration=document.getElementById('si'+id).value;s.deadline=document.getElementById('sdl'+id).value;s.phase=parseInt(document.getElementById('sp'+id).value);save();if(window.logChange)window.logChange(`Editou "${s.name}"`,id);toast('Sistema guardado.');}
+function addSys(){const n=document.getElementById('ms-name').value.trim();if(!n)return;const nid=++D.nid;D.systems.push({id:nid,name:n,phase:parseInt(document.getElementById('ms-phase').value),status:document.getElementById('ms-st').value,deadline:document.getElementById('ms-deadline').value,desc:document.getElementById('ms-desc').value,integration:document.getElementById('ms-int').value,tasks:[]});closeModal('m-sys');['ms-name','ms-desc','ms-int','ms-deadline'].forEach(x=>document.getElementById(x).value='');nav('sys');toast('Sistema adicionado.');save();if(window.logChange)window.logChange(`Adicionou o sistema "${n}"`,nid);}
 
 // ─── RENDER: MODELER ─────────────────────────────────────
 function renderModel(){
@@ -1349,17 +1390,19 @@ function addAsset(){const n=document.getElementById('ma-name').value.trim();if(!
 // ─── RENDER: TIMELINE ────────────────────────────────────
 let editTLId=null;
 function renderTL(){
-  document.getElementById('tl-list').innerHTML=D.timeline.map(t=>`
-    <div class="tl-item">
+  document.getElementById('tl-list').innerHTML=D.timeline.map(t=>{
+    const od=t.status!=='done'&&isOverdue(t.date);
+    return`<div class="tl-item">
       <div class="tl-dot ${t.status}"></div>
-      <div class="tl-date">${t.date} <button class="btn btn-sm btn-ghost" style="font-size:0.65rem;padding:0.1rem 0.3rem;" onclick="editTL(${t.id})">✎</button></div>
+      <div class="tl-date" style="${od?'color:var(--red);':''}">${displayDate(t.date)}${od?' ⚠ Atrasado':''} <button class="btn btn-sm btn-ghost" style="font-size:0.65rem;padding:0.1rem 0.3rem;" onclick="editTL(${t.id})">✎</button></div>
       <div class="tl-title">${t.title}</div>
       <div class="tl-desc">${t.desc}</div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 function editTL(id){
   editTLId=id;const t=D.timeline.find(x=>x.id===id);
-  document.getElementById('te-date').value=t.date;
+  document.getElementById('te-date').value=toISODate(t.date)||t.date;
   document.getElementById('te-st').value=t.status;
   document.getElementById('te-title').value=t.title;
   document.getElementById('te-desc').value=t.desc;
@@ -1734,7 +1777,7 @@ window.changelogItems=[];
 function renderChangelog(){
   const el=document.getElementById('dash-changelog');if(!el)return;
   const items=window.changelogItems||[];
-  el.innerHTML=items.length?items.slice(0,15).map(c=>`<div class="cl-item"><span class="cl-who">${c.user||'?'}</span><span class="cl-what">${c.action}</span><span class="cl-when">${formatRelTime(c.date)}</span></div>`).join(''):`<div style="color:var(--fg3);font-size:0.78rem;">Sem alterações registadas.</div>`;
+  el.innerHTML=items.length?items.slice(0,15).map(c=>`<div class="cl-item">${userAvatar(c.user||'?')}<span class="cl-who" style="color:${userColor(c.user||'?')};">${c.user||'?'}</span><span class="cl-what">${c.action}</span><span class="cl-when">${formatRelTime(c.date)}</span></div>`).join(''):`<div style="color:var(--fg3);font-size:0.78rem;">Sem alterações registadas.</div>`;
 }
 
 // ─── PDF EXPORT ──────────────────────────────────────────
@@ -1806,6 +1849,9 @@ function closeTutorial(){document.getElementById('tut-bg').classList.remove('ope
 // ─── HELPERS ─────────────────────────────────────────────
 function isOverdue(dl){
   if(!dl)return false;
+  // ISO format YYYY-MM-DD
+  if(/^\d{4}-\d{2}-\d{2}$/.test(dl)) return new Date()>new Date(dl+'T23:59:59');
+  // Portuguese text format
   const ms={Jan:0,Fev:1,Mar:2,Abr:3,Mai:4,Jun:5,Jul:6,Ago:7,Set:8,Out:9,Nov:10,Dez:11};
   const parts=dl.trim().split(/[\s\-\/]+/);
   let day=null,month=null;
@@ -1815,6 +1861,70 @@ function isOverdue(dl){
   const now=new Date();
   return now>new Date(now.getFullYear(),month,day,23,59,59);
 }
+function toISODate(dl){
+  if(!dl)return '';
+  if(/^\d{4}-\d{2}-\d{2}$/.test(dl))return dl;
+  const ms={Jan:0,Fev:1,Mar:2,Abr:3,Mai:4,Jun:5,Jul:6,Ago:7,Set:8,Out:9,Nov:10,Dez:11};
+  const parts=dl.trim().split(/[\s\-\/]+/);
+  let day=null,month=null;
+  for(const p of parts){if(ms[p]!==undefined)month=ms[p];else{const n=parseInt(p);if(!isNaN(n)&&n>=1&&n<=31)day=n;}}
+  if(month===null)return '';
+  if(day===null)day=1;
+  const y=new Date().getFullYear();
+  return `${y}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+}
+function displayDate(dl){
+  if(!dl)return '';
+  if(/^\d{4}-\d{2}-\d{2}$/.test(dl)){
+    const d=new Date(dl+'T12:00:00');
+    const mn=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    return `${d.getDate()} ${mn[d.getMonth()]} ${d.getFullYear()}`;
+  }
+  return dl;
+}
+function userColor(name){
+  if(!name)return '#6b7280';
+  let h=0;for(let i=0;i<name.length;i++)h=name.charCodeAt(i)+((h<<5)-h);
+  const c=['#f59e0b','#3b82f6','#a855f7','#10b981','#ef4444','#06b6d4','#f97316','#84cc16','#ec4899'];
+  return c[Math.abs(h)%c.length];
+}
+function userAvatar(name){
+  const col=userColor(name);
+  const init=(name||'?').slice(0,1).toUpperCase();
+  return `<span class="u-av" style="background:${col};">${init}</span>`;
+}
+function checkDeadlines(){
+  const now=new Date();
+  const soon=new Date(now.getTime()+3*864e5);
+  const items=[];
+  const check=(name,dl,ctx)=>{
+    if(!dl)return;
+    const iso=toISODate(dl);if(!iso)return;
+    const d=new Date(iso+'T23:59:59');
+    if(d<now)items.push({type:'overdue',name,dl:displayDate(dl),ctx});
+    else if(d<=soon)items.push({type:'soon',name,dl:displayDate(dl),ctx});
+  };
+  D.systems.filter(s=>s.status!=='done').forEach(s=>check(s.name,s.deadline,'Sistema'));
+  D.assets.filter(a=>a.status!=='done').forEach(a=>check(a.name,a.deadline,'Asset'));
+  D.timeline.filter(t=>t.status!=='done').forEach(t=>check(t.title,t.date,'Marco'));
+  const badge=document.getElementById('notif-count');
+  if(badge){if(items.length){badge.textContent=items.length;badge.style.display='flex';}else badge.style.display='none';}
+  const list=document.getElementById('notif-list');
+  if(list){
+    list.innerHTML=items.length?items.map(it=>`<div class="notif-item">
+      <div class="notif-dot ${it.type}"></div>
+      <div><div class="notif-i-name">${it.name}</div>
+      <div class="notif-i-sub">${it.ctx} · ${it.type==='overdue'?'<span style="color:var(--red)">Atrasado</span>':'<span style="color:var(--accent)">Em 3 dias</span>'} — ${it.dl}</div></div>
+    </div>`).join(''):`<div style="padding:0.8rem;color:var(--fg3);font-size:0.78rem;text-align:center;">Sem alertas.</div>`;
+  }
+}
+function toggleNotifPanel(){
+  document.getElementById('notif-panel').classList.toggle('open');
+}
+function openRename(){
+  document.getElementById('rename-inp').value=currentUsername;
+  openModal('m-rename');
+}
 function deadlineSpan(dl){
   if(!dl)return '';
   const od=isOverdue(dl);
@@ -1822,7 +1932,7 @@ function deadlineSpan(dl){
 }
 function deadlineInput(id,dl){
   const od=isOverdue(dl);
-  return `<input class="inp" style="width:80px;padding:0.2rem 0.4rem;font-size:0.75rem;${od?'border-color:var(--red);color:var(--red);':''}" value="${dl}" onchange="D.assets.find(x=>x.id===${id}).deadline=this.value;save();renderModel();">`;
+  return `<input type="date" class="inp" style="width:130px;padding:0.2rem 0.4rem;font-size:0.75rem;${od?'border-color:var(--red);color:var(--red);':''}" value="${toISODate(dl)}" onchange="D.assets.find(x=>x.id===${id}).deadline=this.value;save();renderModel();">`;
 }
 
 function renderPhaseProgress(){
@@ -1886,9 +1996,14 @@ function handleImport(e){
 
 // ─── KEYBOARD SHORTCUTS ──────────────────────────────────
 const navKeys={1:'dash',2:'tl',3:'phases',4:'sys',5:'model',6:'ai',7:'dec'};
+document.addEventListener('click',e=>{
+  const panel=document.getElementById('notif-panel');
+  const wrap=document.getElementById('notif-wrap');
+  if(panel&&panel.classList.contains('open')&&!wrap.contains(e.target))panel.classList.remove('open');
+});
 document.addEventListener('keydown',e=>{
   if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')return;
-  if(e.key==='Escape'){document.querySelectorAll('.modal-bg.open:not(#m-login):not(#m-pending)').forEach(m=>m.classList.remove('open'));document.getElementById('tut-bg').classList.remove('open');return;}
+  if(e.key==='Escape'){document.querySelectorAll('.modal-bg.open:not(#m-login):not(#m-pending)').forEach(m=>m.classList.remove('open'));document.getElementById('tut-bg').classList.remove('open');document.getElementById('notif-panel')?.classList.remove('open');return;}
   if(e.key==='/'){e.preventDefault();const s=document.getElementById('sys-search');if(s){nav('sys');setTimeout(()=>s.focus(),100);}return;}
   if(navKeys[e.key])nav(navKeys[e.key]);
 });
@@ -1906,9 +2021,8 @@ document.addEventListener('input',e=>{
 window.addEventListener('beforeunload',e=>{if(document.querySelector('.sys.open'))e.preventDefault();});
 
 // ─── CURRENT USER DISPLAY ────────────────────────────────
-window.setCurrentUser = function(email) {
-  const name = email ? email.split('@')[0] : '';
-  document.getElementById('hdr-username').textContent = name;
+window.setCurrentUser = function(name) {
+  document.getElementById('hdr-username').textContent = name || '?';
   document.getElementById('hdr-user').style.display = 'flex';
 };
 window.setOnlineCount = function(n) {
@@ -2363,6 +2477,7 @@ function applyRoleUI(role) {
       document.querySelectorAll('.auth-owner').forEach(el => el.style.display = 'none');
     }
     document.querySelectorAll('.auth-write').forEach(el => el.style.display = 'inline-flex');
+    document.getElementById('notif-wrap').style.display = 'flex';
 
     // Show tutorial first time
     if(!localStorage.getItem('cgf_tut')) showTutorial();
@@ -2393,6 +2508,7 @@ function resetUI() {
   document.getElementById('btn-logout').style.display = 'none';
   document.getElementById('hdr-user').style.display = 'none';
   document.getElementById('hdr-online').style.display = 'none';
+  document.getElementById('notif-wrap').style.display = 'none';
 }
 
 // ─── PUBLIC DATA LISTENER (no auth required) ─────────────
@@ -2456,9 +2572,9 @@ onAuthStateChanged(auth, async (user) => {
   // Update last_online once on login
   await updateDoc(uDocRef, { last_online: new Date().toISOString() }).catch(() => {});
 
-  // Show current user in header
-  currentUsername = user.email ? user.email.split('@')[0] : '';
-  window.setCurrentUser(user.email);
+  // Show current user in header (prefer displayName)
+  currentUsername = udata.displayName || (user.email ? user.email.split('@')[0] : '');
+  window.setCurrentUser(currentUsername);
 
   // Comments real-time listener
   if(commentsSub){commentsSub();commentsSub=null;}
@@ -2526,6 +2642,7 @@ onAuthStateChanged(auth, async (user) => {
       renderDash(); updateSidebarCounts();
       renderSys();
       renderModel(); renderTL(); renderDec();
+      checkDeadlines();
       renderLanding();
     } else {
       window.cloudSave(D);
@@ -2577,13 +2694,27 @@ window.addComment = async (sysId) => {
 };
 
 // ─── CHANGELOG WRITER ────────────────────────────────────
-window.logChange = async (action) => {
+window.logChange = async (action, sysId=null) => {
   if(!currentUsername) return;
   try {
-    await addDoc(collection(db, "changelog"), {
-      user: currentUsername, action, date: new Date().toISOString()
-    });
+    const entry = { user: currentUsername, action, date: new Date().toISOString() };
+    if(sysId != null) entry.sysId = sysId;
+    await addDoc(collection(db, "changelog"), entry);
   } catch(e) {}
+};
+
+// ─── DISPLAY NAME ────────────────────────────────────────
+window.saveDisplayName = async () => {
+  const inp = document.getElementById('rename-inp');
+  const name = inp.value.trim();
+  if(!name || !auth.currentUser) return;
+  try {
+    await updateDoc(doc(db, "users", auth.currentUser.uid), { displayName: name });
+    currentUsername = name;
+    window.setCurrentUser(name);
+    closeModal('m-rename');
+    toast('Nome actualizado!');
+  } catch(e) { toast('Erro ao guardar nome.'); }
 };
 
 // ─── ONLINE COUNT ────────────────────────────────────────
