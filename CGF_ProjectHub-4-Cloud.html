@@ -404,9 +404,16 @@ tr:hover td{background:rgba(255,255,255,0.02);}
     <button class="btn btn-accent" onclick="sendAI()">Enviar</button>
   </div>
 </div>
-<div style="margin-top:0.5rem;display:flex;justify-content:space-between;align-items:center;">
+<div style="margin-top:0.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
   <span style="font-size:0.65rem;color:var(--fg3);" id="ai-status">Modo: Geral · <span id="ai-msg-count">0</span> mensagens</span>
-  <span style="font-size:0.65rem;color:var(--fg3);">Memória activa — a IA lembra o que disseste</span>
+  <div style="display:flex;align-items:center;gap:0.5rem;">
+    <span style="font-size:0.65rem;color:var(--fg3);">Memória activa — a IA lembra o que disseste</span>
+    <button class="btn btn-ghost" style="padding:2px 6px;font-size:0.6rem;height:auto;border:1px solid var(--border);" onclick="toggleApiKeyInput()" title="Usar chave API própria">⚙ API Key</button>
+  </div>
+</div>
+<div id="api-key-container" style="display:none;margin-top:0.5rem;padding:0.5rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);gap:0.5rem;align-items:center;">
+  <input class="inp" type="password" id="custom-gemini-key" placeholder="Introduz a tua própria chave Gemini API" style="flex:1;font-size:0.75rem;padding:4px 8px;height:28px;">
+  <button class="btn btn-accent" style="padding:4px 8px;font-size:0.75rem;height:28px;line-height:1;" onclick="saveCustomKey()">Guardar</button>
 </div>
 </div>
 
@@ -968,7 +975,29 @@ function parseMD(text){
 }
 
 const GEMINI_KEY='AIzaSyAItVoWBWWJxwT_EI-oW42SZu47DpAul0w';
-const GEMINI_URL='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+GEMINI_KEY;
+
+window.toggleApiKeyInput = function() {
+  const container = document.getElementById('api-key-container');
+  const input = document.getElementById('custom-gemini-key');
+  if (container.style.display === 'none') {
+    container.style.display = 'flex';
+    input.value = localStorage.getItem('custom_gemini_key') || '';
+  } else {
+    container.style.display = 'none';
+  }
+};
+
+window.saveCustomKey = function() {
+  const key = document.getElementById('custom-gemini-key').value.trim();
+  if (key) {
+    localStorage.setItem('custom_gemini_key', key);
+    toast('Chave Gemini API guardada com sucesso!');
+  } else {
+    localStorage.removeItem('custom_gemini_key');
+    toast('A usar a chave Gemini API padrão do site.');
+  }
+  document.getElementById('api-key-container').style.display = 'none';
+};
 
 async function sendAI(){
   const inp=document.getElementById('ai-inp');const msg=inp.value.trim();if(!msg)return;inp.value='';
@@ -981,8 +1010,11 @@ async function sendAI(){
   // Mantém últimas 20 mensagens para não exceder tokens
   const hist=aiHistory.slice(-20);
 
+  const activeKey = localStorage.getItem('custom_gemini_key') || GEMINI_KEY;
+  const activeUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + activeKey;
+
   try{
-    const r=await fetch(GEMINI_URL,{
+    const r=await fetch(activeUrl,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
