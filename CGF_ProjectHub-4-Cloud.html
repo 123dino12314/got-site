@@ -503,6 +503,11 @@ tr:hover td{background:rgba(255,255,255,0.02);}
           <button class="btn btn-accent" style="flex:1;" onclick="window.loginUser()">Entrar</button>
           <button class="btn" style="flex:1;" onclick="window.registerUser()">Criar Conta</button>
         </div>
+        <div style="text-align:center;margin:0.5rem 0;color:var(--fg3);font-size:0.8rem;">ou</div>
+        <button class="btn btn-ghost" style="width:100%;display:flex;align-items:center;justify-content:center;gap:0.5rem;" onclick="window.loginWithGoogle()">
+          <svg style="width:16px;height:16px;" viewBox="0 0 24 24"><path fill="currentColor" d="M12.24 10.285V13.4h6.887C18.2 15.614 15.645 18 12.24 18c-3.86 0-7-3.14-7-7s3.14-7 7-7c1.71 0 3.275.61 4.5 1.625l2.437-2.437C17.312 1.696 14.933 1 12.24 1 6.58 1 2 5.58 2 11.24s4.58 10.24 10.24 10.24c5.795 0 10.254-4.074 10.254-10.24 0-.695-.08-1.355-.22-1.955H12.24z"/></svg>
+          Entrar com Google
+        </button>
         <div id="auth-error" style="color:var(--red);font-size:0.8rem;text-align:center;margin-top:0.5rem;"></div>
       </div>
     </div>
@@ -1117,7 +1122,7 @@ if(!localStorage.getItem('cgf_tut'))showTutorial();
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updatePassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -1174,6 +1179,15 @@ window.loginUser = async () => {
       }
     }
     document.getElementById('auth-error').textContent = "Utilizador/E-mail ou senha inválidos.";
+  }
+};
+window.loginWithGoogle = async () => {
+  const provider = new GoogleAuthProvider();
+  try {
+    await signInWithPopup(auth, provider);
+    document.getElementById('auth-error').textContent = '';
+  } catch(err) {
+    document.getElementById('auth-error').textContent = "Erro ao entrar com Google: " + err.message;
   }
 };
 
@@ -1265,16 +1279,18 @@ onAuthStateChanged(auth, async (user) => {
   let udata = udoc.data();
   
   const isDino = user.email && user.email.toLowerCase() === 'dino5651@got.com';
+  const isBernardino = user.email && user.email.toLowerCase() === 'bernardinobravo9@gmail.com';
+  const isOwnerEmail = isDino || isBernardino;
   
   if(!udata){
     udata = {
       email: user.email,
-      role: isDino ? 'owner' : 'guest',
+      role: isOwnerEmail ? 'owner' : 'guest',
       status: 'active',
       last_online: new Date().toISOString()
     };
     await setDoc(uDocRef, udata);
-  } else if (isDino && udata.role !== 'owner') {
+  } else if (isOwnerEmail && udata.role !== 'owner') {
     udata.role = 'owner';
     await updateDoc(uDocRef, { role: 'owner' });
   }
