@@ -258,6 +258,9 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .ro-disabled { opacity: 0.4; pointer-events: none; }
 .hide-guest { display: none; }
 
+/* Hide auth-gated elements until Firebase resolves session */
+.auth-write,.auth-owner{display:none;}
+
 /* MISSING UTILITY CLASSES */
 .g1{display:grid;grid-template-columns:1fr;gap:0.75rem;margin-bottom:0.75rem;}
 .lbl{font-size:0.7rem;font-weight:600;color:var(--fg3);margin-bottom:0.3rem;display:block;}
@@ -975,8 +978,9 @@ function parseMD(text){
   // unordered list
   h=h.replace(/^- (.+)$/gm,'<li>$1</li>');
   h=h.replace(/((?:<li>.*<\/li>\n?)+)/g,'<ul>$1</ul>');
-  // numbered list
-  h=h.replace(/^\d+\. (.+)$/gm,'<li>$1</li>');
+  // numbered list — use interim tag to avoid merging with <ul> items
+  h=h.replace(/^\d+\. (.+)$/gm,'<oitem>$1</oitem>');
+  h=h.replace(/((?:<oitem>.*<\/oitem>\n?)+)/g,(m)=>'<ol>'+m.replace(/<oitem>/g,'<li>').replace(/<\/oitem>/g,'</li>')+'</ol>');
   return h;
 }
 
@@ -1127,7 +1131,7 @@ function exportData(){
 // ─── MODAL / TOAST / SAVE ────────────────────────────────
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
-document.querySelectorAll('.modal-bg').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');});});
+document.querySelectorAll('.modal-bg:not(#m-login):not(#m-pending)').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');});});
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 function save(){ updateSidebarCounts(); if(window.cloudSave) window.cloudSave(D); }
 function load(){ /* Handled by Firebase */ }
@@ -1346,7 +1350,9 @@ window.loginWithGoogle = async () => {
   } catch(err) {
     if (err.code === 'auth/popup-closed-by-user') return;
     const errEl = document.getElementById('auth-error');
+    const errElReg = document.getElementById('reg-error');
     if (errEl) errEl.textContent = "Erro ao entrar com Google: " + err.message;
+    if (errElReg) errElReg.textContent = "Erro ao entrar com Google: " + err.message;
   }
 };
 
@@ -1488,24 +1494,21 @@ onAuthStateChanged(auth, async (user) => {
   await updateDoc(uDocRef, { last_online: new Date().toISOString() }).catch(() => {});
   
   // Real-time listener for user role/status changes (e.g. owner approves a guest)
-  let isFirstSnapshot = true;
   userSub = onSnapshot(uDocRef, async (snap) => {
     const data = snap.data();
     if(!data) return;
-    
+
     if(data.status === 'banned') {
       document.getElementById('auth-error').textContent = "Esta conta foi banida.";
       if (userSub) { userSub(); userSub = null; }
       await signOut(auth);
       return;
     }
-    
+
     applyRoleUI(data.role);
-    
+
     // Load Team if owner
     if(data.role === 'owner') loadTeam();
-    
-    isFirstSnapshot = false;
   });
 
   // Listen to remote project data
@@ -1518,7 +1521,7 @@ onAuthStateChanged(auth, async (user) => {
       if(!D.timeline) D.timeline=[];
       if(!D.decisions) D.decisions=[];
       renderDash(); updateSidebarCounts();
-      const st=document.getElementById('sys-search'); if(st) renderSys(sysFilter, st.value);
+      renderSys();
       renderModel(); renderTL(); renderDec();
     } else {
       // First time init
