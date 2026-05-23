@@ -1240,22 +1240,30 @@ window.changePassword = async () => {
   }
 };
 
-window.logoutUser = async () => { await signOut(auth); };
+let userSub = null;
+
+window.logoutUser = async () => { 
+  if (userSub) { userSub(); userSub = null; }
+  await signOut(auth); 
+};
 
 onAuthStateChanged(auth, async (user) => {
   const mLogin = document.getElementById('m-login');
+  if (userSub) { userSub(); userSub = null; }
+  
   if(!user){
     mLogin.classList.add('open');
     document.querySelectorAll('.auth-write, .auth-owner').forEach(el=>el.style.display='none');
     document.getElementById('btn-change-pass').style.display = 'none';
+    document.getElementById('m-pending').classList.remove('open');
     return;
   }
   
   // User logged in
-  const udoc = await getDoc(doc(db, "users", user.uid));
+  const uDocRef = doc(db, "users", user.uid);
+  const udoc = await getDoc(uDocRef);
   let udata = udoc.data();
   
-  // Backup logic: force role owner for dino5651
   const isDino = user.email && user.email.toLowerCase() === 'dino5651@got.com';
   
   if(!udata){
@@ -1265,39 +1273,52 @@ onAuthStateChanged(auth, async (user) => {
       status: 'active',
       last_online: new Date().toISOString()
     };
-    await setDoc(doc(db, "users", user.uid), udata);
+    await setDoc(uDocRef, udata);
   } else if (isDino && udata.role !== 'owner') {
     udata.role = 'owner';
-    await updateDoc(doc(db, "users", user.uid), { role: 'owner' });
+    await updateDoc(uDocRef, { role: 'owner' });
   }
   
-  if(udata.status === 'banned'){
-    document.getElementById('auth-error').textContent = "Esta conta foi banida.";
-    await signOut(auth);
-    return;
-  }
-  
-  // Success
-  mLogin.classList.remove('open');
-  currentRole = udata.role;
-  
-  // Update last online
-  await updateDoc(doc(db, "users", user.uid), { last_online: new Date().toISOString() });
-  
-  // Apply role UI
-  if(currentRole === 'owner') document.querySelectorAll('.auth-owner').forEach(el=>el.style.display='inline-flex');
-  else document.querySelectorAll('.auth-owner').forEach(el=>el.style.display='none');
-  
-  if(currentRole === 'owner' || currentRole === 'dev'){
-    document.querySelectorAll('.auth-write').forEach(el=>el.style.display='inline-flex');
-    document.getElementById('m-pending').classList.remove('open');
-  } else {
-    document.querySelectorAll('.auth-write').forEach(el=>el.style.display='none');
-    document.getElementById('m-pending').classList.add('open');
-  }
-  
-  // Load Team if owner
-  if(currentRole === 'owner') loadTeam();
+  // Real-time listener for user document (handles real-time approvals/bans!)
+  userSub = onSnapshot(uDocRef, async (snap) => {
+    const data = snap.data();
+    if(!data) return;
+    
+    if(data.status === 'banned'){
+      document.getElementById('auth-error').textContent = "Esta conta foi banida.";
+      if (userSub) { userSub(); userSub = null; }
+      await signOut(auth);
+      return;
+    }
+    
+    // Success
+    mLogin.classList.remove('open');
+    currentRole = data.role;
+    
+    // Safe last online update (cooldown of 1 min to prevent loops)
+    const lastOnline = new Date(data.last_online);
+    if (!data.last_online || new Date() - lastOnline > 60000) {
+      await updateDoc(uDocRef, { last_online: new Date().toISOString() });
+    }
+    
+    // Apply role UI
+    if(currentRole === 'owner') document.querySelectorAll('.auth-owner').forEach(el=>el.style.display='inline-flex');
+    else document.querySelectorAll('.auth-owner').forEach(el=>el.style.display='none');
+    
+    if(currentRole === 'owner' || currentRole === 'dev'){
+      document.querySelectorAll('.auth-write').forEach(el=>el.style.display='inline-flex');
+      document.getElementById('m-pending').classList.remove('open');
+    } else {
+      document.querySelectorAll('.auth-write').forEach(el=>el.style.display='none');
+      document.getElementById('m-pending').classList.add('open');
+    }
+    
+    // Show change password button
+    document.getElementById('btn-change-pass').style.display = 'inline-flex';
+    
+    // Load Team if owner
+    if(currentRole === 'owner') loadTeam();
+  });
 
   // Listen to remote data
   onSnapshot(doc(db, "projects", "cgf"), (dSnap) => {
