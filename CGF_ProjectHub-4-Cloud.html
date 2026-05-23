@@ -1246,7 +1246,17 @@ function renderDash(){
     D.systems.filter(s=>s.status==='done').map(s=>`<div style="margin-bottom:0.3rem;"><span class="badge b-done badge-link" onclick="navFilterSys(${s.phase})" title="Ver Fase ${s.phase}">Feito</span> <span style="margin-left:0.3rem;">${s.name}</span></div>`).join('')+
     D.systems.filter(s=>s.status==='wip').map(s=>`<div style="margin-bottom:0.3rem;"><span class="badge b-wip badge-link" onclick="navFilterSys(${s.phase})" title="Ver Fase ${s.phase}">Em Dev</span> <span style="margin-left:0.3rem;">${s.name}${s.deadline?' — '+s.deadline:''}</span></div>`).join('')+
     D.systems.filter(s=>s.status==='todo'&&s.phase===1).map(s=>`<div style="margin-bottom:0.3rem;"><span class="badge b-todo badge-link" onclick="navFilterSys(${s.phase})" title="Ver Fase ${s.phase}">A Fazer</span> <span style="margin-left:0.3rem;">${s.name}</span></div>`).join('');
-  document.getElementById('dash-dates').innerHTML=D.timeline.filter(t=>t.status!=='done').slice(0,5).map(t=>`<div style="margin-bottom:0.5rem;"><span class="badge ${t.status==='active'?'b-wip':'b-todo'}">${t.date}</span> <span style="margin-left:0.3rem;">${t.title}</span></div>`).join('');
+  const upcomingAll=buildUnifiedTimeline().filter(t=>t.status!=='done'&&t.sortDate!=='9999-12-31');
+  const tColor={milestone:'var(--fg3)',system:'var(--accent)',asset:'var(--blue)'};
+  document.getElementById('dash-dates').innerHTML=upcomingAll.slice(0,6).map(t=>{
+    const od=isOverdue(t.date);
+    const nav_=t._type==='system'?`navFilterSys(${t._phase});nav('sys');`:t._type==='asset'?`nav('model');`:`nav('tl');`;
+    return`<div style="margin-bottom:0.45rem;display:flex;align-items:center;gap:0.4rem;cursor:pointer;" onclick="${nav_}">
+      <span class="badge ${t.status==='active'?'b-wip':od?'b-blocked':'b-todo'}" style="flex-shrink:0;">${displayDate(t.date)}</span>
+      <span style="font-size:0.72rem;color:${tColor[t._type]};">●</span>
+      <span style="font-size:0.78rem;">${t.title}</span>
+    </div>`;
+  }).join('')||`<div style="color:var(--fg3);font-size:0.8rem;">Sem prazos pendentes.</div>`;
   document.getElementById('dash-decisions').innerHTML=D.decisions.slice(0,4).map(d=>`<div style="margin-bottom:0.3rem;">◈ <strong>${d.title}</strong> — <span style="color:var(--fg3);">${d.reason}</span></div>`).join('');
   renderPhaseProgress();
   renderProgressChart();
@@ -1392,18 +1402,37 @@ function chAsset(id,st){D.assets.find(x=>x.id===id).status=st;renderModel();save
 function delAsset(id){D.assets=D.assets.filter(x=>x.id!==id);renderModel();save();}
 function addAsset(){const n=document.getElementById('ma-name').value.trim();if(!n)return;D.assets.push({id:++D.nid,name:n,cat:document.getElementById('ma-cat').value,deadline:document.getElementById('ma-dl').value,priority:parseInt(document.getElementById('ma-pri').value)||99,status:'todo'});closeModal('m-asset');document.getElementById('ma-name').value='';renderModel();toast('Asset adicionado.');save();}
 
-// ─── RENDER: TIMELINE ────────────────────────────────────
+// ─── RENDER: TIMELINE (unified) ──────────────────────────
 let editTLId=null;
+function buildUnifiedTimeline(){
+  const stMap={done:'done',wip:'active',todo:'',blocked:''};
+  const items=[];
+  D.timeline.forEach(t=>items.push({_type:'milestone',_id:t.id,date:t.date,sortDate:toISODate(t.date)||'9999-12-31',title:t.title,desc:t.desc||'',status:t.status||''}));
+  D.systems.filter(s=>s.deadline).forEach(s=>items.push({_type:'system',_id:s.id,_phase:s.phase,date:s.deadline,sortDate:toISODate(s.deadline)||'9999-12-31',title:s.name,desc:`Sistema · Fase ${s.phase}`,status:stMap[s.status]||''}));
+  D.assets.filter(a=>a.deadline).forEach(a=>items.push({_type:'asset',_id:a.id,date:a.deadline,sortDate:toISODate(a.deadline)||'9999-12-31',title:a.name,desc:`Asset · ${a.cat}`,status:a.status==='done'?'done':''}));
+  return items.sort((a,b)=>a.sortDate.localeCompare(b.sortDate));
+}
 function renderTL(){
-  document.getElementById('tl-list').innerHTML=D.timeline.map(t=>{
+  const items=buildUnifiedTimeline();
+  const tLabel={milestone:'Marco',system:'Sistema',asset:'Asset'};
+  const tColor={milestone:'var(--fg3)',system:'var(--accent)',asset:'var(--blue)'};
+  document.getElementById('tl-list').innerHTML=items.length?items.map(t=>{
     const od=t.status!=='done'&&isOverdue(t.date);
+    let editBtn='';
+    if(t._type==='milestone') editBtn=`<button class="btn btn-sm btn-ghost" style="font-size:0.6rem;padding:0.1rem 0.3rem;" onclick="editTL(${t._id})">✎</button>`;
+    else if(t._type==='system') editBtn=`<button class="btn btn-sm btn-ghost" style="font-size:0.6rem;padding:0.1rem 0.3rem;" onclick="navFilterSys(${t._phase});nav('sys');" title="Ver sistema">↗</button>`;
+    else editBtn=`<button class="btn btn-sm btn-ghost" style="font-size:0.6rem;padding:0.1rem 0.3rem;" onclick="nav('model');" title="Ver assets">↗</button>`;
     return`<div class="tl-item">
       <div class="tl-dot ${t.status}"></div>
-      <div class="tl-date" style="${od?'color:var(--red);':''}">${displayDate(t.date)}${od?' ⚠ Atrasado':''} <button class="btn btn-sm btn-ghost" style="font-size:0.65rem;padding:0.1rem 0.3rem;" onclick="editTL(${t.id})">✎</button></div>
+      <div class="tl-date" style="${od?'color:var(--red);':`color:var(--fg2);`}">
+        ${displayDate(t.date)}${od?' ⚠':''}&nbsp;
+        <span style="font-size:0.6rem;color:${tColor[t._type]};background:${tColor[t._type]}22;padding:0.1rem 0.35rem;border-radius:4px;font-weight:600;">${tLabel[t._type]}</span>
+        ${editBtn}
+      </div>
       <div class="tl-title">${t.title}</div>
       <div class="tl-desc">${t.desc}</div>
     </div>`;
-  }).join('');
+  }).join(''):`<div style="color:var(--fg3);padding:1rem 0;font-size:0.8rem;">Nenhum prazo definido ainda. Adiciona prazos aos sistemas ou cria marcos abaixo.</div>`;
 }
 function editTL(id){
   editTLId=id;const t=D.timeline.find(x=>x.id===id);
@@ -1902,16 +1931,12 @@ function checkDeadlines(){
   const now=new Date();
   const soon=new Date(now.getTime()+3*864e5);
   const items=[];
-  const check=(name,dl,ctx)=>{
-    if(!dl)return;
-    const iso=toISODate(dl);if(!iso)return;
-    const d=new Date(iso+'T23:59:59');
-    if(d<now)items.push({type:'overdue',name,dl:displayDate(dl),ctx});
-    else if(d<=soon)items.push({type:'soon',name,dl:displayDate(dl),ctx});
-  };
-  D.systems.filter(s=>s.status!=='done').forEach(s=>check(s.name,s.deadline,'Sistema'));
-  D.assets.filter(a=>a.status!=='done').forEach(a=>check(a.name,a.deadline,'Asset'));
-  D.timeline.filter(t=>t.status!=='done').forEach(t=>check(t.title,t.date,'Marco'));
+  buildUnifiedTimeline().filter(t=>t.status!=='done'&&t.sortDate!=='9999-12-31').forEach(t=>{
+    const d=new Date(t.sortDate+'T23:59:59');
+    const ctx={milestone:'Marco',system:'Sistema',asset:'Asset'}[t._type];
+    if(d<now)items.push({type:'overdue',name:t.title,dl:displayDate(t.date),ctx});
+    else if(d<=soon)items.push({type:'soon',name:t.title,dl:displayDate(t.date),ctx});
+  });
   const badge=document.getElementById('notif-count');
   if(badge){if(items.length){badge.textContent=items.length;badge.style.display='flex';}else badge.style.display='none';}
   const list=document.getElementById('notif-list');
