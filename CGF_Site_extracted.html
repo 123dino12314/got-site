@@ -1,0 +1,2600 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CGF Â· Project Hub</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%23f59e0b'/><text x='50' y='67' text-anchor='middle' font-size='48' font-weight='bold' fill='%2309090b'>C</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#09090b;--bg2:#18181b;--bg3:#27272a;--bg4:#3f3f46;
+  --fg:#fafafa;--fg2:#a1a1aa;--fg3:#71717a;
+  --accent:#f59e0b;--accent2:#d97706;--accent-bg:rgba(245,158,11,0.08);
+  --green:#22c55e;--green-bg:rgba(34,197,94,0.1);--green-bd:rgba(34,197,94,0.3);
+  --red:#ef4444;--red-bg:rgba(239,68,68,0.1);--red-bd:rgba(239,68,68,0.3);
+  --blue:#3b82f6;--blue-bg:rgba(59,130,246,0.1);--blue-bd:rgba(59,130,246,0.3);
+  --purple:#a855f7;
+  --border:#27272a;--border2:#3f3f46;
+  --radius:8px;--radius-sm:6px;
+  --sidebar:260px;--header:56px;
+  --shadow:0 1px 3px rgba(0,0,0,0.4);
+  --font:'Inter',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+html{font-size:14px;}
+body{font-family:var(--font);background:var(--bg);color:var(--fg);min-height:100vh;overflow-x:hidden;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px;}
+::selection{background:var(--accent);color:var(--bg);}
+a{color:var(--accent);text-decoration:none;}
+
+/* HEADER */
+.hdr{height:var(--header);background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(12px);background:rgba(24,24,27,0.85);}
+.hdr-left{display:flex;align-items:center;gap:0.75rem;}
+.hdr-burger{display:none;background:none;border:none;color:var(--fg2);font-size:1.2rem;cursor:pointer;padding:0.25rem;}
+.hdr-logo{display:flex;align-items:center;gap:0.5rem;}
+.hdr-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);}
+.hdr-title{font-weight:700;font-size:0.85rem;letter-spacing:-0.01em;}
+.hdr-tag{font-size:0.65rem;font-weight:500;color:var(--fg3);background:var(--bg3);padding:0.15rem 0.5rem;border-radius:10px;margin-left:0.25rem;}
+.hdr-actions{display:flex;gap:0.5rem;align-items:center;}
+
+/* BUTTONS */
+.btn{font-family:var(--font);font-size:0.75rem;font-weight:600;padding:0.4rem 0.85rem;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg3);color:var(--fg);cursor:pointer;transition:all 0.15s;display:inline-flex;align-items:center;gap:0.35rem;white-space:nowrap;}
+.btn:hover{background:var(--bg4);border-color:var(--fg3);}
+.btn-accent{background:var(--accent);color:var(--bg);border-color:var(--accent);}
+.btn-accent:hover{background:var(--accent2);border-color:var(--accent2);}
+.btn-ghost{background:transparent;border-color:transparent;}
+.btn-ghost:hover{background:var(--bg3);}
+.btn-danger{color:var(--red);border-color:var(--red-bd);}
+.btn-danger:hover{background:var(--red-bg);}
+.btn-sm{font-size:0.7rem;padding:0.25rem 0.55rem;}
+.btn-icon{padding:0.3rem;min-width:28px;justify-content:center;}
+
+/* LAYOUT */
+.app{display:flex;margin-top:var(--header);min-height:calc(100vh - var(--header));}
+
+/* SIDEBAR */
+.side{width:var(--sidebar);background:var(--bg2);border-right:1px solid var(--border);position:fixed;top:var(--header);bottom:0;left:0;overflow-y:auto;padding:0.75rem 0;transition:transform 0.25s;z-index:90;}
+.side-section{margin-bottom:0.5rem;}
+.side-label{font-size:0.65rem;font-weight:600;color:var(--fg3);text-transform:uppercase;letter-spacing:0.08em;padding:0.5rem 1rem 0.35rem;}
+.side-item{display:flex;align-items:center;gap:0.6rem;padding:0.5rem 1rem;cursor:pointer;color:var(--fg2);font-size:0.8rem;font-weight:500;transition:all 0.1s;border-left:2px solid transparent;margin:0 0.25rem;border-radius:0 var(--radius-sm) var(--radius-sm) 0;}
+.side-item:hover{color:var(--fg);background:var(--bg3);}
+.side-item.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-bg);}
+.side-icon{font-size:0.85rem;width:18px;text-align:center;opacity:0.7;}
+.side-item.active .side-icon{opacity:1;}
+
+/* MAIN */
+.main{margin-left:var(--sidebar);flex:1;padding:1.75rem 2rem;max-width:1100px;}
+
+/* SECTIONS */
+.panel{display:none;animation:fadeIn 0.2s;}
+.panel.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+.pg-title{font-size:1.35rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.15rem;}
+.pg-sub{font-size:0.8rem;color:var(--fg3);margin-bottom:1.75rem;}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.15rem;margin-bottom:0.75rem;}
+.card-title{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--fg3);margin-bottom:0.65rem;display:flex;align-items:center;justify-content:space-between;}
+.card-body{font-size:0.82rem;line-height:1.7;color:var(--fg2);}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;}
+
+/* STAT */
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;text-align:center;}
+.stat-n{font-size:1.8rem;font-weight:800;line-height:1;letter-spacing:-0.03em;}
+.stat-n.c-green{color:var(--green);}
+.stat-n.c-accent{color:var(--accent);}
+.stat-n.c-fg3{color:var(--fg3);}
+.stat-l{font-size:0.7rem;color:var(--fg3);margin-top:0.25rem;}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;font-size:0.65rem;font-weight:600;padding:0.15rem 0.45rem;border-radius:4px;letter-spacing:0.02em;}
+.b-done{background:var(--green-bg);color:var(--green);border:1px solid var(--green-bd);}
+.b-wip{background:var(--accent-bg);color:var(--accent);border:1px solid rgba(245,158,11,0.3);}
+.b-todo{background:rgba(161,161,170,0.08);color:var(--fg3);border:1px solid rgba(161,161,170,0.2);}
+.b-blocked{background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd);}
+.b-phase{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-bd);font-size:0.6rem;}
+
+/* FORM */
+.field{margin-bottom:0.75rem;}
+.field-l{font-size:0.7rem;font-weight:600;color:var(--fg3);margin-bottom:0.3rem;display:flex;justify-content:space-between;align-items:center;}
+.inp,.txta,.sel{width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--fg);font-family:var(--font);font-size:0.82rem;padding:0.45rem 0.65rem;border-radius:var(--radius-sm);outline:none;transition:border-color 0.15s;}
+.inp:focus,.txta:focus,.sel:focus{border-color:var(--accent);}
+.txta{resize:vertical;min-height:70px;line-height:1.6;}
+.sel{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2371717a'%3E%3Cpath d='M2 4l4 4 4-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.6rem center;}
+.sel option{background:var(--bg2);}
+
+/* SYSTEM ITEM */
+.sys{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:0.5rem;overflow:hidden;transition:border-color 0.15s;}
+.sys:hover{border-color:var(--border2);}
+.sys.open{border-color:rgba(245,158,11,0.3);}
+.sys-h{display:flex;align-items:center;gap:0.65rem;padding:0.75rem 1rem;cursor:pointer;}
+.sys-name{flex:1;font-size:0.85rem;font-weight:600;}
+.sys-chev{color:var(--fg3);font-size:0.6rem;transition:transform 0.2s;}
+.sys.open .sys-chev{transform:rotate(180deg);}
+.sys-body{display:none;padding:0 1rem 1rem;border-top:1px solid var(--border);}
+.sys.open .sys-body{display:block;}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:0.8rem;}
+th{font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--fg3);padding:0.55rem 0.75rem;text-align:left;border-bottom:1px solid var(--border2);background:var(--bg2);}
+td{padding:0.55rem 0.75rem;border-bottom:1px solid var(--border);color:var(--fg2);vertical-align:middle;}
+tr:hover td{background:rgba(255,255,255,0.02);}
+
+/* TIMELINE */
+.tl{position:relative;padding-left:1.75rem;}
+.tl::before{content:'';position:absolute;left:0.4rem;top:0;bottom:0;width:1px;background:var(--border2);}
+.tl-item{position:relative;margin-bottom:1.25rem;padding-bottom:0.25rem;}
+.tl-dot{position:absolute;left:-1.55rem;top:0.15rem;width:10px;height:10px;border-radius:50%;border:2px solid var(--border2);background:var(--bg);}
+.tl-dot.done{background:var(--green);border-color:var(--green);}
+.tl-dot.active{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 3px rgba(245,158,11,0.2);}
+.tl-date{font-size:0.7rem;font-weight:600;color:var(--fg3);margin-bottom:0.1rem;display:flex;align-items:center;gap:0.5rem;}
+.tl-title{font-size:0.88rem;font-weight:600;color:var(--fg);margin-bottom:0.1rem;}
+.tl-desc{font-size:0.78rem;color:var(--fg3);}
+.tl-edit{display:flex;gap:0.3rem;margin-top:0.3rem;}
+
+/* AI CHAT */
+.ai-box{display:flex;flex-direction:column;height:calc(100vh - var(--header) - 12rem);}
+.ai-msgs{flex:1;overflow-y:auto;padding:0.75rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius) var(--radius) 0 0;}
+.ai-msg{margin-bottom:0.75rem;display:flex;}
+.ai-msg.usr{justify-content:flex-end;}
+.ai-bubble{max-width:78%;padding:0.6rem 0.85rem;font-size:0.82rem;line-height:1.65;border-radius:var(--radius);white-space:pre-wrap;}
+.ai-msg.usr .ai-bubble{background:var(--accent-bg);border:1px solid rgba(245,158,11,0.2);color:var(--fg);}
+.ai-msg.bot .ai-bubble{background:var(--bg2);border:1px solid var(--border);color:var(--fg2);}
+.ai-who{font-size:0.6rem;font-weight:700;color:var(--fg3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.2rem;}
+.ai-bar{display:flex;gap:0.5rem;border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);background:var(--bg2);padding:0.5rem;}
+.ai-inp{flex:1;background:var(--bg);border:1px solid var(--border2);color:var(--fg);font-family:var(--font);font-size:0.82rem;padding:0.45rem 0.65rem;border-radius:var(--radius-sm);outline:none;}
+.ai-inp:focus{border-color:var(--accent);}
+
+/* AI ROLES */
+.ai-roles{display:flex;gap:0.35rem;margin-bottom:0.6rem;flex-wrap:wrap;}
+.ai-role{font-family:var(--font);font-size:0.72rem;font-weight:600;padding:0.4rem 0.75rem;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg2);color:var(--fg2);cursor:pointer;transition:all 0.15s;display:inline-flex;align-items:center;gap:0.35rem;}
+.ai-role:hover{background:var(--bg3);color:var(--fg);}
+.ai-role.active{background:var(--accent-bg);color:var(--accent);border-color:rgba(245,158,11,0.35);}
+.ai-role-icon{font-size:0.8rem;}
+
+/* AI QUICK ACTIONS */
+.ai-quick{display:flex;gap:0.35rem;margin-bottom:0.6rem;flex-wrap:wrap;}
+.ai-qbtn{font-family:var(--font);font-size:0.68rem;font-weight:500;padding:0.3rem 0.6rem;border-radius:12px;border:1px solid var(--border);background:var(--bg2);color:var(--fg3);cursor:pointer;transition:all 0.15s;}
+.ai-qbtn:hover{background:var(--bg3);color:var(--fg);border-color:var(--border2);}
+
+/* AI CLEAR BUTTON */
+.ai-clear-btn{font-size:0.85rem;color:var(--fg3);flex-shrink:0;}
+.ai-clear-btn:hover{color:var(--red);}
+
+/* AI BUBBLE MARKDOWN */
+.ai-bubble code{font-family:var(--mono);font-size:0.75rem;background:rgba(255,255,255,0.06);padding:0.1rem 0.35rem;border-radius:3px;border:1px solid rgba(255,255,255,0.08);}
+.ai-bubble pre{background:rgba(0,0,0,0.4);padding:0.6rem 0.75rem;border-radius:var(--radius-sm);overflow-x:auto;margin:0.4rem 0;border:1px solid var(--border);}
+.ai-bubble pre code{background:none;border:none;padding:0;font-size:0.73rem;line-height:1.6;}
+.ai-bubble strong{color:var(--fg);font-weight:700;}
+.ai-bubble ul,.ai-bubble ol{margin:0.3rem 0 0.3rem 1.2rem;}
+.ai-bubble li{margin-bottom:0.15rem;}
+.ai-bubble h3,.ai-bubble h4{color:var(--accent);font-size:0.82rem;margin:0.5rem 0 0.2rem;}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.modal-bg.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:1.5rem;width:92%;max-width:520px;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+.modal-t{font-size:1rem;font-weight:700;margin-bottom:1.25rem;}
+.modal-foot{display:flex;gap:0.5rem;justify-content:flex-end;margin-top:1.25rem;}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.25rem;right:1.25rem;background:var(--bg2);border:1px solid var(--accent);border-radius:var(--radius-sm);padding:0.65rem 1rem;font-size:0.8rem;color:var(--fg);z-index:300;transform:translateY(80px);opacity:0;transition:all 0.25s;box-shadow:var(--shadow);}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* TUTORIAL OVERLAY */
+.tut-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+.tut-bg.open{display:flex;}
+.tut{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);width:92%;max-width:560px;max-height:85vh;overflow-y:auto;}
+.tut-header{padding:1.5rem 1.5rem 0;text-align:center;}
+.tut-header h2{font-size:1.1rem;font-weight:800;margin-bottom:0.2rem;}
+.tut-header p{font-size:0.8rem;color:var(--fg3);}
+.tut-steps{padding:1.25rem 1.5rem;}
+.tut-step{display:flex;gap:0.85rem;margin-bottom:1.15rem;align-items:flex-start;}
+.tut-num{min-width:28px;height:28px;background:var(--accent);color:var(--bg);font-size:0.75rem;font-weight:800;display:flex;align-items:center;justify-content:center;border-radius:50%;}
+.tut-text h4{font-size:0.85rem;font-weight:700;margin-bottom:0.15rem;}
+.tut-text p{font-size:0.78rem;color:var(--fg2);line-height:1.6;}
+.tut-foot{padding:0.75rem 1.5rem 1.5rem;text-align:center;}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--fg3);font-size:0.85rem;}
+.empty-icon{font-size:2rem;margin-bottom:0.5rem;opacity:0.4;}
+
+/* DIVIDER */
+.hr{border:none;border-top:1px solid var(--border);margin:1.25rem 0;}
+
+/* MOBILE */
+@media(max-width:768px){
+  .side{transform:translateX(-100%);}
+  .side.open{transform:translateX(0);box-shadow:4px 0 20px rgba(0,0,0,0.5);}
+  .hdr-burger{display:block;}
+  .main{margin-left:0;padding:1.25rem 1rem;}
+  .g2,.g3,.g4{grid-template-columns:1fr;}
+  .hdr-tag{display:none;}
+  .mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:85;}
+  .mob-overlay.open{display:block;}
+  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table{min-width:480px;}
+}
+
+/* SEARCH */
+.search-wrap{position:relative;margin-bottom:0.75rem;}
+.search-inp{width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--fg);font-family:var(--font);font-size:0.82rem;padding:0.45rem 0.65rem 0.45rem 2rem;border-radius:var(--radius-sm);outline:none;transition:border-color 0.15s;}
+.search-inp:focus{border-color:var(--accent);}
+.search-icon{position:absolute;left:0.6rem;top:50%;transform:translateY(-50%);color:var(--fg3);font-size:0.8rem;pointer-events:none;}
+
+/* PROGRESS BAR ANIMATED */
+.prog-bar-inner{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:3px;transition:width 0.7s cubic-bezier(0.4,0,0.2,1);}
+
+/* CLICKABLE BADGE */
+.badge-link{cursor:pointer;transition:opacity 0.15s;}
+.badge-link:hover{opacity:0.75;}
+
+/* SIDEBAR COUNTS */
+.side-count{font-size:0.6rem;background:var(--bg4);color:var(--fg3);padding:0.05rem 0.35rem;border-radius:8px;margin-left:auto;}
+.side-item.active .side-count{background:rgba(245,158,11,0.15);color:var(--accent);}
+
+/* AI TYPING DOTS */
+.ai-thinking{display:inline-flex;align-items:center;gap:1px;color:var(--fg3);font-size:0.82rem;}
+.ai-dot{display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--fg3);margin-left:2px;animation:dotPulse 1.4s infinite ease-in-out both;}
+.ai-dot:nth-child(1){animation-delay:0s;}
+.ai-dot:nth-child(2){animation-delay:0.2s;}
+.ai-dot:nth-child(3){animation-delay:0.4s;}
+@keyframes dotPulse{0%,80%,100%{opacity:0.2;transform:scale(0.8);}40%{opacity:1;transform:scale(1.3);}}
+
+/* FIREBASE AUTH & TEAM */
+.auth-bg { background: rgba(0,0,0,0.85) !important; backdrop-filter: blur(8px); display: none; }
+.auth-bg.open { display: flex !important; }
+.team-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.8rem; }
+.team-table th, .team-table td { text-align: left; padding: 0.5rem; border-bottom: 1px solid var(--border); }
+.team-table th { color: var(--fg2); font-weight: 600; }
+.ro-disabled { opacity: 0.4; pointer-events: none; }
+.hide-guest { display: none; }
+
+/* Hide auth-gated elements until Firebase resolves session */
+.auth-write,.auth-owner{display:none;}
+
+/* SUBTASKS */
+.task-list{margin-top:0.6rem;border-top:1px solid var(--border);padding-top:0.6rem;}
+.task-item{display:flex;align-items:center;gap:0.5rem;padding:0.2rem 0;font-size:0.78rem;color:var(--fg2);}
+.task-item input[type=checkbox]{accent-color:var(--accent);width:14px;height:14px;cursor:pointer;flex-shrink:0;}
+.task-item.done-task>span{text-decoration:line-through;color:var(--fg3);}
+.task-del{background:none;border:none;color:transparent;cursor:pointer;font-size:0.7rem;margin-left:auto;padding:0 0.2rem;line-height:1;}
+.task-item:hover .task-del{color:var(--fg3);}
+.task-del:hover{color:var(--red) !important;}
+.task-add{display:flex;gap:0.4rem;margin-top:0.5rem;}
+.task-add .inp{font-size:0.78rem;padding:0.3rem 0.5rem;}
+
+/* DRAG & DROP */
+.sys[draggable]{cursor:grab;}
+.sys.dragging{opacity:0.35;pointer-events:none;}
+.sys.drag-over{border-color:var(--accent) !important;box-shadow:0 0 0 2px rgba(245,158,11,0.15);}
+
+/* COMMENTS */
+.comment-section{margin-top:0.75rem;border-top:1px solid var(--border);padding-top:0.6rem;}
+.comment{padding:0.4rem 0;border-bottom:1px solid var(--border);}
+.comment:last-child{border-bottom:none;}
+.comment-meta{font-size:0.65rem;display:flex;gap:0.5rem;margin-bottom:0.15rem;}
+.comment-user{color:var(--accent);font-weight:600;}
+.comment-text{font-size:0.78rem;color:var(--fg2);line-height:1.5;}
+.comment-add{display:flex;gap:0.4rem;margin-top:0.5rem;}
+.comment-add .inp{font-size:0.78rem;padding:0.3rem 0.5rem;}
+
+/* CHANGELOG */
+.cl-item{display:flex;align-items:baseline;gap:0.5rem;padding:0.3rem 0;border-bottom:1px solid var(--border);font-size:0.78rem;}
+.cl-item:last-child{border-bottom:none;}
+.cl-who{color:var(--accent);font-weight:600;font-size:0.72rem;flex-shrink:0;}
+.cl-what{color:var(--fg2);flex:1;}
+.cl-when{font-size:0.65rem;color:var(--fg3);flex-shrink:0;}
+
+/* CHART */
+.chart-wrap svg{width:100%;height:110px;display:block;}
+
+/* HEADER USER + ONLINE */
+.hdr-user{font-size:0.72rem;color:var(--fg2);display:flex;align-items:center;gap:0.4rem;padding:0 0.25rem;}
+.hdr-user-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 2px rgba(34,197,94,0.2);}
+.hdr-online{font-size:0.65rem;color:var(--fg3);background:var(--bg3);padding:0.15rem 0.5rem;border-radius:8px;display:flex;align-items:center;gap:0.3rem;border:1px solid var(--border);}
+.hdr-online-dot{width:6px;height:6px;border-radius:50%;background:var(--green);}
+
+/* MISSING UTILITY CLASSES */
+.g1{display:grid;grid-template-columns:1fr;gap:0.75rem;margin-bottom:0.75rem;}
+.lbl{font-size:0.7rem;font-weight:600;color:var(--fg3);margin-bottom:0.3rem;display:block;}
+.modal-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
+.modal-h h2{font-size:1rem;font-weight:700;margin:0;}
+
+/* âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+   PUBLIC LANDING â Medieval / GOT-inspired player view
+   âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+:root{
+  --gold:#c9a961;
+  --gold-bright:#e8c878;
+  --gold-deep:#8e7339;
+  --parchment:#1a1612;
+  --parchment-2:#211c16;
+  --ink:#0a0807;
+  --ash:#71655a;
+  --blood:#7a1f1f;
+  --serif:'Cinzel',serif;
+  --body-serif:'EB Garamond',Georgia,serif;
+}
+
+/* Body modes */
+body.view-public{background:var(--ink);overflow-x:hidden;}
+body.view-public .hdr,
+body.view-public .app,
+body.view-public .mob-overlay,
+body.view-public .modal-bg.auth-bg#m-pending{display:none !important;}
+
+body.view-dev .landing{display:none !important;}
+
+/* When public view + login is forced for non-devs, we hide landing entirely */
+body.view-public.show-login .landing-hero,
+body.view-public.show-login .landing-section{filter:blur(2px) brightness(0.4);pointer-events:none;}
+
+/* âââ LANDING SHELL âââ */
+.landing{font-family:var(--body-serif);color:#d8cdb5;background:var(--ink);}
+.landing *{box-sizing:border-box;}
+
+/* TOP NAV */
+.l-nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:1.1rem 2.25rem;backdrop-filter:blur(14px);background:linear-gradient(to bottom,rgba(10,8,7,0.85),rgba(10,8,7,0.4));border-bottom:1px solid rgba(201,169,97,0.12);transition:all 0.25s;}
+.l-nav.scrolled{padding:0.7rem 2.25rem;background:rgba(10,8,7,0.95);border-bottom-color:rgba(201,169,97,0.25);}
+.l-brand{display:flex;align-items:center;gap:0.85rem;cursor:default;}
+.l-sigil{width:40px;height:40px;flex-shrink:0;}
+.l-brand-text{display:flex;flex-direction:column;line-height:1;}
+.l-brand-name{font-family:var(--serif);font-weight:600;font-size:0.95rem;letter-spacing:0.18em;color:var(--gold-bright);text-transform:uppercase;}
+.l-brand-sub{font-family:var(--body-serif);font-style:italic;font-size:0.75rem;color:var(--ash);margin-top:3px;letter-spacing:0.02em;}
+.l-nav-links{display:flex;align-items:center;gap:2rem;}
+.l-nav-link{font-family:var(--serif);font-weight:500;font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:#a8997b;text-decoration:none;cursor:pointer;transition:color 0.2s;padding:0.5rem 0;position:relative;}
+.l-nav-link:hover{color:var(--gold-bright);}
+.l-nav-link::after{content:'';position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);width:0;height:1px;background:var(--gold);transition:width 0.25s;}
+.l-nav-link:hover::after{width:100%;}
+.l-dev-btn{font-family:var(--serif);font-weight:600;font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-bright);background:transparent;border:1px solid rgba(201,169,97,0.4);padding:0.6rem 1.1rem;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.5rem;}
+.l-dev-btn:hover{background:rgba(201,169,97,0.08);border-color:var(--gold);color:#fff;}
+.l-dev-btn svg{width:13px;height:13px;}
+.l-burger{display:none;background:none;border:1px solid rgba(201,169,97,0.4);color:var(--gold-bright);width:36px;height:36px;align-items:center;justify-content:center;cursor:pointer;}
+
+/* HERO */
+.landing-hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:8rem 2rem 4rem;overflow:hidden;background:radial-gradient(ellipse at center top,#1f1812 0%,#0e0a07 55%,#070504 100%);}
+.hero-bg-pattern{position:absolute;inset:0;opacity:0.07;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath d='M40 5 L48 25 L70 28 L52 44 L58 68 L40 56 L22 68 L28 44 L10 28 L32 25 Z' fill='none' stroke='%23c9a961' stroke-width='0.6'/%3E%3Ccircle cx='40' cy='40' r='3' fill='%23c9a961'/%3E%3C/svg%3E");}
+.hero-bg-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 30%,rgba(0,0,0,0.7) 100%);pointer-events:none;}
+.hero-flame-l,.hero-flame-r{position:absolute;top:50%;width:1px;height:280px;transform:translateY(-50%);background:linear-gradient(to bottom,transparent,var(--gold-deep),transparent);opacity:0.5;}
+.hero-flame-l{left:8%;}.hero-flame-r{right:8%;}
+.hero-inner{position:relative;z-index:2;text-align:center;max-width:920px;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:0.8rem;font-family:var(--serif);font-size:0.7rem;letter-spacing:0.4em;color:var(--gold);text-transform:uppercase;margin-bottom:2.2rem;}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';width:36px;height:1px;background:var(--gold-deep);}
+.hero-title{font-family:var(--serif);font-weight:600;font-size:clamp(2.4rem,6vw,4.8rem);line-height:1.05;letter-spacing:0.05em;color:#f5ebd0;margin:0 0 0.8rem;text-shadow:0 2px 30px rgba(201,169,97,0.15);}
+.hero-title .amp{color:var(--gold);font-style:italic;font-weight:400;font-family:var(--body-serif);font-size:0.85em;letter-spacing:0;margin:0 0.15em;display:inline-block;transform:translateY(-0.08em);}
+.hero-tagline{font-family:var(--body-serif);font-style:italic;font-size:clamp(1rem,1.6vw,1.3rem);color:#b8a888;max-width:620px;margin:0 auto 2.8rem;line-height:1.55;}
+.hero-divider{display:flex;align-items:center;justify-content:center;gap:1rem;margin:0 auto 3rem;max-width:340px;}
+.hero-divider-line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--gold-deep),transparent);}
+.hero-divider-icon{color:var(--gold);font-size:0.9rem;}
+
+/* HERO STATUS CARD */
+.hero-status{display:inline-flex;align-items:center;gap:0;margin-top:1rem;padding:0;border:1px solid rgba(201,169,97,0.25);background:rgba(20,16,12,0.6);backdrop-filter:blur(8px);}
+.hero-status-cell{padding:1rem 1.5rem;border-right:1px solid rgba(201,169,97,0.15);text-align:center;min-width:140px;}
+.hero-status-cell:last-child{border-right:none;}
+.hero-status-label{font-family:var(--serif);font-size:0.62rem;letter-spacing:0.22em;color:var(--ash);text-transform:uppercase;margin-bottom:0.45rem;}
+.hero-status-value{font-family:var(--serif);font-weight:600;font-size:1.5rem;color:var(--gold-bright);line-height:1;letter-spacing:0.02em;}
+.hero-status-value.sm{font-size:0.95rem;font-weight:500;color:#e0d4b8;}
+.hero-status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold);animation:pulse 2s infinite;margin-right:0.4rem;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.45;}}
+
+.hero-scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);color:var(--ash);font-family:var(--serif);font-size:0.62rem;letter-spacing:0.32em;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:0.5rem;animation:floatY 2.5s ease-in-out infinite;}
+@keyframes floatY{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(8px);}}
+.hero-scroll-hint::after{content:'';width:1px;height:30px;background:linear-gradient(to bottom,var(--gold-deep),transparent);}
+
+/* SECTIONS */
+.landing-section{position:relative;padding:6rem 2rem;max-width:1200px;margin:0 auto;}
+.section-head{text-align:center;margin-bottom:3.5rem;}
+.section-eyebrow{font-family:var(--serif);font-size:0.66rem;letter-spacing:0.4em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;justify-content:center;gap:0.8rem;}
+.section-eyebrow::before,.section-eyebrow::after{content:'';width:30px;height:1px;background:var(--gold-deep);}
+.section-title{font-family:var(--serif);font-weight:600;font-size:clamp(1.6rem,3.2vw,2.4rem);letter-spacing:0.04em;color:#f0e4c5;margin:0 0 0.9rem;line-height:1.15;}
+.section-sub{font-family:var(--body-serif);font-style:italic;font-size:1.05rem;color:#9c8d70;max-width:580px;margin:0 auto;line-height:1.55;}
+
+/* OVERVIEW STATS */
+.l-overview{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(201,169,97,0.15);border:1px solid rgba(201,169,97,0.2);}
+.l-ov-cell{background:linear-gradient(180deg,#15110c 0%,#0e0b08 100%);padding:2rem 1.3rem;text-align:center;position:relative;transition:background 0.25s;}
+.l-ov-cell:hover{background:linear-gradient(180deg,#1a150f 0%,#13100b 100%);}
+.l-ov-icon{font-size:1.3rem;color:var(--gold);margin-bottom:0.65rem;font-family:var(--serif);}
+.l-ov-num{font-family:var(--serif);font-weight:600;font-size:2.6rem;color:var(--gold-bright);line-height:1;letter-spacing:0.02em;margin-bottom:0.4rem;}
+.l-ov-label{font-family:var(--serif);font-size:0.62rem;letter-spacing:0.25em;color:#8c7e62;text-transform:uppercase;}
+
+/* PROGRESS RING */
+.l-progress-wrap{display:grid;grid-template-columns:280px 1fr;gap:3.5rem;align-items:center;padding:3rem 2.5rem;background:linear-gradient(135deg,rgba(30,24,18,0.6),rgba(15,12,9,0.6));border:1px solid rgba(201,169,97,0.18);position:relative;margin-bottom:3rem;}
+.l-progress-wrap::before,.l-progress-wrap::after{content:'';position:absolute;width:14px;height:14px;border:1px solid var(--gold);}
+.l-progress-wrap::before{top:-1px;left:-1px;border-right:none;border-bottom:none;}
+.l-progress-wrap::after{bottom:-1px;right:-1px;border-left:none;border-top:none;}
+.l-ring{position:relative;width:240px;height:240px;margin:0 auto;}
+.l-ring svg{transform:rotate(-90deg);}
+.l-ring-bg{fill:none;stroke:rgba(201,169,97,0.12);stroke-width:6;}
+.l-ring-fg{fill:none;stroke:url(#ringGrad);stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset 1.5s cubic-bezier(0.4,0,0.2,1);}
+.l-ring-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.l-ring-num{font-family:var(--serif);font-weight:600;font-size:3.4rem;color:var(--gold-bright);line-height:1;}
+.l-ring-label{font-family:var(--serif);font-size:0.62rem;letter-spacing:0.28em;color:var(--ash);text-transform:uppercase;margin-top:0.5rem;}
+.l-progress-info h3{font-family:var(--serif);font-weight:600;font-size:1.4rem;color:#f0e4c5;margin:0 0 0.6rem;letter-spacing:0.03em;}
+.l-progress-info p{font-family:var(--body-serif);font-size:1.02rem;color:#a89a7e;line-height:1.65;margin:0 0 1.2rem;}
+.l-phase-bars{display:flex;flex-direction:column;gap:0.85rem;}
+.l-phase-bar{display:grid;grid-template-columns:90px 1fr 60px;gap:1rem;align-items:center;}
+.l-phase-bar-label{font-family:var(--serif);font-size:0.7rem;letter-spacing:0.15em;color:#b8a888;text-transform:uppercase;}
+.l-phase-bar-track{height:5px;background:rgba(201,169,97,0.08);position:relative;overflow:hidden;}
+.l-phase-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold-deep),var(--gold-bright));transition:width 1.2s cubic-bezier(0.4,0,0.2,1);}
+.l-phase-bar-count{font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--gold);text-align:right;}
+
+/* CURRENT WORK / "Em Forja" */
+.l-current-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.4rem;}
+.l-current-card{background:linear-gradient(180deg,#1c1611 0%,#13100b 100%);border:1px solid rgba(201,169,97,0.18);padding:1.6rem 1.5rem;position:relative;transition:all 0.25s;overflow:hidden;}
+.l-current-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:0;background:linear-gradient(180deg,var(--gold-bright),var(--gold-deep));transition:height 0.3s;}
+.l-current-card:hover{border-color:rgba(201,169,97,0.4);transform:translateY(-3px);}
+.l-current-card:hover::before{height:100%;}
+.l-current-card-head{display:flex;justify-content:space-between;align-items:start;margin-bottom:1rem;gap:0.8rem;}
+.l-current-card-name{font-family:var(--serif);font-weight:600;font-size:1.1rem;color:#f0e4c5;letter-spacing:0.03em;line-height:1.3;}
+.l-current-pill{font-family:var(--serif);font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;padding:0.25rem 0.55rem;border:1px solid currentColor;color:var(--gold-bright);background:rgba(201,169,97,0.06);white-space:nowrap;flex-shrink:0;}
+.l-current-card-desc{font-family:var(--body-serif);font-size:0.95rem;color:#a89a7e;line-height:1.55;margin-bottom:1.1rem;}
+.l-current-card-foot{display:flex;justify-content:space-between;align-items:center;padding-top:1rem;border-top:1px solid rgba(201,169,97,0.1);font-family:var(--serif);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;}
+.l-current-foot-label{color:var(--ash);}
+.l-current-foot-val{color:var(--gold-bright);}
+
+/* TIMELINE â Saga */
+.l-saga{position:relative;max-width:780px;margin:0 auto;padding-left:0;}
+.l-saga::before{content:'';position:absolute;left:14px;top:14px;bottom:14px;width:1px;background:linear-gradient(to bottom,transparent,var(--gold-deep) 10%,var(--gold-deep) 90%,transparent);}
+.l-saga-item{position:relative;padding-left:60px;margin-bottom:2.5rem;}
+.l-saga-item:last-child{margin-bottom:0;}
+.l-saga-dot{position:absolute;left:0;top:0;width:28px;height:28px;border:1px solid var(--gold-deep);background:var(--ink);display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:var(--serif);font-size:0.7rem;transform:rotate(45deg);}
+.l-saga-dot > span{transform:rotate(-45deg);}
+.l-saga-dot.done{background:var(--gold-deep);border-color:var(--gold);color:var(--ink);}
+.l-saga-dot.active{background:transparent;border-color:var(--gold-bright);color:var(--gold-bright);box-shadow:0 0 0 4px rgba(232,200,120,0.12);animation:dotPulseGold 2.4s infinite;}
+@keyframes dotPulseGold{0%,100%{box-shadow:0 0 0 4px rgba(232,200,120,0.12);}50%{box-shadow:0 0 0 8px rgba(232,200,120,0.04);}}
+.l-saga-date{font-family:var(--serif);font-size:0.65rem;letter-spacing:0.25em;color:var(--gold);text-transform:uppercase;margin-bottom:0.4rem;}
+.l-saga-date.done-d{color:#7d6f54;}
+.l-saga-title{font-family:var(--serif);font-weight:600;font-size:1.15rem;color:#f0e4c5;letter-spacing:0.03em;margin-bottom:0.4rem;}
+.l-saga-title.done-t{color:#9c8d70;}
+.l-saga-desc{font-family:var(--body-serif);font-size:0.98rem;color:#a89a7e;line-height:1.6;}
+
+/* PHASES â Three Pillars */
+.l-pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+.l-pillar{background:linear-gradient(180deg,rgba(28,22,16,0.6) 0%,rgba(15,12,9,0.6) 100%);border:1px solid rgba(201,169,97,0.18);padding:2.2rem 1.8rem;position:relative;transition:all 0.3s;}
+.l-pillar.featured{border-color:rgba(201,169,97,0.45);background:linear-gradient(180deg,rgba(40,30,20,0.7) 0%,rgba(20,16,12,0.7) 100%);}
+.l-pillar:hover{transform:translateY(-4px);border-color:rgba(201,169,97,0.4);}
+.l-pillar-num{font-family:var(--serif);font-weight:600;font-size:0.7rem;letter-spacing:0.32em;color:var(--gold);text-transform:uppercase;margin-bottom:0.5rem;}
+.l-pillar-title{font-family:var(--serif);font-weight:600;font-size:1.3rem;color:#f0e4c5;letter-spacing:0.03em;margin-bottom:0.4rem;line-height:1.25;}
+.l-pillar-when{font-family:var(--body-serif);font-style:italic;font-size:0.92rem;color:var(--gold-deep);margin-bottom:1.4rem;}
+.l-pillar-progress{display:flex;align-items:center;gap:0.8rem;margin-bottom:1.4rem;}
+.l-pillar-bar{flex:1;height:4px;background:rgba(201,169,97,0.1);overflow:hidden;}
+.l-pillar-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold-deep),var(--gold-bright));transition:width 1.2s ease-out;}
+.l-pillar-count{font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--gold);}
+.l-pillar-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.55rem;}
+.l-pillar-list li{font-family:var(--body-serif);font-size:0.92rem;color:#9c8d70;display:flex;align-items:start;gap:0.55rem;line-height:1.45;}
+.l-pillar-list li::before{content:'â';color:var(--gold-deep);font-size:0.6rem;margin-top:0.35rem;flex-shrink:0;}
+.l-pillar-list li.done-li{color:#7d6f54;text-decoration:line-through;text-decoration-color:rgba(125,111,84,0.4);}
+.l-pillar-list li.done-li::before{color:var(--gold);}
+.l-pillar-more{font-family:var(--serif);font-size:0.65rem;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;margin-top:0.9rem;padding-top:0.9rem;border-top:1px solid rgba(201,169,97,0.12);}
+
+/* COMPLETED â Cofre */
+.l-vault{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:0.8rem;}
+.l-vault-item{padding:0.95rem 1.1rem;border:1px solid rgba(201,169,97,0.15);background:rgba(20,16,12,0.4);display:flex;align-items:center;gap:0.7rem;transition:all 0.2s;}
+.l-vault-item:hover{border-color:rgba(201,169,97,0.35);background:rgba(28,22,16,0.6);}
+.l-vault-icon{color:var(--gold);font-size:0.85rem;flex-shrink:0;}
+.l-vault-name{font-family:var(--body-serif);font-size:0.95rem;color:#d8cdb5;line-height:1.25;}
+
+/* DECISIONS â Tomos */
+.l-tomos{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.3rem;}
+.l-tomo{background:linear-gradient(135deg,rgba(28,22,16,0.7),rgba(15,12,9,0.7));border:1px solid rgba(201,169,97,0.15);padding:1.7rem 1.6rem;position:relative;}
+.l-tomo::before{content:'â';position:absolute;top:-12px;left:1.2rem;font-family:Georgia,serif;font-size:3rem;color:var(--gold-deep);background:var(--ink);padding:0 0.3rem;line-height:1;}
+.l-tomo-title{font-family:var(--serif);font-weight:600;font-size:1.05rem;color:#f0e4c5;letter-spacing:0.02em;margin:0.4rem 0 0.6rem;line-height:1.35;}
+.l-tomo-reason{font-family:var(--body-serif);font-style:italic;font-size:0.97rem;color:#a89a7e;line-height:1.6;}
+
+/* COUNTDOWN */
+.l-countdown{padding:3rem 2rem;text-align:center;background:linear-gradient(180deg,rgba(30,22,15,0.5),rgba(15,12,9,0.5));border:1px solid rgba(201,169,97,0.2);position:relative;margin-bottom:3rem;}
+.l-countdown-label{font-family:var(--serif);font-size:0.66rem;letter-spacing:0.35em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem;}
+.l-countdown-title{font-family:var(--serif);font-weight:600;font-size:1.6rem;color:#f0e4c5;margin-bottom:2rem;letter-spacing:0.04em;}
+.l-countdown-grid{display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;}
+.l-cd-cell{min-width:90px;text-align:center;}
+.l-cd-num{font-family:var(--serif);font-weight:600;font-size:2.8rem;color:var(--gold-bright);line-height:1;letter-spacing:0.02em;}
+.l-cd-label{font-family:var(--serif);font-size:0.62rem;letter-spacing:0.22em;color:var(--ash);text-transform:uppercase;margin-top:0.6rem;}
+
+/* FOOTER */
+.l-foot{padding:4rem 2rem 2.5rem;border-top:1px solid rgba(201,169,97,0.15);text-align:center;background:#070504;}
+.l-foot-sigil{margin-bottom:1.4rem;display:flex;justify-content:center;}
+.l-foot-text{font-family:var(--body-serif);font-style:italic;color:#7d6f54;font-size:1rem;line-height:1.65;max-width:520px;margin:0 auto 1.5rem;}
+.l-foot-cta{display:inline-flex;align-items:center;gap:0.6rem;font-family:var(--serif);font-size:0.7rem;letter-spacing:0.22em;color:var(--gold-bright);text-transform:uppercase;border:1px solid rgba(201,169,97,0.35);padding:0.85rem 1.6rem;cursor:pointer;background:transparent;transition:all 0.2s;}
+.l-foot-cta:hover{background:rgba(201,169,97,0.08);border-color:var(--gold);}
+.l-foot-meta{margin-top:2.5rem;font-family:var(--serif);font-size:0.62rem;letter-spacing:0.22em;color:#4d4537;text-transform:uppercase;}
+
+/* SECTION DIVIDER ORNAMENT */
+.l-ornament{display:flex;align-items:center;justify-content:center;gap:1.2rem;margin:2rem auto;max-width:420px;}
+.l-ornament-line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--gold-deep),transparent);}
+.l-ornament-icon{color:var(--gold);font-size:1rem;}
+
+/* ANIMATE IN */
+.fadeUp{opacity:0;transform:translateY(20px);transition:all 0.7s cubic-bezier(0.4,0,0.2,1);}
+.fadeUp.visible{opacity:1;transform:translateY(0);}
+
+/* MOBILE */
+@media(max-width:900px){
+  .l-nav-links{display:none;}
+  .l-burger{display:flex;}
+  .l-progress-wrap{grid-template-columns:1fr;gap:2rem;padding:2rem 1.5rem;}
+  .l-pillars{grid-template-columns:1fr;}
+  .l-overview{grid-template-columns:repeat(2,1fr);}
+  .hero-status{flex-direction:column;width:100%;max-width:320px;}
+  .hero-status-cell{border-right:none;border-bottom:1px solid rgba(201,169,97,0.15);width:100%;}
+  .hero-status-cell:last-child{border-bottom:none;}
+  .landing-section{padding:4rem 1.25rem;}
+  .l-nav{padding:0.9rem 1.25rem;}
+  .l-foot{padding:3rem 1.25rem 2rem;}
+}
+
+</style>
+</head>
+<body class="view-public">
+
+<!-- âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+     PUBLIC LANDING â Player-facing view of project progress
+     âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
+<div class="landing">
+
+  <!-- NAV -->
+  <nav class="l-nav" id="l-nav">
+    <div class="l-brand">
+      <svg class="l-sigil" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="sigilGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#e8c878"/>
+            <stop offset="100%" stop-color="#8e7339"/>
+          </linearGradient>
+        </defs>
+        <!-- Outer ring -->
+        <circle cx="30" cy="30" r="27" fill="none" stroke="url(#sigilGrad)" stroke-width="1.2"/>
+        <circle cx="30" cy="30" r="24" fill="none" stroke="#c9a961" stroke-width="0.4" opacity="0.5"/>
+        <!-- Flame / wolf-tear shape: stylized -->
+        <path d="M30 10 C 22 18, 22 28, 30 32 C 38 28, 38 18, 30 10 Z" fill="url(#sigilGrad)" opacity="0.85"/>
+        <!-- Ice shard mirror -->
+        <path d="M30 50 C 22 42, 22 32, 30 28 C 38 32, 38 42, 30 50 Z" fill="none" stroke="#c9a961" stroke-width="1"/>
+        <!-- Center crossing -->
+        <circle cx="30" cy="30" r="2.2" fill="#e8c878"/>
+        <line x1="6" y1="30" x2="14" y2="30" stroke="#c9a961" stroke-width="0.6"/>
+        <line x1="46" y1="30" x2="54" y2="30" stroke="#c9a961" stroke-width="0.6"/>
+      </svg>
+      <div class="l-brand-text">
+        <span class="l-brand-name">CrÃ´nicas de Gelo e Fogo</span>
+        <span class="l-brand-sub">Roblox Â· 211 AC Â· Universo PrÃ³prio</span>
+      </div>
+    </div>
+    <div class="l-nav-links">
+      <a class="l-nav-link" onclick="scrollToSection('sec-saga')">A Saga</a>
+      <a class="l-nav-link" onclick="scrollToSection('sec-forja')">Em Forja</a>
+      <a class="l-nav-link" onclick="scrollToSection('sec-pillars')">As TrÃªs Fases</a>
+      <a class="l-nav-link" onclick="scrollToSection('sec-cofre')">O Cofre</a>
+      <a class="l-nav-link" onclick="scrollToSection('sec-tomos')">Tomos</a>
+    </div>
+    <button class="l-dev-btn" onclick="openDevLogin()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1L3 5v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V5l-9-4z"/></svg>
+      Sou Dev
+    </button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="landing-hero">
+    <div class="hero-bg-pattern"></div>
+    <div class="hero-bg-vignette"></div>
+    <div class="hero-flame-l"></div>
+    <div class="hero-flame-r"></div>
+
+    <div class="hero-inner">
+      <div class="hero-eyebrow fadeUp">Estado da Coroa Â· Mai 2026</div>
+      <h1 class="hero-title fadeUp">CrÃ´nicas de Gelo <span class="amp">&amp;</span> Fogo</h1>
+      <p class="hero-tagline fadeUp">Onde a forja nÃ£o pÃ¡ra, a sept se ergue, e o reino se constrÃ³i pedra a pedra. Acompanha aqui cada passo desta saga â entre o cobre, o aÃ§o e a fÃ© dos Sete.</p>
+
+      <div class="hero-divider fadeUp">
+        <div class="hero-divider-line"></div>
+        <span class="hero-divider-icon">â</span>
+        <div class="hero-divider-line"></div>
+      </div>
+
+      <div class="hero-status fadeUp">
+        <div class="hero-status-cell">
+          <div class="hero-status-label">Progresso</div>
+          <div class="hero-status-value" id="hero-pct">â</div>
+        </div>
+        <div class="hero-status-cell">
+          <div class="hero-status-label">Fase Actual</div>
+          <div class="hero-status-value">I</div>
+        </div>
+        <div class="hero-status-cell">
+          <div class="hero-status-label">LanÃ§amento</div>
+          <div class="hero-status-value sm">VerÃ£o 2026<br><span style="font-size:0.7rem;color:var(--ash);font-weight:400;">Exclusivo</span></div>
+        </div>
+        <div class="hero-status-cell">
+          <div class="hero-status-label"><span class="hero-status-dot"></span>Em Forja Agora</div>
+          <div class="hero-status-value sm" id="hero-wip">â</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-scroll-hint">Desce Â· A Saga</div>
+  </section>
+
+  <!-- OVERVIEW STATS -->
+  <section class="landing-section" style="padding-top:5rem;padding-bottom:3rem;">
+    <div class="l-overview fadeUp" id="lp-overview">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+  <!-- PROGRESS RING + PHASE BREAKDOWN -->
+  <section class="landing-section" style="padding-top:1rem;padding-bottom:4rem;">
+    <div class="l-progress-wrap fadeUp">
+      <div class="l-ring">
+        <svg width="240" height="240" viewBox="0 0 240 240">
+          <defs>
+            <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#e8c878"/>
+              <stop offset="100%" stop-color="#8e7339"/>
+            </linearGradient>
+          </defs>
+          <circle class="l-ring-bg" cx="120" cy="120" r="105"/>
+          <circle class="l-ring-fg" id="lp-ring-fg" cx="120" cy="120" r="105" stroke-dasharray="659.7" stroke-dashoffset="659.7"/>
+        </svg>
+        <div class="l-ring-inner">
+          <div class="l-ring-num" id="lp-ring-num">â%</div>
+          <div class="l-ring-label">Da Saga</div>
+        </div>
+      </div>
+      <div class="l-progress-info">
+        <h3>O Reino ConstrÃ³i-se a Cada Dia</h3>
+        <p>Cada sistema completo aproxima-nos da abertura das muralhas. Aqui vÃªs quanto jÃ¡ foi forjado em cada fase do projecto.</p>
+        <div class="l-phase-bars" id="lp-phase-bars">
+          <!-- populated by JS -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COUNTDOWN -->
+  <section class="landing-section" style="padding-top:0;padding-bottom:4rem;">
+    <div class="l-countdown fadeUp">
+      <div class="l-countdown-label">Abertura das Muralhas</div>
+      <div class="l-countdown-title">LanÃ§amento Exclusivo Â· 15 Junho 2026</div>
+      <div class="l-countdown-grid" id="lp-countdown">
+        <!-- populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- CURRENT WORK â "Em Forja" -->
+  <section class="landing-section" id="sec-forja">
+    <div class="section-head fadeUp">
+      <div class="section-eyebrow">CapÃ­tulo Presente</div>
+      <h2 class="section-title">Em Forja Agora</h2>
+      <p class="section-sub">Aquilo que os mestres-artesÃ£os martelam neste preciso momento. Cada peÃ§a aqui estÃ¡ a aproximar-se do reino.</p>
+    </div>
+    <div class="l-current-grid fadeUp" id="lp-current">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+  <!-- SAGA / TIMELINE -->
+  <section class="landing-section" id="sec-saga">
+    <div class="section-head fadeUp">
+      <div class="section-eyebrow">O Caminho</div>
+      <h2 class="section-title">A Saga em Marcos</h2>
+      <p class="section-sub">Onde estivemos, onde estamos, e para onde caminhamos. As datas que dÃ£o forma Ã  viagem.</p>
+    </div>
+    <div class="l-saga fadeUp" id="lp-saga">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+  <!-- THREE PHASES -->
+  <section class="landing-section" id="sec-pillars">
+    <div class="section-head fadeUp">
+      <div class="section-eyebrow">A Grande Obra</div>
+      <h2 class="section-title">TrÃªs Fases, Um Reino</h2>
+      <p class="section-sub">A construÃ§Ã£o do projecto estÃ¡ dividida em trÃªs grandes capÃ­tulos. Cada um expande o anterior, cada um amadurece o seguinte.</p>
+    </div>
+    <div class="l-pillars fadeUp" id="lp-pillars">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+  <!-- COMPLETED â "Cofre" -->
+  <section class="landing-section" id="sec-cofre">
+    <div class="section-head fadeUp">
+      <div class="section-eyebrow">JÃ¡ Selado</div>
+      <h2 class="section-title">O Cofre dos Sistemas Forjados</h2>
+      <p class="section-sub">Tudo o que jÃ¡ estÃ¡ pronto, testado e implementado no reino. As bases sÃ³lidas onde tudo o resto assenta.</p>
+    </div>
+    <div class="l-vault fadeUp" id="lp-vault">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+  <!-- DECISIONS â "Tomos" -->
+  <section class="landing-section" id="sec-tomos">
+    <div class="section-head fadeUp">
+      <div class="section-eyebrow">Os Tomos do Maestre</div>
+      <h2 class="section-title">DecisÃµes que Moldam o Reino</h2>
+      <p class="section-sub">Os princÃ­pios fundadores. Aquilo que define que tipo de jogo queremos â e o que escolhemos nÃ£o ser.</p>
+    </div>
+    <div class="l-tomos fadeUp" id="lp-tomos">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="l-foot">
+    <div class="l-foot-sigil">
+      <svg width="50" height="50" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="30" cy="30" r="27" fill="none" stroke="#8e7339" stroke-width="1"/>
+        <path d="M30 10 C 22 18, 22 28, 30 32 C 38 28, 38 18, 30 10 Z" fill="#8e7339" opacity="0.7"/>
+        <path d="M30 50 C 22 42, 22 32, 30 28 C 38 32, 38 42, 30 50 Z" fill="none" stroke="#8e7339" stroke-width="1"/>
+      </svg>
+    </div>
+    <p class="l-foot-text">"Da forja sai o aÃ§o; do aÃ§o sai a coroa; da coroa, a histÃ³ria."<br>â Volta em breve. O reino cresce todos os dias.</p>
+    <button class="l-foot-cta" onclick="openDevLogin()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1L3 5v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V5l-9-4z"/></svg>
+      Entrar como Dev
+    </button>
+    <div class="l-foot-meta">CGF Project Hub Â· v1.0 Â· <span id="lp-foot-update">â</span></div>
+  </footer>
+
+</div>
+<!-- âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+     END PUBLIC LANDING
+     âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ -->
+
+<header class="hdr">
+  <div class="hdr-left">
+    <button class="hdr-burger" onclick="toggleSidebar()">â°</button>
+    <div class="hdr-logo"><div class="hdr-dot"></div><span class="hdr-title">CGF Project Hub</span><span class="hdr-tag">v1.0</span></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:0.5rem;flex:1;justify-content:flex-end;margin-right:0.5rem;">
+    <div class="hdr-user" id="hdr-user" style="display:none;"><div class="hdr-user-dot"></div><span id="hdr-username"></span></div>
+    <div class="hdr-online" id="hdr-online" style="display:none;"><div class="hdr-online-dot"></div><span id="hdr-online-count">1</span> online</div>
+  </div>
+  <div class="hdr-actions">
+    <button class="btn btn-ghost" onclick="showTutorial()">? Guia</button>
+    <button class="btn" onclick="exportData()">â Exportar</button>
+    <button class="btn" onclick="exportPDF()" title="Exportar PDF">ð PDF</button>
+    <button class="btn btn-icon btn-ghost" onclick="exportJSON()" title="Backup JSON">ð¾</button>
+    <button class="btn auth-owner" onclick="importData()">â Importar</button>
+    <button class="btn auth-owner" id="btn-team" onclick="openModal('m-team')">ð¥ Equipa</button>
+    <button class="btn" id="btn-change-pass" style="display:none;" onclick="openModal('m-password')">ð Senha</button>
+    <button class="btn" id="btn-logout" style="display:none;" onclick="window.logoutUser()">Sair</button>
+    <button class="btn btn-accent auth-write" id="btn-add-sys" onclick="openModal('m-sys')">+ Sistema</button>
+  </div>
+</header>
+
+<div class="mob-overlay" id="mob-overlay" onclick="toggleSidebar()"></div>
+
+<div class="app">
+<nav class="side" id="sidebar">
+  <div class="side-section">
+    <div class="side-label">Geral</div>
+    <div class="side-item active" data-p="dash"><span class="side-icon">â</span>Dashboard</div>
+    <div class="side-item" data-p="tl"><span class="side-icon">â·</span>CalendÃ¡rio</div>
+    <div class="side-item" data-p="phases"><span class="side-icon">â</span>Fases</div>
+  </div>
+  <div class="side-section">
+    <div class="side-label">ProduÃ§Ã£o</div>
+    <div class="side-item" data-p="sys"><span class="side-icon">â</span>Sistemas</div>
+    <div class="side-item" data-p="model"><span class="side-icon">â»</span>Modelador</div>
+  </div>
+  <div class="side-section">
+    <div class="side-label">Ferramentas</div>
+    <div class="side-item" data-p="ai"><span class="side-icon">â¦</span>IA Assistente</div>
+    <div class="side-item" data-p="dec"><span class="side-icon">â</span>DecisÃµes</div>
+  </div>
+</nav>
+
+<div class="main">
+
+<!-- DASHBOARD -->
+<div class="panel active" id="p-dash">
+<div class="pg-title">Dashboard</div>
+<div class="pg-sub">CrÃ´nicas de Gelo e Fogo Â· RP/RPG Â· VerÃ£o 2026</div>
+
+<div class="g4" id="dash-stats"></div>
+<div class="g3" id="dash-phase-progress"></div>
+
+<div class="g2">
+  <div class="card">
+    <div class="card-title">Progresso Geral</div>
+    <div id="dash-progress"></div>
+    <div class="card-body" id="dash-summary" style="margin-top:0.75rem;"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">PrÃ³ximas Datas <button class="btn btn-sm btn-ghost" onclick="nav('tl')">Ver tudo â</button></div>
+    <div class="card-body" id="dash-dates"></div>
+  </div>
+</div>
+
+<div class="card" style="margin-bottom:0.75rem;">
+  <div class="card-title">EvoluÃ§Ã£o do Progresso</div>
+  <div class="chart-wrap" id="dash-chart"></div>
+</div>
+
+<div class="g2">
+  <div class="card">
+    <div class="card-title">DecisÃµes Chave</div>
+    <div class="card-body" id="dash-decisions"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Log de AlteraÃ§Ãµes</div>
+    <div class="card-body" id="dash-changelog"><div style="color:var(--fg3);font-size:0.8rem;">A carregar...</div></div>
+  </div>
+</div>
+</div>
+
+<!-- TIMELINE -->
+<div class="panel" id="p-tl">
+<div class="pg-title">CalendÃ¡rio</div>
+<div class="pg-sub">Marcos do projecto â clica no â para editar datas e conteÃºdo</div>
+<div class="tl" id="tl-list"></div>
+<hr class="hr">
+<div class="card">
+  <div class="card-title">Adicionar Marco</div>
+  <div class="g2">
+    <div class="field"><div class="field-l">Data</div><input class="inp" id="tl-i-date" placeholder="ex: 20 Jun"></div>
+    <div class="field"><div class="field-l">Estado</div><select class="sel" id="tl-i-st"><option value="">A Fazer</option><option value="active">Em Progresso</option><option value="done">ConcluÃ­do</option></select></div>
+  </div>
+  <div class="field"><div class="field-l">TÃ­tulo</div><input class="inp" id="tl-i-title" placeholder="Nome do marco"></div>
+  <div class="field"><div class="field-l">DescriÃ§Ã£o</div><input class="inp" id="tl-i-desc" placeholder="Breve descriÃ§Ã£o"></div>
+  <button class="btn btn-accent" onclick="addTL()">Adicionar</button>
+</div>
+</div>
+
+<!-- PHASES -->
+<div class="panel" id="p-phases">
+<div class="pg-title">Fases do Projecto</div>
+<div class="pg-sub">Roadmap por fase â o que entra em cada uma</div>
+<div id="phases-content"></div>
+</div>
+
+<!-- SYSTEMS -->
+<div class="panel" id="p-sys">
+<div class="pg-title">Sistemas</div>
+<div class="pg-sub">Todos os sistemas â clica para expandir, editar e alterar estado</div>
+<div style="display:flex;gap:0.5rem;margin-bottom:0.4rem;flex-wrap:wrap;">
+  <button class="btn btn-sm" onclick="filterSys('all')" id="sf-all">Todas as fases</button>
+  <button class="btn btn-sm" onclick="filterSys(1)" id="sf-1">Fase 1</button>
+  <button class="btn btn-sm" onclick="filterSys(2)" id="sf-2">Fase 2</button>
+  <button class="btn btn-sm" onclick="filterSys(3)" id="sf-3">Fase 3</button>
+</div>
+<div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;flex-wrap:wrap;">
+  <button class="btn btn-sm" onclick="filterSysStatus('all')" id="ss-all">Todos os estados</button>
+  <button class="btn btn-sm" onclick="filterSysStatus('todo')" id="ss-todo">A Fazer</button>
+  <button class="btn btn-sm" onclick="filterSysStatus('wip')" id="ss-wip">Em Dev</button>
+  <button class="btn btn-sm" onclick="filterSysStatus('done')" id="ss-done">Completo</button>
+</div>
+<div class="search-wrap">
+  <span class="search-icon">â</span>
+  <input class="search-inp" id="sys-search" placeholder="Pesquisar sistemas..." oninput="renderSys()">
+</div>
+<div id="sys-list"></div>
+</div>
+
+<!-- MODELER -->
+<div class="panel" id="p-model">
+<div class="pg-title">Modelador</div>
+<div class="pg-sub">Assets 3D â prioridade, prazos e entregas</div>
+<div class="g3" id="model-stats"></div>
+<div style="margin-bottom:0.75rem;text-align:right;"><button class="btn btn-accent" onclick="openModal('m-asset')">+ Asset</button></div>
+<div class="table-wrap"><table><thead><tr><th>#</th><th>Asset</th><th>Categoria</th><th>Prazo</th><th>Estado</th><th>AÃ§Ãµes</th></tr></thead><tbody id="model-table"></tbody></table></div>
+</div>
+
+<!-- AI -->
+<div class="panel" id="p-ai">
+<div class="pg-title">IA Assistente</div>
+<div class="pg-sub">Chat com memÃ³ria de conversa Â· Muda de modo conforme o que precisas</div>
+
+<!-- Role Tabs -->
+<div class="ai-roles" id="ai-roles">
+  <button class="ai-role active" data-role="geral" onclick="switchRole('geral')"><span class="ai-role-icon">â</span>Geral</button>
+  <button class="ai-role" data-role="prog" onclick="switchRole('prog')"><span class="ai-role-icon">â</span>Programador</button>
+  <button class="ai-role" data-role="model" onclick="switchRole('model')"><span class="ai-role-icon">â»</span>Modelador</button>
+  <button class="ai-role" data-role="ideias" onclick="switchRole('ideias')"><span class="ai-role-icon">â¦</span>Ideias &amp; Design</button>
+</div>
+
+<!-- Quick Actions -->
+<div class="ai-quick" id="ai-quick"></div>
+
+<div class="ai-box">
+  <div class="ai-msgs" id="ai-msgs"></div>
+  <div class="ai-bar">
+    <button class="btn btn-icon btn-ghost ai-clear-btn" onclick="clearChat()" title="Limpar conversa">â³</button>
+    <input class="ai-inp" id="ai-inp" placeholder="Escreve a tua pergunta..." onkeydown="if(event.key==='Enter')sendAI()">
+    <button class="btn btn-accent" onclick="sendAI()">Enviar</button>
+  </div>
+</div>
+<div style="margin-top:0.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+  <span style="font-size:0.65rem;color:var(--fg3);" id="ai-status">Modo: Geral Â· <span id="ai-msg-count">0</span> mensagens</span>
+  <div style="display:flex;align-items:center;gap:0.5rem;">
+    <span style="font-size:0.65rem;color:var(--fg3);">MemÃ³ria activa â a IA lembra o que disseste</span>
+    <button class="btn btn-ghost" style="padding:2px 6px;font-size:0.6rem;height:auto;border:1px solid var(--border);" onclick="toggleApiKeyInput()" title="Usar chave API prÃ³pria">â API Key</button>
+  </div>
+</div>
+<div id="api-key-container" style="display:none;margin-top:0.5rem;padding:0.5rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);gap:0.5rem;align-items:center;">
+  <input class="inp" type="password" id="custom-gemini-key" placeholder="Introduz a tua prÃ³pria chave Gemini API" style="flex:1;font-size:0.75rem;padding:4px 8px;height:28px;">
+  <button class="btn btn-accent" style="padding:4px 8px;font-size:0.75rem;height:28px;line-height:1;" onclick="saveCustomKey()">Guardar</button>
+</div>
+</div>
+
+<!-- DECISIONS -->
+<div class="panel" id="p-dec">
+<div class="pg-title">Registo de DecisÃµes</div>
+<div class="pg-sub">DecisÃµes tomadas â para nÃ£o revisitar as mesmas questÃµes</div>
+<div id="dec-list"></div>
+<hr class="hr">
+<div class="card">
+  <div class="card-title">Registar DecisÃ£o</div>
+  <div class="field"><div class="field-l">DecisÃ£o</div><input class="inp" id="dec-i-t" placeholder="O que foi decidido"></div>
+  <div class="field"><div class="field-l">RazÃ£o</div><textarea class="txta" id="dec-i-r" placeholder="PorquÃª esta decisÃ£o"></textarea></div>
+  <button class="btn btn-accent" onclick="addDec()">Registar</button>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- MODAL: ADD SYSTEM -->
+<div class="modal-bg" id="m-sys"><div class="modal">
+  <div class="modal-t">Adicionar Sistema</div>
+  <div class="field"><div class="field-l">Nome</div><input class="inp" id="ms-name" placeholder="ex: Sistema de Mestria"></div>
+  <div class="g2">
+    <div class="field"><div class="field-l">Fase</div><select class="sel" id="ms-phase"><option value="1">Fase 1</option><option value="2">Fase 2</option><option value="3">Fase 3</option></select></div>
+    <div class="field"><div class="field-l">Estado</div><select class="sel" id="ms-st"><option value="todo">A Fazer</option><option value="wip">Em Dev</option><option value="done">Completo</option></select></div>
+  </div>
+  <div class="field"><div class="field-l">Prazo</div><input class="inp" id="ms-deadline" placeholder="ex: 10 Jun"></div>
+  <div class="field"><div class="field-l">DescriÃ§Ã£o</div><textarea class="txta" id="ms-desc" placeholder="Como vai funcionar"></textarea></div>
+  <div class="field"><div class="field-l">IntegraÃ§Ã£o</div><textarea class="txta" id="ms-int" placeholder="Como liga ao que jÃ¡ existe"></textarea></div>
+  <div class="modal-foot"><button class="btn" onclick="closeModal('m-sys')">Cancelar</button><button class="btn btn-accent" onclick="addSys()">Adicionar</button></div>
+</div></div>
+
+<!-- MODAL: ADD ASSET -->
+<div class="modal-bg" id="m-asset"><div class="modal">
+  <div class="modal-t">Adicionar Asset</div>
+  <div class="field"><div class="field-l">Nome</div><input class="inp" id="ma-name" placeholder="ex: Espada de AÃ§o Tier 2"></div>
+  <div class="g2">
+    <div class="field"><div class="field-l">Categoria</div><select class="sel" id="ma-cat"><option>Arma</option><option>Armadura</option><option>NPC / Personagem</option><option>Ambiente</option><option>Prop</option><option>UI</option><option>Outro</option></select></div>
+    <div class="field"><div class="field-l">Prazo</div><input class="inp" id="ma-dl" placeholder="ex: 10 Jun"></div>
+  </div>
+  <div class="field"><div class="field-l">Prioridade (1 = urgente)</div><input class="inp" type="number" id="ma-pri" value="1" min="1"></div>
+  <div class="modal-foot"><button class="btn" onclick="closeModal('m-asset')">Cancelar</button><button class="btn btn-accent" onclick="addAsset()">Adicionar</button></div>
+</div></div>
+
+<!-- MODAL: EDIT TIMELINE -->
+<div class="modal-bg" id="m-tl-edit"><div class="modal">
+  <div class="modal-t">Editar Marco</div>
+  <div class="g2">
+    <div class="field"><div class="field-l">Data</div><input class="inp" id="te-date"></div>
+    <div class="field"><div class="field-l">Estado</div><select class="sel" id="te-st"><option value="">A Fazer</option><option value="active">Em Progresso</option><option value="done">ConcluÃ­do</option></select></div>
+  </div>
+  <div class="field"><div class="field-l">TÃ­tulo</div><input class="inp" id="te-title"></div>
+  <div class="field"><div class="field-l">DescriÃ§Ã£o</div><input class="inp" id="te-desc"></div>
+  <div class="modal-foot">
+    <button class="btn btn-danger" onclick="deleteTL()">Remover</button>
+    <button class="btn" onclick="closeModal('m-tl-edit')">Cancelar</button>
+    <button class="btn btn-accent" onclick="saveTLEdit()">Guardar</button>
+  </div>
+</div></div>
+
+<!-- TUTORIAL -->
+<div class="tut-bg" id="tut-bg">
+<div class="tut">
+  <div class="tut-header">
+    <h2>Bem-vindo ao Project Hub</h2>
+    <p>O centro de operaÃ§Ãµes do CrÃ´nicas de Gelo e Fogo</p>
+  </div>
+  <div class="tut-steps">
+    <div class="tut-step"><div class="tut-num">1</div><div class="tut-text"><h4>Dashboard</h4><p>VisÃ£o geral do projecto â percentagem de progresso, prÃ³ximas datas e decisÃµes chave. Tudo se actualiza automaticamente.</p></div></div>
+    <div class="tut-step"><div class="tut-num">2</div><div class="tut-text"><h4>Sistemas</h4><p>Cada sistema do jogo estÃ¡ listado aqui. Clica num para expandir, editar a descriÃ§Ã£o, mudar o estado ou remover. Usa o botÃ£o "+ Sistema" para adicionar novos.</p></div></div>
+    <div class="tut-step"><div class="tut-num">3</div><div class="tut-text"><h4>Modelador</h4><p>Lista de assets 3D com prioridade e prazos. O modelador sabe exactamente o que fazer e por que ordem. Marca como entregue quando receberes.</p></div></div>
+    <div class="tut-step"><div class="tut-num">4</div><div class="tut-text"><h4>CalendÃ¡rio</h4><p>Marcos com datas editÃ¡veis. Clica no â para mudar qualquer data ou conteÃºdo. Adiciona novos marcos na parte inferior.</p></div></div>
+    <div class="tut-step"><div class="tut-num">5</div><div class="tut-text"><h4>IA Assistente</h4><p>Chat com memÃ³ria de conversa e 4 modos: <strong>Geral</strong> (visÃ£o geral), <strong>Programador</strong> (Luau, arquitectura, debugging), <strong>Modelador</strong> (specs, pipeline, prioridades) e <strong>Ideias</strong> (mecÃ¢nicas, lore, game design). Usa os botÃµes rÃ¡pidos para perguntas comuns.</p></div></div>
+    <div class="tut-step"><div class="tut-num">6</div><div class="tut-text"><h4>Exportar</h4><p>O botÃ£o "â Exportar" gera um ficheiro .txt com todo o estado actual. Cola-o numa conversa com o Claude para anÃ¡lise completa e sugestÃµes.</p></div></div>
+    <div class="tut-step"><div class="tut-num">7</div><div class="tut-text"><h4>DecisÃµes</h4><p>Regista aqui todas as decisÃµes importantes. Evita voltar ao mesmo assunto semanas depois â estÃ¡ tudo documentado.</p></div></div>
+  </div>
+  <div class="tut-foot"><button class="btn btn-accent" onclick="closeTutorial()">Entendi, vamos comeÃ§ar</button></div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- MODAL: LOGIN -->
+<div class="modal-bg auth-bg" id="m-login" style="z-index: 9999;">
+  <div class="modal" style="max-width:420px;">
+    <!-- Tabs -->
+    <div style="display:flex;border-bottom:2px solid var(--border);margin-bottom:1rem;">
+      <button id="tab-login" class="btn btn-ghost" style="flex:1;border-radius:0;border-bottom:2px solid var(--accent);margin-bottom:-2px;font-weight:700;" onclick="window.switchAuthTab('login')">Entrar</button>
+      <button id="tab-register" class="btn btn-ghost" style="flex:1;border-radius:0;border-bottom:2px solid transparent;margin-bottom:-2px;" onclick="window.switchAuthTab('register')">Criar Conta</button>
+    </div>
+
+    <!-- LOGIN VIEW -->
+    <div id="view-login" class="modal-b">
+      <div class="g1" style="gap:1rem;">
+        <button class="btn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:0.6rem;padding:0.7rem;background:var(--bg2);border:1px solid var(--border);" onclick="window.loginWithGoogle()">
+          <svg style="width:18px;height:18px;" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Entrar com Google
+        </button>
+        <div style="text-align:center;color:var(--fg3);font-size:0.75rem;">ou com utilizador/email</div>
+        <div><label class="lbl">Utilizador ou E-mail</label><input type="text" id="auth-email" class="inp" placeholder="Ex: dino5651"></div>
+        <div><label class="lbl">Senha</label><input type="password" id="auth-pass" class="inp" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢" onkeydown="if(event.key==='Enter')window.loginUser()"></div>
+        <button class="btn btn-accent" style="width:100%;justify-content:center;" onclick="window.loginUser()">Entrar</button>
+        <div id="auth-error" style="color:var(--red);font-size:0.8rem;text-align:center;"></div>
+      </div>
+    </div>
+
+    <!-- REGISTER VIEW -->
+    <div id="view-register" class="modal-b" style="display:none;">
+      <div class="g1" style="gap:1rem;">
+        <button class="btn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:0.6rem;padding:0.7rem;background:var(--bg2);border:1px solid var(--border);" onclick="window.loginWithGoogle()">
+          <svg style="width:18px;height:18px;" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Registar com Google
+        </button>
+        <div style="text-align:center;color:var(--fg3);font-size:0.75rem;">ou criar conta manual</div>
+        <div><label class="lbl">Utilizador</label><input type="text" id="reg-email" class="inp" placeholder="Ex: joao123"></div>
+        <div><label class="lbl">Senha (mÃ­n. 6 caracteres)</label><input type="password" id="reg-pass" class="inp" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢"></div>
+        <div><label class="lbl">Confirmar Senha</label><input type="password" id="reg-pass2" class="inp" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢" onkeydown="if(event.key==='Enter')window.registerUser()"></div>
+        <button class="btn btn-accent" style="width:100%;justify-content:center;" onclick="window.registerUser()">Criar Conta</button>
+        <div id="reg-error" style="color:var(--red);font-size:0.8rem;text-align:center;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: PENDING APPROVAL -->
+<div class="modal-bg auth-bg" id="m-pending" style="z-index: 9998; backdrop-filter: blur(10px);">
+  <div class="modal" style="text-align:center;">
+    <div class="modal-h"><h2>A Aguardar AprovaÃ§Ã£o â³</h2></div>
+    <div class="modal-b">
+      <p style="color:var(--fg2); margin-bottom:1.5rem;">A tua conta foi criada, mas precisa de ser aprovada pelo Dono do projeto (dino5651) para teres acesso ao conteÃºdo.</p>
+      <button class="btn btn-ghost" onclick="window.logoutUser()">Sair da Conta</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: PASSWORD CHANGE -->
+<div class="modal-bg" id="m-password">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-h" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <h2>Alterar Senha</h2>
+      <button class="btn btn-sm btn-icon" onclick="closeModal('m-password')">â</button>
+    </div>
+    <div class="modal-b">
+      <div class="field">
+        <div class="field-l">Nova Senha</div>
+        <input type="password" id="new-password" class="inp" placeholder="MÃ­nimo 6 caracteres">
+      </div>
+      <div class="field">
+        <div class="field-l">Confirmar Nova Senha</div>
+        <input type="password" id="confirm-password" class="inp" placeholder="Repita a nova senha">
+      </div>
+      <div id="password-error" style="color:var(--red);font-size:0.8rem;margin-bottom:0.5rem;"></div>
+      <button class="btn btn-accent" style="width:100%;justify-content:center;" onclick="window.changePassword()">Atualizar Senha</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: TEAM -->
+<div class="modal-bg" id="m-team">
+  <div class="modal" style="max-width:600px;">
+    <div class="modal-h">
+      <h2>GestÃ£o da Equipa</h2>
+      <button class="btn btn-sm btn-icon" onclick="closeModal('m-team')">â</button>
+    </div>
+    <div class="modal-b">
+      <table class="team-table">
+        <thead><tr><th>Email</th><th>FunÃ§Ã£o</th><th>Ãltimo Acesso</th><th>AÃ§Ãµes</th></tr></thead>
+        <tbody id="team-list"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="import-file" accept=".json" style="display:none;" onchange="handleImport(event)">
+
+<script>
+// âââ DATA ââââââââââââââââââââââââââââââââââââââââââââââââ
+let D={
+  systems:[
+    {id:1,name:'ProfissÃµes (7)',phase:1,status:'done',deadline:'',desc:'Ferreiro, Pescador, Fazendeiro, Lenhador, Minerador, Cozinheiro, Mercador. Todos funcionais com XP, nÃ­veis e discipulado.',integration:'Base da economia. FerreiroâArmas, CozinheiroâComida/Stamina.'},
+    {id:2,name:'Economia + Copper',phase:1,status:'done',deadline:'',desc:'Estrelas de Cobre. Imposto 10% ao Cofre. NPCs Mira e Alden como fallback. Dirty cache para impostos.',integration:'Liga a todas as profissÃµes e GoldCloaks (salÃ¡rios).'},
+    {id:3,name:'GoldCloaks',phase:1,status:'done',deadline:'',desc:'Hierarquia: RecrutaâSoldadoâCapitÃ£oâLorde Comandante. Painel de gestÃ£o. Roster, rank.',integration:'Liga Ã  ReputaÃ§Ã£o, PrisÃ£o (futuro), Economia (salÃ¡rios).'},
+    {id:4,name:'FÃ© dos Sete',phase:1,status:'done',deadline:'',desc:'Oswin como SeptÃ£o NPC. RedenÃ§Ã£o de reputaÃ§Ã£o. Oferendas. CerimÃ³nias.',integration:'Liga Ã  ReputaÃ§Ã£o. Percurso de Septon integra aqui.'},
+    {id:5,name:'Armaduras + Durabilidade',phase:1,status:'done',deadline:'',desc:'Tiers de qualidade. Durabilidade que degrada por uso. SincronizaÃ§Ã£o com inventÃ¡rio.',integration:'Liga ao Ferreiro e Combate.'},
+    {id:6,name:'ReputaÃ§Ã£o',phase:1,status:'done',deadline:'',desc:'Honrado/Neutro/Desonrado. Afecta acesso a GoldCloaks e serviÃ§os.',integration:'Liga Ã  FÃ© (redenÃ§Ã£o), GoldCloaks (recrutamento), comÃ©rcio.'},
+    {id:7,name:'Quadro de Rumores',phase:1,status:'done',deadline:'',desc:'Quadro fÃ­sico no mapa com informaÃ§Ãµes de lore e hints para jogadores.',integration:'Liga Ã s SSUs e ao worldbuilding.'},
+    {id:8,name:'Combate',phase:1,status:'wip',deadline:'27-28 Mai',desc:'Parry, Block, Combos, Dash implementados. Falta integraÃ§Ã£o com armaduras e hitboxes server-side.',integration:'Liga a Armaduras, Cavaleiro, Torneios, Atributos RPG.'},
+    {id:9,name:'Sistema de Atributos RPG',phase:1,status:'wip',deadline:'Jun',desc:'ForÃ§a, Destreza, ResistÃªncia, Magia, Stamina. ProgressÃ£o por uso (Skyrim-style). Desbloqueiam perks.',integration:'Liga ao Combate, ProfissÃµes, CriaÃ§Ã£o de Personagem.'},
+    {id:10,name:'CriaÃ§Ã£o de Personagem',phase:1,status:'wip',deadline:'Jun',desc:'Escolha de origem + aparÃªncia + atributos iniciais. Onboarding do jogador novo.',integration:'Liga a Atributos RPG, ProfissÃµes, primeira experiÃªncia do jogador.'},
+    {id:11,name:'Percurso do Cavaleiro',phase:1,status:'todo',deadline:'Jun',desc:'NPC aceita escudeiros. Treino por uso. CerimÃ³nia em sept com timer. Tag Cavaleiro Andante.',integration:'Liga ao Combate, FÃ© (cerimÃ³nia), ReputaÃ§Ã£o.'},
+    {id:12,name:'Festivais dos Sete',phase:1,status:'todo',deadline:'Jun',desc:'7 buffs rotativos semanais. Dia do Guerreiro, Dia do Ferreiro, etc.',integration:'Liga Ã  FÃ© dos Sete e Ã s ProfissÃµes.'},
+    {id:13,name:'Dados na Taverna',phase:1,status:'todo',deadline:'Jun',desc:'Item dado jogÃ¡vel. Apostas em Copper entre jogadores. Hazard, Passe-Dix, Raffle.',integration:'Liga Ã  Economia (transferÃªncias de Copper).'},
+    {id:14,name:'CaÃ§a',phase:1,status:'todo',deadline:'Jun',desc:'Actividade na Ã¡rea de exploraÃ§Ã£o. Drop de carne, couro, ossos.',integration:'Liga ao Cozinheiro (receitas) e Ferreiro (couro).'},
+    {id:15,name:'Septon / Septa (percurso)',phase:1,status:'todo',deadline:'Jun',desc:'Percurso de identidade da FÃ©. Casamentos, investiduras, bÃªnÃ§Ã£os.',integration:'Liga Ã  FÃ© dos Sete (Oswin como mentor).'},
+    {id:16,name:'Maestre + Elos',phase:2,status:'todo',deadline:'',desc:'Biblioteca fÃ­sica. Sistema de elos da corrente. Cada disciplina desbloqueia perks.',integration:'Liga a FÃ©, Economia, Medicina.'},
+    {id:17,name:'Flea Bottom (zona crime)',phase:2,status:'todo',deadline:'',desc:'Zona distinta com regras diferentes. Mercado negro, apostas, menos jurisdiÃ§Ã£o.',integration:'Liga aos GoldCloaks, Contrabando, Economia.'},
+    {id:18,name:'Contrabando',phase:2,status:'todo',deadline:'',desc:'Entrar mercadoria pelo porto sem imposto. InspecÃ§Ãµes aleatÃ³rias.',integration:'Liga Ã  Economia e GoldCloaks.'},
+    {id:19,name:'ReputaÃ§Ã£o por Bairro',phase:2,status:'todo',deadline:'',desc:'Rep separada por zona: Red Keep, Mercado, Flea Bottom, Docas.',integration:'Liga Ã  ReputaÃ§Ã£o actual (expande).'},
+    {id:20,name:'Torneios AutomÃ¡ticos',phase:2,status:'todo',deadline:'',desc:'Brackets semanais. Prize pool. Jousting + melee + archery.',integration:'Liga ao Combate e Cavaleiro.'},
+    {id:21,name:'Casas Nobres',phase:3,status:'todo',deadline:'',desc:'Player-founded. Sigilo, palavras, terras. Vassalagem.',integration:'Liga a PolÃ­tica, Economia, Cavaleiro.'},
+    {id:22,name:'Pequeno Conselho',phase:3,status:'todo',deadline:'',desc:'Cargos com perks. MÃ£o, Mestre das Moedas, Mestre das Leis, etc.',integration:'Liga a Casas Nobres e GoldCloaks.'},
+    {id:23,name:'Kingsguard',phase:3,status:'todo',deadline:'',desc:'7 slots. AplicaÃ§Ã£o RP-driven. Abdica de tudo. Endgame de prestÃ­gio.',integration:'Liga ao Cavaleiro e Combate.'},
+  ],
+  timeline:[
+    {id:1,date:'ConcluÃ­do',status:'done',title:'ProfissÃµes + Economia + GoldCloaks + FÃ©',desc:'Base do servidor implementada e funcional'},
+    {id:2,date:'ConcluÃ­do',status:'done',title:'Armaduras + Durabilidade + ReputaÃ§Ã£o',desc:'Ferreiro completo, tiers de qualidade, sistema de reputaÃ§Ã£o'},
+    {id:3,date:'27-28 Mai',status:'active',title:'Combate Beta',desc:'Parry, block, combos, dash â entrega do programador'},
+    {id:4,date:'Jun (1Âª semana)',status:'',title:'Atributos RPG + CriaÃ§Ã£o de Personagem',desc:'ForÃ§a, Destreza, ResistÃªncia, Magia, Stamina + onboarding'},
+    {id:5,date:'Jun (2Âª semana)',status:'',title:'Cavaleiro + Festivais + Dados',desc:'Percurso do cavaleiro, 7 buffs semanais, jogos de taverna'},
+    {id:6,date:'Jun (3Âª semana)',status:'',title:'Testes Completos',desc:'SessÃ£o com testers, relatÃ³rio de bugs, ajustes'},
+    {id:7,date:'~15 Jun',status:'',title:'LanÃ§amento Exclusivo',desc:'Abertura para comunidade seleccionada â foco em testar progressÃ£o RPG'},
+  ],
+  assets:[
+    {id:1,name:'Espada Comum â Tier 1',cat:'Arma',deadline:'5 Jun',priority:1,status:'todo'},
+    {id:2,name:'Espada de AÃ§o â Tier 2',cat:'Arma',deadline:'5 Jun',priority:2,status:'todo'},
+    {id:3,name:'Armadura de Couro â Tier 1',cat:'Armadura',deadline:'8 Jun',priority:3,status:'todo'},
+    {id:4,name:'Armadura de Malha â Tier 2',cat:'Armadura',deadline:'10 Jun',priority:4,status:'todo'},
+    {id:5,name:'Armadura de Placa â Tier 3',cat:'Armadura',deadline:'12 Jun',priority:5,status:'todo'},
+    {id:6,name:'Escudo Redondo',cat:'Arma',deadline:'8 Jun',priority:3,status:'todo'},
+    {id:7,name:'Machado de Batalha',cat:'Arma',deadline:'10 Jun',priority:6,status:'todo'},
+    {id:8,name:'Arco + Flechas',cat:'Arma',deadline:'12 Jun',priority:7,status:'todo'},
+    {id:9,name:'Dado (prop taverna)',cat:'Prop',deadline:'5 Jun',priority:1,status:'todo'},
+  ],
+  decisions:[
+    {id:1,title:'Universo prÃ³prio com base GOT',reason:'Mais liberdade criativa. O lore de GOT Ã© a fundaÃ§Ã£o mas o mundo Ã© nosso.',date:'Mai 2026'},
+    {id:2,title:'RP/RPG hÃ­brido â Skyrim + Witcher',reason:'ProfissÃµes integram com RPG. Sem classes fixas â identidade emerge do comportamento.',date:'Mai 2026'},
+    {id:3,title:'ProgressÃ£o por uso (use-based)',reason:'Luta â ForÃ§a sobe. Forja â Destreza sobe. Natural, sem grind forÃ§ado.',date:'Mai 2026'},
+    {id:4,title:'Atributos: ForÃ§a, Destreza, ResistÃªncia, Magia, Stamina',reason:'Core stats do RPG. Podem ser ajustados mas esta Ã© a base definida.',date:'Mai 2026'},
+    {id:5,title:'LanÃ§amento exclusivo verÃ£o 2026, pÃºblico 2027',reason:'Testar progressÃ£o com grupo selecto. Mais saudÃ¡vel para o produto.',date:'Mai 2026'},
+    {id:6,title:'ProfissÃµes nÃ£o saem â integram com RPG',reason:'Meses de trabalho funcional. FerreiroâArmas, CozinheiroâStamina.',date:'Mai 2026'},
+  ],
+  nid:100
+};
+
+// âââ NAV âââââââââââââââââââââââââââââââââââââââââââââââââ
+document.querySelectorAll('.side-item').forEach(el=>{
+  el.addEventListener('click',()=>nav(el.dataset.p));
+});
+function nav(p){
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.side-item').forEach(x=>x.classList.remove('active'));
+  document.getElementById('p-'+p).classList.add('active');
+  document.querySelector(`[data-p="${p}"]`).classList.add('active');
+  if(p==='sys')renderSys();
+  if(p==='model')renderModel();
+  if(p==='tl')renderTL();
+  if(p==='dec')renderDec();
+  if(p==='dash')renderDash();
+  if(p==='phases')renderPhases();
+  if(window.innerWidth<769){document.getElementById('sidebar').classList.remove('open');document.getElementById('mob-overlay').classList.remove('open');}
+}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('mob-overlay').classList.toggle('open');}
+
+// âââ RENDER: DASHBOARD âââââââââââââââââââââââââââââââââââ
+function renderDash(){
+  const done=D.systems.filter(s=>s.status==='done').length;
+  const wip=D.systems.filter(s=>s.status==='wip').length;
+  const todo=D.systems.filter(s=>s.status==='todo'||s.status==='blocked').length;
+  const pct=Math.round(done/D.systems.length*100);
+  document.getElementById('dash-stats').innerHTML=`
+    <div class="stat"><div class="stat-n c-green">${done}</div><div class="stat-l">Completos</div></div>
+    <div class="stat"><div class="stat-n c-accent">${wip}</div><div class="stat-l">Em Dev</div></div>
+    <div class="stat"><div class="stat-n c-fg3">${todo}</div><div class="stat-l">Por Fazer</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--fg);">${pct}%</div><div class="stat-l">Progresso</div></div>`;
+  // Barra de progresso com animaÃ§Ã£o ao entrar
+  document.getElementById('dash-progress').innerHTML=`<div style="height:6px;background:var(--bg);border-radius:3px;overflow:hidden;"><div class="prog-bar-inner" id="prog-bar"></div></div>`;
+  requestAnimationFrame(()=>setTimeout(()=>{const b=document.getElementById('prog-bar');if(b)b.style.width=pct+'%';},50));
+  const sl={done:'Feito',wip:'Em Dev',todo:'A Fazer'};
+  document.getElementById('dash-summary').innerHTML=
+    D.systems.filter(s=>s.status==='done').map(s=>`<div style="margin-bottom:0.3rem;"><span class="badge b-done badge-link" onclick="navFilterSys(${s.phase})" title="Ver Fase ${s.phase}">Feito</span> <span style="margin-left:0.3rem;">${s.name}</span></div>`).join('')+
+    D.systems.filter(s=>s.status==='wip').map(s=>`<div style="margin-bottom:0.3rem;"><span class="badge b-wip badge-link" onclick="navFilterSys(${s.phase})" title="Ver Fase ${s.phase}">Em Dev</span> <span style="margin-left:0.3rem;">${s.name}${s.deadline?' â '+s.deadline:''}</span></div>`).join('')+
+    D.systems.filter(s=>s.status==='todo'&&s.phase===1).map(s=>`<div style="margin-bottom:0.3rem;"><span class="badge b-todo badge-link" onclick="navFilterSys(${s.phase})" title="Ver Fase ${s.phase}">A Fazer</span> <span style="margin-left:0.3rem;">${s.name}</span></div>`).join('');
+  document.getElementById('dash-dates').innerHTML=D.timeline.filter(t=>t.status!=='done').slice(0,5).map(t=>`<div style="margin-bottom:0.5rem;"><span class="badge ${t.status==='active'?'b-wip':'b-todo'}">${t.date}</span> <span style="margin-left:0.3rem;">${t.title}</span></div>`).join('');
+  document.getElementById('dash-decisions').innerHTML=D.decisions.slice(0,4).map(d=>`<div style="margin-bottom:0.3rem;">â <strong>${d.title}</strong> â <span style="color:var(--fg3);">${d.reason}</span></div>`).join('');
+  renderPhaseProgress();
+  renderProgressChart();
+  renderChangelog();
+  updateSidebarCounts();
+}
+function navFilterSys(phase){sysFilter=phase;nav('sys');}
+
+// âââ RENDER: SYSTEMS âââââââââââââââââââââââââââââââââââââ
+let sysFilter='all';
+let sysStatusFilter='all';
+function filterSys(f){sysFilter=f;renderSys();}
+function filterSysStatus(f){sysStatusFilter=f;renderSys();}
+function getOpenSys(){return[...document.querySelectorAll('.sys.open')].map(el=>parseInt(el.id.slice(1))).filter(Boolean);}
+function renderSys(){
+  const open=getOpenSys();
+  const list=document.getElementById('sys-list');
+  const q=(document.getElementById('sys-search')?.value||'').toLowerCase().trim();
+  let items=sysFilter==='all'?D.systems:D.systems.filter(s=>s.phase==sysFilter);
+  if(sysStatusFilter!=='all')items=items.filter(s=>s.status===sysStatusFilter);
+  if(q)items=items.filter(s=>s.name.toLowerCase().includes(q)||s.desc.toLowerCase().includes(q));
+  ['all',1,2,3].forEach(f=>{const el=document.getElementById('sf-'+(f==='all'?'all':f));if(el)el.style.borderColor=sysFilter==f?'var(--accent)':''});
+  ['all','todo','wip','done'].forEach(f=>{const el=document.getElementById('ss-'+f);if(el)el.style.borderColor=sysStatusFilter===f?'var(--accent)':''});
+  const sl={done:'Completo',wip:'Em Dev',todo:'A Fazer',blocked:'Bloqueado'};
+  const sb={done:'b-done',wip:'b-wip',todo:'b-todo',blocked:'b-blocked'};
+  if(!items.length){list.innerHTML='<div class="empty"><div class="empty-icon">â</div>'+(q?'Nenhum sistema encontrado':'Nenhum sistema nesta fase')+'</div>';return;}
+  list.innerHTML=items.map(s=>{
+    const tasks=s.tasks||[];
+    const td=tasks.filter(t=>t.done).length;
+    const tasksHtml=`<div class="task-list">
+      <div class="field-l" style="margin-bottom:0.4rem;">Subtarefas <span style="font-weight:400;">${td}/${tasks.length}</span></div>
+      ${tasks.map(t=>`<div class="task-item${t.done?' done-task':''}" id="ti${s.id}-${t.id}">
+        <input type="checkbox"${t.done?' checked':''} onclick="event.stopPropagation();toggleTask(${s.id},${t.id})">
+        <span>${t.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>
+        <button class="task-del" onclick="event.stopPropagation();deleteTask(${s.id},${t.id})">â</button>
+      </div>`).join('')}
+      <div class="task-add" onclick="event.stopPropagation()">
+        <input class="inp" id="ta${s.id}" placeholder="Nova subtarefa..." onkeydown="if(event.key==='Enter'){event.stopPropagation();addTask(${s.id});}">
+        <button class="btn btn-sm btn-accent" onclick="event.stopPropagation();addTask(${s.id})">+</button>
+      </div>
+    </div>`;
+    const cmts=(window.allComments&&window.allComments[s.id])||[];
+    const commentsHtml=`<div class="comment-section">
+      <div class="field-l" style="margin-bottom:0.4rem;">ComentÃ¡rios <span style="font-weight:400;">(${cmts.length})</span></div>
+      ${cmts.length?cmts.map(c=>`<div class="comment"><div class="comment-meta"><span class="comment-user">${c.user}</span><span>${formatRelTime(c.date)}</span></div><div class="comment-text">${c.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`).join(''):'<div style="color:var(--fg3);font-size:0.75rem;padding:0.2rem 0;">Sem comentÃ¡rios ainda.</div>'}
+      <div class="comment-add" onclick="event.stopPropagation()">
+        <input class="inp" id="cm${s.id}" placeholder="Adicionar comentÃ¡rio..." onkeydown="if(event.key==='Enter'){event.stopPropagation();window.addComment&&window.addComment(${s.id});}">
+        <button class="btn btn-sm" onclick="event.stopPropagation();window.addComment&&window.addComment(${s.id})">Enviar</button>
+      </div>
+    </div>`;
+    return`<div class="sys" id="s${s.id}" draggable="true"
+      ondragstart="dragSysStart(event,${s.id})"
+      ondragover="dragSysOver(event,${s.id})"
+      ondrop="dragSysDrop(event,${s.id})"
+      ondragend="dragSysEnd()"
+      onclick="togSys(${s.id})">
+      <div class="sys-h">
+        <span style="color:var(--fg3);font-size:0.75rem;cursor:grab;flex-shrink:0;" title="Arrastar para reordenar">â ¿</span>
+        <span class="badge b-phase">F${s.phase}</span>
+        <span class="sys-name">${s.name}</span>
+        ${tasks.length?`<span style="font-size:0.65rem;color:var(--fg3);flex-shrink:0;">â ${td}/${tasks.length}</span>`:''}
+        ${deadlineSpan(s.deadline)}
+        <span class="badge ${sb[s.status]}">${sl[s.status]}</span>
+        <span class="sys-chev">â¼</span>
+      </div>
+      <div class="sys-body" onclick="event.stopPropagation()">
+        <div class="field"><div class="field-l">DescriÃ§Ã£o</div><textarea class="txta" id="sd${s.id}">${s.desc}</textarea></div>
+        <div class="field"><div class="field-l">IntegraÃ§Ã£o</div><textarea class="txta" id="si${s.id}">${s.integration}</textarea></div>
+        <div class="g2">
+          <div class="field"><div class="field-l">Prazo</div><input class="inp" id="sdl${s.id}" value="${s.deadline||''}"></div>
+          <div class="field"><div class="field-l">Fase</div><select class="sel" id="sp${s.id}"><option value="1"${s.phase===1?' selected':''}>Fase 1</option><option value="2"${s.phase===2?' selected':''}>Fase 2</option><option value="3"${s.phase===3?' selected':''}>Fase 3</option></select></div>
+        </div>
+        ${tasksHtml}
+        ${commentsHtml}
+        <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.5rem;">
+          <button class="btn btn-sm" style="border-color:var(--green);color:var(--green);" onclick="chSys(${s.id},'done')">â Completo</button>
+          <button class="btn btn-sm" style="border-color:var(--accent);color:var(--accent);" onclick="chSys(${s.id},'wip')">â Em Dev</button>
+          <button class="btn btn-sm" onclick="chSys(${s.id},'todo')">â A Fazer</button>
+          <button class="btn btn-sm btn-accent" onclick="saveSys(${s.id})">Guardar</button>
+          <button class="btn btn-sm btn-danger" onclick="delSys(${s.id})">Remover</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  open.forEach(id=>{const el=document.getElementById('s'+id);if(el)el.classList.add('open');});
+}
+function addTask(sysId){
+  const inp=document.getElementById('ta'+sysId);if(!inp)return;
+  const text=inp.value.trim();if(!text)return;
+  const s=D.systems.find(x=>x.id===sysId);if(!s)return;
+  if(!s.tasks)s.tasks=[];
+  s.tasks.push({id:++D.nid,text,done:false});
+  inp.value='';renderSys();save();
+}
+function toggleTask(sysId,taskId){
+  const s=D.systems.find(x=>x.id===sysId);
+  const t=(s.tasks||[]).find(x=>x.id===taskId);if(!t)return;
+  t.done=!t.done;
+  const item=document.getElementById('ti'+sysId+'-'+taskId);
+  if(item){item.classList.toggle('done-task',t.done);item.querySelector('input[type=checkbox]').checked=t.done;}
+  save();
+}
+function deleteTask(sysId,taskId){
+  const s=D.systems.find(x=>x.id===sysId);if(!s)return;
+  s.tasks=(s.tasks||[]).filter(x=>x.id!==taskId);
+  renderSys();save();
+}
+function togSys(id){document.getElementById('s'+id).classList.toggle('open');}
+function saveSys(id){const s=D.systems.find(x=>x.id===id);s.desc=document.getElementById('sd'+id).value;s.integration=document.getElementById('si'+id).value;s.deadline=document.getElementById('sdl'+id).value;s.phase=parseInt(document.getElementById('sp'+id).value);save();toast('Sistema guardado.');}
+function chSys(id,st){const s=D.systems.find(x=>x.id===id);s.status=st;renderSys();save();const ll={done:'Completo',wip:'Em Dev',todo:'A Fazer'};if(window.logChange)window.logChange(`Marcou "${s.name}" como ${ll[st]||st}`);}
+function delSys(id){if(!confirm('Remover?'))return;const s=D.systems.find(x=>x.id===id);D.systems=D.systems.filter(x=>x.id!==id);renderSys();save();if(window.logChange&&s)window.logChange(`Removeu o sistema "${s.name}"`);}
+function addSys(){const n=document.getElementById('ms-name').value.trim();if(!n)return;D.systems.push({id:++D.nid,name:n,phase:parseInt(document.getElementById('ms-phase').value),status:document.getElementById('ms-st').value,deadline:document.getElementById('ms-deadline').value,desc:document.getElementById('ms-desc').value,integration:document.getElementById('ms-int').value,tasks:[]});closeModal('m-sys');['ms-name','ms-desc','ms-int','ms-deadline'].forEach(x=>document.getElementById(x).value='');nav('sys');toast('Sistema adicionado.');save();if(window.logChange)window.logChange(`Adicionou o sistema "${n}"`);}
+
+// âââ RENDER: MODELER âââââââââââââââââââââââââââââââââââââ
+function renderModel(){
+  const d=D.assets.filter(a=>a.status==='done').length;
+  const w=D.assets.filter(a=>a.status==='wip').length;
+  const t=D.assets.filter(a=>a.status==='todo').length;
+  document.getElementById('model-stats').innerHTML=`
+    <div class="stat"><div class="stat-n c-green">${d}</div><div class="stat-l">Entregues</div></div>
+    <div class="stat"><div class="stat-n c-accent">${w}</div><div class="stat-l">Em ProduÃ§Ã£o</div></div>
+    <div class="stat"><div class="stat-n c-fg3">${t}</div><div class="stat-l">Por Fazer</div></div>`;
+  const sb={done:'b-done',wip:'b-wip',todo:'b-todo'};
+  const sl={done:'Entregue',wip:'Em Prod.',todo:'A Fazer'};
+  const sorted=[...D.assets].sort((a,b)=>a.priority-b.priority);
+  document.getElementById('model-table').innerHTML=sorted.map(a=>`<tr>
+    <td style="font-weight:700;color:var(--accent);">#${a.priority}</td>
+    <td style="font-weight:600;color:var(--fg);">${a.name}</td>
+    <td>${a.cat}</td>
+    <td>${deadlineInput(a.id,a.deadline)}</td>
+    <td><span class="badge ${sb[a.status]}">${sl[a.status]}</span></td>
+    <td style="white-space:nowrap;">
+      <button class="btn btn-sm btn-icon" style="border-color:var(--green);color:var(--green);" onclick="chAsset(${a.id},'done')">â</button>
+      <button class="btn btn-sm btn-icon" style="border-color:var(--accent);color:var(--accent);" onclick="chAsset(${a.id},'wip')">â</button>
+      <button class="btn btn-sm btn-icon btn-danger" onclick="delAsset(${a.id})">â</button>
+    </td>
+  </tr>`).join('');
+}
+function chAsset(id,st){D.assets.find(x=>x.id===id).status=st;renderModel();save();}
+function delAsset(id){D.assets=D.assets.filter(x=>x.id!==id);renderModel();save();}
+function addAsset(){const n=document.getElementById('ma-name').value.trim();if(!n)return;D.assets.push({id:++D.nid,name:n,cat:document.getElementById('ma-cat').value,deadline:document.getElementById('ma-dl').value,priority:parseInt(document.getElementById('ma-pri').value)||99,status:'todo'});closeModal('m-asset');document.getElementById('ma-name').value='';renderModel();toast('Asset adicionado.');save();}
+
+// âââ RENDER: TIMELINE ââââââââââââââââââââââââââââââââââââ
+let editTLId=null;
+function renderTL(){
+  document.getElementById('tl-list').innerHTML=D.timeline.map(t=>`
+    <div class="tl-item">
+      <div class="tl-dot ${t.status}"></div>
+      <div class="tl-date">${t.date} <button class="btn btn-sm btn-ghost" style="font-size:0.65rem;padding:0.1rem 0.3rem;" onclick="editTL(${t.id})">â</button></div>
+      <div class="tl-title">${t.title}</div>
+      <div class="tl-desc">${t.desc}</div>
+    </div>`).join('');
+}
+function editTL(id){
+  editTLId=id;const t=D.timeline.find(x=>x.id===id);
+  document.getElementById('te-date').value=t.date;
+  document.getElementById('te-st').value=t.status;
+  document.getElementById('te-title').value=t.title;
+  document.getElementById('te-desc').value=t.desc;
+  openModal('m-tl-edit');
+}
+function saveTLEdit(){
+  const t=D.timeline.find(x=>x.id===editTLId);
+  t.date=document.getElementById('te-date').value;
+  t.status=document.getElementById('te-st').value;
+  t.title=document.getElementById('te-title').value;
+  t.desc=document.getElementById('te-desc').value;
+  closeModal('m-tl-edit');renderTL();save();toast('Marco actualizado.');
+}
+function deleteTL(){D.timeline=D.timeline.filter(x=>x.id!==editTLId);closeModal('m-tl-edit');renderTL();save();toast('Marco removido.');}
+function addTL(){
+  const t=document.getElementById('tl-i-title').value.trim();if(!t)return;
+  D.timeline.push({id:++D.nid,date:document.getElementById('tl-i-date').value,status:document.getElementById('tl-i-st').value,title:t,desc:document.getElementById('tl-i-desc').value});
+  ['tl-i-date','tl-i-title','tl-i-desc'].forEach(x=>document.getElementById(x).value='');
+  renderTL();save();toast('Marco adicionado.');
+}
+
+// âââ RENDER: PHASES ââââââââââââââââââââââââââââââââââââââ
+function renderPhases(){
+  const phases=[{n:1,title:'Fase 1 â Porto Real + ExploraÃ§Ã£o',sub:'VerÃ£o 2026',accent:true},{n:2,title:'Fase 2 â Winterfell + ExpansÃ£o',sub:'ApÃ³s validaÃ§Ã£o Fase 1'},{n:3,title:'Fase 3 â PolÃ­tica + Endgame',sub:'2027'}];
+  const sb={done:'b-done',wip:'b-wip',todo:'b-todo',blocked:'b-blocked'};
+  const sl={done:'Feito',wip:'Em Dev',todo:'A Fazer',blocked:'Bloqueado'};
+  document.getElementById('phases-content').innerHTML=phases.map(ph=>{
+    const items=D.systems.filter(s=>s.phase===ph.n);
+    return`<div class="card" style="margin-bottom:0.75rem;${ph.accent?'border-color:rgba(245,158,11,0.3);':''}">
+      <div class="card-title" style="${ph.accent?'color:var(--accent);':''}">${ph.title}<span style="font-weight:400;font-size:0.6rem;text-transform:none;letter-spacing:0;color:var(--fg3);margin-left:0.5rem;">${ph.sub}</span></div>
+      <div class="card-body">${items.map(s=>`<div style="margin-bottom:0.3rem;"><span class="badge ${sb[s.status]}">${sl[s.status]}</span> <span style="margin-left:0.3rem;">${s.name}${s.deadline?' â '+s.deadline:''}</span></div>`).join('')}</div>
+    </div>`;
+  }).join('');
+}
+
+// âââ RENDER: DECISIONS âââââââââââââââââââââââââââââââââââ
+function renderDec(){
+  document.getElementById('dec-list').innerHTML=D.decisions.map(d=>`
+    <div class="card" style="margin-bottom:0.5rem;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div><strong>${d.title}</strong><div style="font-size:0.8rem;color:var(--fg3);margin-top:0.2rem;">${d.reason}</div></div>
+        <div style="display:flex;gap:0.3rem;align-items:center;flex-shrink:0;">
+          <span style="font-size:0.65rem;color:var(--fg3);">${d.date}</span>
+          <button class="btn btn-sm btn-icon btn-danger" onclick="delDec(${d.id})">â</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function addDec(){const t=document.getElementById('dec-i-t').value.trim();if(!t)return;const now=new Date();const m=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];D.decisions.push({id:++D.nid,title:t,reason:document.getElementById('dec-i-r').value,date:`${m[now.getMonth()]} ${now.getFullYear()}`});document.getElementById('dec-i-t').value='';document.getElementById('dec-i-r').value='';renderDec();save();toast('DecisÃ£o registada.');}
+function delDec(id){D.decisions=D.decisions.filter(x=>x.id!==id);renderDec();save();}
+
+// âââ AI ââââââââââââââââââââââââââââââââââââââââââââââââââ
+let aiRole='geral';
+let aiHistory=[];
+const aiWelcome={
+  geral:'OlÃ¡. Tenho contexto completo do projecto â sistemas, prazos, decisÃµes, assets. Pergunta o que precisares.',
+  prog:'Modo Programador activo. Posso ajudar com arquitectura Luau/Roblox, debugging, integraÃ§Ã£o de sistemas, estrutura de mÃ³dulos, networking. Manda cÃ³digo ou descreve o problema.',
+  model:'Modo Modelador activo. Posso ajudar com prioridades de assets, especificaÃ§Ãµes tÃ©cnicas (poly count, textures, rigs), pipeline de entrega, e referÃªncias visuais para cada peÃ§a.',
+  ideias:'Modo Ideias & Design activo. Vamos explorar mecÃ¢nicas, loops de gameplay, narrativa, progressÃ£o, eventos. Posso propor features novas, analisar se encaixam no que jÃ¡ existe, e ajudar a expandir o GDD.'
+};
+const aiLabels={geral:'Assistente CGF',prog:'Assistente Â· Programador',model:'Assistente Â· Modelador',ideias:'Assistente Â· Ideias'};
+const quickActions={
+  geral:[
+    {label:'Estado do projecto',msg:'DÃ¡-me um resumo rÃ¡pido do estado actual do projecto â o que estÃ¡ feito, o que falta, e os prÃ³ximos passos.'},
+    {label:'PrÃ³ximos prazos',msg:'Quais sÃ£o os prazos mais urgentes e o que precisa de ser feito primeiro?'},
+    {label:'Riscos e bloqueios',msg:'Analisa possÃ­veis riscos ou bloqueios no plano actual. O que pode atrasar o lanÃ§amento?'},
+    {label:'Prioridades Fase 1',msg:'Qual deve ser a ordem de prioridade para fechar tudo da Fase 1?'}
+  ],
+  prog:[
+    {label:'Arquitectura Combate',msg:'Sugere uma arquitectura em Luau para o sistema de combate â mÃ³dulos, comunicaÃ§Ã£o server/client, hitbox validation.'},
+    {label:'Atributos RPG â estrutura',msg:'Como estruturar o sistema de atributos RPG (ForÃ§a, Destreza, ResistÃªncia, Magia, Stamina) em mÃ³dulos Luau? ProgressÃ£o por uso estilo Skyrim.'},
+    {label:'Integrar sistemas',msg:'Como os sistemas actuais (profissÃµes, economia, reputaÃ§Ã£o) devem comunicar entre si? PropÃµe uma arquitectura de eventos/mÃ³dulos.'},
+    {label:'Anti-exploit',msg:'Quais sÃ£o os pontos mais vulnerÃ¡veis a exploits no projecto actual e como proteger?'},
+    {label:'Debugging help',msg:'Tenho um bug â vou descrever o comportamento. Ajuda-me a diagnosticar.'}
+  ],
+  model:[
+    {label:'Lista de prioridades',msg:'DÃ¡-me a lista de assets por ordem de prioridade com specs tÃ©cnicas recomendadas (polycount, textures, estilo).'},
+    {label:'Specs armas tier 1-2',msg:'Quais devem ser as specs tÃ©cnicas para as armas Tier 1 e Tier 2? Polycount, texture resolution, estilo visual.'},
+    {label:'Specs armaduras',msg:'Specs tÃ©cnicas para as armaduras dos 3 tiers â couro, malha e placa. Como devem diferir visualmente?'},
+    {label:'Pipeline de entrega',msg:'Sugere um pipeline de entrega eficiente: formatos, naming convention, organizaÃ§Ã£o de ficheiros, checklist de qualidade.'},
+    {label:'ReferÃªncias visuais',msg:'Que referÃªncias visuais devo seguir para manter consistÃªncia com o estilo GOT/medieval do projecto?'}
+  ],
+  ideias:[
+    {label:'MecÃ¢nicas novas',msg:'Sugere 3-5 mecÃ¢nicas que encaixariam bem no projecto actual, considerando o que jÃ¡ estÃ¡ feito e o tema medieval/RPG.'},
+    {label:'Loop de gameplay',msg:'Analisa o core gameplay loop actual. O que faz o jogador querer continuar a jogar? Onde estÃ£o as lacunas?'},
+    {label:'Eventos sazonais',msg:'PropÃµe ideias de eventos sazonais/temporÃ¡rios que faÃ§am sentido no universo de Gelo e Fogo e usem os sistemas existentes.'},
+    {label:'MonetizaÃ§Ã£o',msg:'Ideias de monetizaÃ§Ã£o Ã©ticas para Roblox que nÃ£o sejam pay-to-win e respeitem o espÃ­rito RPG do jogo.'},
+    {label:'Narrativa / Lore',msg:'Ajuda a expandir o lore do universo prÃ³prio â facÃ§Ãµes, conflitos, personagens NPC que enriqueÃ§am o mundo.'},
+    {label:'Onboarding',msg:'Como deve ser a primeira hora de um jogador novo? PropÃµe um fluxo de onboarding que ensine sem ser tutorial forÃ§ado.'}
+  ]
+};
+
+function switchRole(role){
+  aiRole=role;
+  document.querySelectorAll('.ai-role').forEach(b=>b.classList.toggle('active',b.dataset.role===role));
+  renderQuickActions();
+  clearChat();
+}
+function renderQuickActions(){
+  const acts=quickActions[aiRole]||[];
+  document.getElementById('ai-quick').innerHTML=acts.map(a=>`<button class="ai-qbtn" onclick="sendQuick(this)" data-msg="${a.msg.replace(/"/g,'&quot;')}">${a.label}</button>`).join('');
+}
+function sendQuick(btn){
+  document.getElementById('ai-inp').value=btn.dataset.msg;
+  sendAI();
+}
+function clearChat(){
+  aiHistory=[];
+  const msgs=document.getElementById('ai-msgs');
+  msgs.innerHTML='';
+  // Mensagem de boas-vindas nÃ£o entra no histÃ³rico (nÃ£o Ã© enviada ao modelo)
+  addMsg('bot',aiWelcome[aiRole]);
+  updateMsgCount();
+}
+function updateMsgCount(){
+  const c=aiHistory.filter(m=>m.role==='user').length;
+  document.getElementById('ai-msg-count').textContent=c;
+  const labels={geral:'Geral',prog:'Programador',model:'Modelador',ideias:'Ideias'};
+  document.getElementById('ai-status').innerHTML=`Modo: ${labels[aiRole]} Â· <span id="ai-msg-count">${c}</span> mensagens`;
+}
+
+function buildSystemPrompt(){
+  const base=`Ãs o assistente tÃ©cnico do projecto "CrÃ´nicas de Gelo e Fogo" â um RP/RPG no Roblox inspirado em GOT (211 AC) mas com universo prÃ³prio.
+
+ESTADO DO PROJECTO:
+- Sistemas completos: ${D.systems.filter(s=>s.status==='done').map(s=>s.name).join(', ')}
+- Em desenvolvimento: ${D.systems.filter(s=>s.status==='wip').map(s=>s.name+(s.deadline?' (prazo: '+s.deadline+')':'')).join(', ')}
+- A fazer Fase 1: ${D.systems.filter(s=>s.status==='todo'&&s.phase===1).map(s=>s.name).join(', ')}
+- A fazer Fase 2: ${D.systems.filter(s=>s.status==='todo'&&s.phase===2).map(s=>s.name).join(', ')}
+- A fazer Fase 3: ${D.systems.filter(s=>s.status==='todo'&&s.phase===3).map(s=>s.name).join(', ')}
+
+DETALHES DOS SISTEMAS:
+${D.systems.map(s=>`[${s.status.toUpperCase()}] ${s.name} (Fase ${s.phase}): ${s.desc} | IntegraÃ§Ã£o: ${s.integration}`).join('\n')}
+
+ASSETS DO MODELADOR:
+${D.assets.map(a=>`#${a.priority} ${a.name} (${a.cat}) â Prazo: ${a.deadline} â Estado: ${a.status}`).join('\n')}
+
+CALENDÃRIO:
+${D.timeline.map(t=>`[${t.status||'todo'}] ${t.date} â ${t.title}: ${t.desc}`).join('\n')}
+
+DECISÃES TOMADAS:
+${D.decisions.map(d=>`- ${d.title}: ${d.reason}`).join('\n')}
+
+REFERÃNCIAS: Skyrim (progressÃ£o por uso), Witcher 3 (mundo/narrativa), GTA RP (interacÃ§Ã£o social)
+ATRIBUTOS: ForÃ§a, Destreza, ResistÃªncia, Magia, Stamina (progressÃ£o por uso, sem classes)
+LANÃAMENTO: Exclusivo Jun 2026 (testers). PÃºblico 2027.
+PLATAFORMA: Roblox (Luau)`;
+
+  const roleCtx={
+    geral:`\n\nResponde conciso, tÃ©cnico, directo. PortuguÃªs. Sem emojis. Podes usar markdown para estruturar (negrito, listas, blocos de cÃ³digo).`,
+    prog:`\n\nMODO PROGRAMADOR ACTIVO.
+Foco: Luau, Roblox Studio, arquitectura de sistemas, mÃ³dulos, RemoteEvents/Functions, ReplicatedStorage vs ServerStorage, anti-exploit, optimizaÃ§Ã£o.
+Quando o utilizador partilhar cÃ³digo, analisa e sugere melhorias.
+Quando pedir arquitectura, propÃµe estrutura de mÃ³dulos com nomes concretos.
+Usa blocos de cÃ³digo Luau. SÃª directo e tÃ©cnico. PortuguÃªs. Sem emojis.
+O projecto usa ModuleScripts organizados, comunicaÃ§Ã£o server-client via RemoteEvents.`,
+    model:`\n\nMODO MODELADOR ACTIVO.
+Foco: Assets 3D para Roblox, prioridades de produÃ§Ã£o, specs tÃ©cnicas (polycount, textures, UV, rigging), pipeline de entrega, naming conventions, consistÃªncia visual medieval.
+Considera as limitaÃ§Ãµes do Roblox (MeshParts, SurfaceAppearance, streaming).
+Quando der specs, sÃª concreto: "Espada Tier 1: ~800 tris, 256x256 texture, sem rig."
+PortuguÃªs. Sem emojis. Directo.`,
+    ideias:`\n\nMODO IDEIAS & DESIGN ACTIVO.
+Foco: Game design, mecÃ¢nicas, loops de gameplay, progressÃ£o, narrativa, eventos, monetizaÃ§Ã£o, UX, worldbuilding.
+Quando propuseres features, analisa sempre: como integra com o que jÃ¡ existe? Qual o custo de dev? Vale a pena para Fase 1 ou adia para depois?
+SÃª criativo mas prÃ¡tico. Fundamenta as ideias no que o projecto jÃ¡ tem.
+PortuguÃªs. Sem emojis. Estrutura as propostas com prÃ³s, contras e integraÃ§Ã£o.`
+  };
+  return base+(roleCtx[aiRole]||roleCtx.geral);
+}
+
+function parseMD(text){
+  let h=text;
+  h=h.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  // code blocks
+  h=h.replace(/```(\w*)\n([\s\S]*?)```/g,(m,lang,code)=>`<pre><code>${code.trim()}</code></pre>`);
+  // inline code
+  h=h.replace(/`([^`]+)`/g,'<code>$1</code>');
+  // bold
+  h=h.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+  // h4
+  h=h.replace(/^#### (.+)$/gm,'<h4>$1</h4>');
+  // h3
+  h=h.replace(/^### (.+)$/gm,'<h3>$1</h3>');
+  // unordered list
+  h=h.replace(/^- (.+)$/gm,'<li>$1</li>');
+  h=h.replace(/((?:<li>.*<\/li>\n?)+)/g,'<ul>$1</ul>');
+  // numbered list â use interim tag to avoid merging with <ul> items
+  h=h.replace(/^\d+\. (.+)$/gm,'<oitem>$1</oitem>');
+  h=h.replace(/((?:<oitem>.*<\/oitem>\n?)+)/g,(m)=>'<ol>'+m.replace(/<oitem>/g,'<li>').replace(/<\/oitem>/g,'</li>')+'</ol>');
+  return h;
+}
+
+const GEMINI_KEY='AIzaSyC8_FrrEF8rNgY6Qa_4_UlJcYRy-ZTqQ9k';
+
+// Models to try in order (fallback chain)
+const GEMINI_MODELS = [
+  'gemini-2.5-flash',
+  'gemini-2.0-flash',
+  'gemini-2.0-flash-lite'
+];
+
+window.toggleApiKeyInput = function() {
+  const container = document.getElementById('api-key-container');
+  const input = document.getElementById('custom-gemini-key');
+  if (container.style.display === 'none' || container.style.display === '') {
+    container.style.display = 'flex';
+    input.value = localStorage.getItem('custom_gemini_key') || '';
+  } else {
+    container.style.display = 'none';
+  }
+};
+
+window.saveCustomKey = function() {
+  const key = document.getElementById('custom-gemini-key').value.trim();
+  if (key) {
+    localStorage.setItem('custom_gemini_key', key);
+    toast('Chave Gemini API guardada! A IA agora usa a tua chave.');
+  } else {
+    localStorage.removeItem('custom_gemini_key');
+    toast('Chave removida. A usar a chave padrÃ£o do site.');
+  }
+  document.getElementById('api-key-container').style.display = 'none';
+};
+
+// Core API call with fallback models
+async function callGeminiAPI(sysPrompt, hist, activeKey) {
+  let lastError = null;
+  
+  for (const model of GEMINI_MODELS) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${activeKey}`;
+    try {
+      const r = await fetch(url, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          system_instruction: {parts: [{text: sysPrompt}]},
+          contents: hist,
+          generationConfig: {maxOutputTokens: 2048, temperature: 0.7}
+        })
+      });
+      const d = await r.json();
+      
+      if (d.error) {
+        lastError = d.error.message || JSON.stringify(d.error);
+        // If quota error, try next model
+        if (d.error.code === 429 || (d.error.message && d.error.message.includes('quota'))) {
+          console.warn(`Modelo ${model} com quota esgotada, a tentar prÃ³ximo...`);
+          continue;
+        }
+        throw new Error(lastError);
+      }
+      
+      const text = d.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!text) throw new Error('Resposta vazia do modelo.');
+      return text;
+    } catch (fetchErr) {
+      lastError = fetchErr.message || 'Erro de rede';
+      // Network errors â try next model
+      if (fetchErr.name === 'TypeError' || (fetchErr.message && fetchErr.message.includes('quota'))) {
+        continue;
+      }
+      throw fetchErr;
+    }
+  }
+  
+  // All models failed
+  throw new Error(lastError || 'Todos os modelos falharam.');
+}
+
+let _aiRetryData = null;
+
+async function sendAI(isRetry) {
+  const inp = document.getElementById('ai-inp');
+  
+  if (!isRetry) {
+    const msg = inp.value.trim();
+    if (!msg) return;
+    inp.value = '';
+    addMsg('usr', msg);
+    aiHistory.push({role: 'user', parts: [{text: msg}]});
+    updateMsgCount();
+  }
+  
+  // Show loading
+  addMsg('bot', '<span class="ai-thinking">A pensar<span class="ai-dot"></span><span class="ai-dot"></span><span class="ai-dot"></span></span>');
+
+  const sysPrompt = buildSystemPrompt();
+  const hist = aiHistory.slice(-20);
+  const activeKey = localStorage.getItem('custom_gemini_key') || GEMINI_KEY;
+
+  try {
+    const text = await callGeminiAPI(sysPrompt, hist, activeKey);
+    aiHistory.push({role: 'model', parts: [{text: text}]});
+    const lastBot = document.querySelector('.ai-msg.bot:last-child .ai-bubble');
+    if (lastBot) lastBot.innerHTML = parseMD(text);
+    _aiRetryData = null;
+  } catch(e) {
+    const lastBot = document.querySelector('.ai-msg.bot:last-child .ai-bubble');
+    const isQuota = e.message && (e.message.includes('quota') || e.message.includes('429') || e.message.includes('exceeded'));
+    
+    let errorHTML = '';
+    if (isQuota) {
+      errorHTML = `<div style="color:var(--red);font-size:0.8rem;">
+        <strong>Limite da API atingido.</strong> A chave Gemini gratuita esgotou a cota diÃ¡ria.<br><br>
+        <strong>SoluÃ§Ã£o:</strong> Clica em <strong>â API Key</strong> abaixo e coloca a tua prÃ³pria chave.<br>
+        Podes criar uma grÃ¡tis em <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--accent);">aistudio.google.com/apikey</a><br><br>
+        <button class="btn btn-sm btn-accent" onclick="sendAI(true)" style="margin-top:0.3rem;">â» Tentar novamente</button>
+      </div>`;
+    } else {
+      errorHTML = `<div style="color:var(--red);font-size:0.8rem;">
+        Erro: ${e.message}<br>
+        <button class="btn btn-sm btn-accent" onclick="sendAI(true)" style="margin-top:0.5rem;">â» Tentar novamente</button>
+      </div>`;
+    }
+    
+    if (lastBot) lastBot.innerHTML = errorHTML;
+    console.error('AI Error:', e);
+  }
+}
+function addMsg(r,t){const m=document.getElementById('ai-msgs');const d=document.createElement('div');d.className='ai-msg '+r;const label=r==='usr'?'Tu':aiLabels[aiRole];d.innerHTML=`<div><div class="ai-who">${label}</div><div class="ai-bubble">${r==='bot'?t:t.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`;m.appendChild(d);m.scrollTop=m.scrollHeight;}
+
+// âââ HELPERS âââââââââââââââââââââââââââââââââââââââââââââ
+function formatRelTime(d){
+  const diff=Math.floor((Date.now()-new Date(d))/1000);
+  if(diff<60)return'agora';if(diff<3600)return Math.floor(diff/60)+'m';
+  if(diff<86400)return Math.floor(diff/3600)+'h';
+  return new Date(d).toLocaleDateString('pt-PT',{day:'2-digit',month:'short'});
+}
+
+// âââ PROGRESS CHART ââââââââââââââââââââââââââââââââââââââ
+function recordSnapshot(){
+  const done=D.systems.filter(s=>s.status==='done').length;
+  const pct=Math.round(done/D.systems.length*100);
+  const today=new Date().toISOString().slice(0,10);
+  let snaps=JSON.parse(localStorage.getItem('cgf_snaps')||'[]');
+  if(!snaps.length||snaps[snaps.length-1].date!==today){
+    snaps.push({date:today,pct});
+    if(snaps.length>60)snaps=snaps.slice(-60);
+    localStorage.setItem('cgf_snaps',JSON.stringify(snaps));
+  }
+}
+function renderProgressChart(){
+  const el=document.getElementById('dash-chart');if(!el)return;
+  recordSnapshot();
+  let snaps=JSON.parse(localStorage.getItem('cgf_snaps')||'[]');
+  const done=D.systems.filter(s=>s.status==='done').length;
+  const pct=Math.round(done/D.systems.length*100);
+  const today=new Date().toISOString().slice(0,10);
+  if(!snaps.length||snaps[snaps.length-1].date!==today)snaps=[...snaps,{date:today,pct}];
+  if(snaps.length<2){el.innerHTML=`<div style="color:var(--fg3);font-size:0.78rem;padding:0.5rem 0;">Sem dados histÃ³ricos ainda â o grÃ¡fico aparece ao longo dos dias.</div>`;return;}
+  const W=500,H=100,PL=30,PR=10,PT=15,PB=20;
+  const iW=W-PL-PR,iH=H-PT-PB;
+  const xs=snaps.map((_,i)=>PL+i/(snaps.length-1)*iW);
+  const ys=snaps.map(s=>PT+iH-(s.pct/100)*iH);
+  const line=xs.map((x,i)=>`${i?'L':'M'}${x.toFixed(1)},${ys[i].toFixed(1)}`).join('');
+  const area=`M${xs[0].toFixed(1)},${(PT+iH).toFixed(1)}${line}L${xs[xs.length-1].toFixed(1)},${(PT+iH).toFixed(1)}Z`;
+  const dots=snaps.map((s,i)=>`<circle cx="${xs[i].toFixed(1)}" cy="${ys[i].toFixed(1)}" r="3" fill="var(--accent)" title="${s.date}: ${s.pct}%"/>`).join('');
+  const gridLines=[0,25,50,75,100].map(v=>{const y=(PT+iH-(v/100)*iH).toFixed(1);return`<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="var(--border)" stroke-width="1"/><text x="${(PL-3).toFixed(0)}" y="${(parseFloat(y)+3).toFixed(0)}" font-size="8" fill="var(--fg3)" text-anchor="end">${v}%</text>`;}).join('');
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:110px;">
+    <defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--accent)" stop-opacity="0.25"/><stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>
+    ${gridLines}
+    <path d="${area}" fill="url(#cg)"/>
+    <path d="${line}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    ${dots}
+    <text x="${xs[0].toFixed(1)}" y="${H}" font-size="8" fill="var(--fg3)" text-anchor="start">${snaps[0].date.slice(5)}</text>
+    <text x="${xs[xs.length-1].toFixed(1)}" y="${H}" font-size="8" fill="var(--fg3)" text-anchor="end">${snaps[snaps.length-1].date.slice(5)}</text>
+  </svg>`;
+}
+
+// âââ CHANGELOG âââââââââââââââââââââââââââââââââââââââââââ
+window.changelogItems=[];
+function renderChangelog(){
+  const el=document.getElementById('dash-changelog');if(!el)return;
+  const items=window.changelogItems||[];
+  el.innerHTML=items.length?items.slice(0,15).map(c=>`<div class="cl-item"><span class="cl-who">${c.user||'?'}</span><span class="cl-what">${c.action}</span><span class="cl-when">${formatRelTime(c.date)}</span></div>`).join(''):`<div style="color:var(--fg3);font-size:0.78rem;">Sem alteraÃ§Ãµes registadas.</div>`;
+}
+
+// âââ PDF EXPORT ââââââââââââââââââââââââââââââââââââââââââ
+function exportPDF(){
+  const sl={done:'Completo',wip:'Em Dev',todo:'A Fazer',blocked:'Bloqueado'};
+  const sc={done:'#166534',wip:'#92400e',todo:'#6b7280',blocked:'#991b1b'};
+  const sb={done:'#dcfce7',wip:'#fef9c3',todo:'#f3f4f6',blocked:'#fee2e2'};
+  let body=`<h1 style="border-bottom:3px solid #f59e0b;padding-bottom:8px;font-size:22px;">CGF Project Hub</h1>
+  <p style="color:#6b7280;font-size:13px;">Exportado em ${new Date().toLocaleDateString('pt-PT',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})}</p>`;
+  [1,2,3].forEach(ph=>{
+    const items=D.systems.filter(s=>s.phase===ph);if(!items.length)return;
+    body+=`<h2 style="margin-top:22px;font-size:15px;color:#374151;border-left:4px solid #f59e0b;padding-left:8px;">Fase ${ph}</h2><table style="width:100%;border-collapse:collapse;margin-top:8px;font-size:12px;"><tr style="background:#f9fafb;"><th style="padding:6px 8px;text-align:left;border-bottom:2px solid #e5e7eb;">Sistema</th><th style="padding:6px 8px;text-align:left;border-bottom:2px solid #e5e7eb;">Estado</th><th style="padding:6px 8px;text-align:left;border-bottom:2px solid #e5e7eb;">Prazo</th></tr>`;
+    items.forEach(s=>{body+=`<tr><td style="padding:5px 8px;border-bottom:1px solid #f3f4f6;">${s.name}${s.tasks&&s.tasks.length?` <span style="color:#9ca3af;font-size:11px;">(${s.tasks.filter(t=>t.done).length}/${s.tasks.length} subtarefas)</span>`:''}</td><td style="padding:5px 8px;border-bottom:1px solid #f3f4f6;"><span style="background:${sb[s.status]||'#f3f4f6'};color:${sc[s.status]||'#6b7280'};padding:2px 6px;border-radius:4px;font-size:11px;font-weight:600;">${sl[s.status]||s.status}</span></td><td style="padding:5px 8px;border-bottom:1px solid #f3f4f6;color:#6b7280;">${s.deadline||'â'}</td></tr>`;});
+    body+='</table>';
+  });
+  body+=`<h2 style="margin-top:22px;font-size:15px;color:#374151;border-left:4px solid #f59e0b;padding-left:8px;">CalendÃ¡rio</h2><ul style="font-size:12px;color:#374151;line-height:1.8;">`;
+  D.timeline.forEach(t=>body+=`<li><strong>${t.date}</strong> â ${t.title}: <span style="color:#6b7280;">${t.desc}</span></li>`);
+  body+=`</ul><h2 style="margin-top:22px;font-size:15px;color:#374151;border-left:4px solid #f59e0b;padding-left:8px;">DecisÃµes</h2><ul style="font-size:12px;color:#374151;line-height:1.8;">`;
+  D.decisions.forEach(d=>body+=`<li><strong>${d.title}</strong> â ${d.reason}</li>`);
+  body+='</ul>';
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>CGF Project Hub â RelatÃ³rio</title><style>body{font-family:system-ui,Arial,sans-serif;margin:2.5cm;color:#111;line-height:1.6;}@media print{body{margin:1.5cm;}}</style></head><body>${body}</body></html>`);
+  w.document.close();setTimeout(()=>w.print(),400);
+}
+
+// âââ DRAG & DROP (SYSTEMS) âââââââââââââââââââââââââââââââ
+let _dragSysId=null;
+function dragSysStart(e,id){_dragSysId=id;e.dataTransfer.effectAllowed='move';setTimeout(()=>{const el=document.getElementById('s'+id);if(el)el.classList.add('dragging');},0);}
+function dragSysOver(e,id){e.preventDefault();e.dataTransfer.dropEffect='move';document.querySelectorAll('.sys.drag-over').forEach(el=>el.classList.remove('drag-over'));if(id!==_dragSysId){const el=document.getElementById('s'+id);if(el)el.classList.add('drag-over');}}
+function dragSysDrop(e,targetId){
+  e.preventDefault();
+  if(_dragSysId===null||_dragSysId===targetId)return;
+  const fi=D.systems.findIndex(s=>s.id===_dragSysId);
+  const ti=D.systems.findIndex(s=>s.id===targetId);
+  if(fi<0||ti<0)return;
+  const[moved]=D.systems.splice(fi,1);D.systems.splice(ti,0,moved);
+  if(window.logChange)window.logChange(`Reordenou "${moved.name}"`);
+  renderSys();save();toast('Ordem atualizada.');
+}
+function dragSysEnd(){_dragSysId=null;document.querySelectorAll('.sys.dragging,.sys.drag-over').forEach(el=>el.classList.remove('dragging','drag-over'));}
+
+// âââ EXPORT ââââââââââââââââââââââââââââââââââââââââââââââ
+function exportData(){
+  const sl={done:'Completo',wip:'Em Dev',todo:'A Fazer'};
+  let txt=`# CRÃNICAS DE GELO E FOGO â ESTADO DO PROJECTO\nData: ${new Date().toLocaleDateString('pt-PT')}\n\n`;
+  [1,2,3].forEach(ph=>{
+    const items=D.systems.filter(s=>s.phase===ph);
+    if(items.length){txt+=`## FASE ${ph}\n`;items.forEach(s=>{txt+=`[${sl[s.status]||s.status}] ${s.name}${s.deadline?' â Prazo: '+s.deadline:''}\n  Desc: ${s.desc}\n  IntegraÃ§Ã£o: ${s.integration}\n\n`;});}
+  });
+  txt+=`## ASSETS MODELADOR\n`;D.assets.sort((a,b)=>a.priority-b.priority).forEach(a=>{txt+=`[${sl[a.status]}] #${a.priority} ${a.name} (${a.cat}) â Prazo: ${a.deadline}\n`;});
+  txt+=`\n## CALENDÃRIO\n`;D.timeline.forEach(t=>{txt+=`[${t.status==='done'?'â':t.status==='active'?'âº':'â'}] ${t.date} â ${t.title}: ${t.desc}\n`;});
+  txt+=`\n## DECISÃES\n`;D.decisions.forEach(d=>{txt+=`- ${d.title}: ${d.reason} (${d.date})\n`;});
+  txt+=`\n## NOTAS\nCola este texto numa conversa com o Claude para contexto completo.\n`;
+  const b=new Blob([txt],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`CGF_Estado_${new Date().toISOString().slice(0,10)}.txt`;a.click();toast('Estado exportado.');
+}
+
+// âââ MODAL / TOAST / SAVE ââââââââââââââââââââââââââââââââ
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-bg:not(#m-login):not(#m-pending)').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');});});
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+function save(){ updateSidebarCounts(); if(window.cloudSave) window.cloudSave(D); }
+function load(){ /* Handled by Firebase */ }
+
+// âââ TUTORIAL ââââââââââââââââââââââââââââââââââââââââââââ
+function showTutorial(){document.getElementById('tut-bg').classList.add('open');}
+function closeTutorial(){document.getElementById('tut-bg').classList.remove('open');localStorage.setItem('cgf_tut','1');}
+
+// âââ HELPERS âââââââââââââââââââââââââââââââââââââââââââââ
+function isOverdue(dl){
+  if(!dl)return false;
+  const ms={Jan:0,Fev:1,Mar:2,Abr:3,Mai:4,Jun:5,Jul:6,Ago:7,Set:8,Out:9,Nov:10,Dez:11};
+  const parts=dl.trim().split(/[\s\-\/]+/);
+  let day=null,month=null;
+  for(const p of parts){if(ms[p]!==undefined)month=ms[p];else{const n=parseInt(p);if(!isNaN(n)&&n>=1&&n<=31)day=n;}}
+  if(month===null)return false;
+  if(day===null)day=28;
+  const now=new Date();
+  return now>new Date(now.getFullYear(),month,day,23,59,59);
+}
+function deadlineSpan(dl){
+  if(!dl)return '';
+  const od=isOverdue(dl);
+  return `<span style="font-size:0.7rem;color:${od?'var(--red)':'var(--fg3)'};">â± ${dl}${od?' â ':''}</span>`;
+}
+function deadlineInput(id,dl){
+  const od=isOverdue(dl);
+  return `<input class="inp" style="width:80px;padding:0.2rem 0.4rem;font-size:0.75rem;${od?'border-color:var(--red);color:var(--red);':''}" value="${dl}" onchange="D.assets.find(x=>x.id===${id}).deadline=this.value;save();renderModel();">`;
+}
+
+function renderPhaseProgress(){
+  const el=document.getElementById('dash-phase-progress');if(!el)return;
+  const phases=[{n:1,name:'Fase 1',color:'var(--accent)'},{n:2,name:'Fase 2',color:'var(--blue)'},{n:3,name:'Fase 3',color:'var(--purple)'}];
+  el.innerHTML=phases.map(ph=>{
+    const items=D.systems.filter(s=>s.phase===ph.n);
+    const done=items.filter(s=>s.status==='done').length;
+    const pct=items.length?Math.round(done/items.length*100):0;
+    return`<div class="card" style="padding:0.75rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
+        <span style="font-size:0.72rem;font-weight:700;color:var(--fg2);cursor:pointer;" onclick="navFilterSys(${ph.n})">${ph.name}</span>
+        <span style="font-size:0.72rem;font-weight:700;color:${ph.color};">${done}/${items.length}</span>
+      </div>
+      <div style="height:4px;background:var(--bg);border-radius:2px;overflow:hidden;">
+        <div class="prog-bar-inner" data-w="${pct}" style="background:${ph.color};"></div>
+      </div>
+    </div>`;
+  }).join('');
+  setTimeout(()=>{el.querySelectorAll('.prog-bar-inner').forEach(b=>b.style.width=b.dataset.w+'%');},80);
+}
+
+function updateSidebarCounts(){
+  const counts={
+    sys:`${D.systems.filter(s=>s.status==='done').length}/${D.systems.length}`,
+    model:`${D.assets.filter(a=>a.status==='done').length}/${D.assets.length}`,
+    tl:D.timeline.filter(t=>t.status!=='done').length,
+    dec:D.decisions.length
+  };
+  Object.entries(counts).forEach(([key,val])=>{
+    const item=document.querySelector(`[data-p="${key}"]`);if(!item)return;
+    let span=item.querySelector('.side-count');
+    if(!span){span=document.createElement('span');span.className='side-count';item.appendChild(span);}
+    span.textContent=val;
+  });
+}
+
+// âââ IMPORT / EXPORT JSON ââââââââââââââââââââââââââââââââ
+function exportJSON(){
+  const b=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);
+  a.download=`CGF_Backup_${new Date().toISOString().slice(0,10)}.json`;a.click();
+  toast('Backup JSON exportado.');
+}
+function importData(){document.getElementById('import-file').click();}
+function handleImport(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      const data=JSON.parse(ev.target.result);
+      if(data.systems&&data.timeline&&data.assets&&data.decisions){
+        D=data;
+        if(!D.nid)D.nid=Math.max(...[...D.systems,...D.timeline,...D.assets,...D.decisions].map(x=>x.id||0))+1;
+        save();nav('dash');toast('Dados restaurados com sucesso!');
+      }else{toast('Ficheiro invÃ¡lido â estrutura incorrecta.');}
+    }catch(err){toast('Erro ao ler ficheiro â JSON invÃ¡lido.');}
+  };
+  reader.readAsText(file);e.target.value='';
+}
+
+// âââ KEYBOARD SHORTCUTS ââââââââââââââââââââââââââââââââââ
+const navKeys={1:'dash',2:'tl',3:'phases',4:'sys',5:'model',6:'ai',7:'dec'};
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')return;
+  if(e.key==='Escape'){document.querySelectorAll('.modal-bg.open:not(#m-login):not(#m-pending)').forEach(m=>m.classList.remove('open'));document.getElementById('tut-bg').classList.remove('open');return;}
+  if(e.key==='/'){e.preventDefault();const s=document.getElementById('sys-search');if(s){nav('sys');setTimeout(()=>s.focus(),100);}return;}
+  if(navKeys[e.key])nav(navKeys[e.key]);
+});
+
+// âââ AUTO-SAVE DEBOUNCE ââââââââââââââââââââââââââââââââââ
+let _ast=null;
+document.addEventListener('input',e=>{
+  if(e.target.closest('.sys-body')){
+    clearTimeout(_ast);
+    _ast=setTimeout(()=>{const el=e.target.closest('.sys');if(el){const id=parseInt(el.id.replace('s',''));if(id)saveSys(id);}},1500);
+  }
+});
+
+// âââ BEFOREUNLOAD ââââââââââââââââââââââââââââââââââââââââ
+window.addEventListener('beforeunload',e=>{if(document.querySelector('.sys.open'))e.preventDefault();});
+
+// âââ CURRENT USER DISPLAY ââââââââââââââââââââââââââââââââ
+window.setCurrentUser = function(email) {
+  const name = email ? email.split('@')[0] : '';
+  document.getElementById('hdr-username').textContent = name;
+  document.getElementById('hdr-user').style.display = 'flex';
+};
+window.setOnlineCount = function(n) {
+  document.getElementById('hdr-online-count').textContent = n;
+  document.getElementById('hdr-online').style.display = 'flex';
+};
+
+// âââ INIT ââââââââââââââââââââââââââââââââââââââââââââââââ
+load();renderDash();renderQuickActions();clearChat();updateSidebarCounts();
+// Render landing first (with defaults), Firebase will refresh when data syncs
+renderLanding();
+// Default to landing view â onAuthStateChanged in the module below will call resetUI() once Firebase resolves
+document.body.classList.add('view-public');
+document.body.classList.remove('view-dev');
+
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// PUBLIC LANDING â render functions
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function openDevLogin(){
+  document.getElementById('m-login').classList.add('open');
+  document.body.classList.add('show-login');
+}
+function closeDevLogin(){
+  document.getElementById('m-login').classList.remove('open');
+  document.body.classList.remove('show-login');
+}
+function scrollToSection(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  window.scrollTo({top:el.offsetTop-70,behavior:'smooth'});
+}
+
+function escHTML(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// Parse a "DD Mmm" or "Mmm" Portuguese date (current year, with rollover) â Date
+function parseDeadline(dl){
+  if(!dl)return null;
+  const ms={Jan:0,Fev:1,Mar:2,Abr:3,Mai:4,Jun:5,Jul:6,Ago:7,Set:8,Out:9,Nov:10,Dez:11};
+  const parts=dl.trim().split(/[\s\-\/]+/);
+  let day=null,month=null;
+  for(const p of parts){if(ms[p]!==undefined)month=ms[p];else{const n=parseInt(p);if(!isNaN(n)&&n>=1&&n<=31)day=n;}}
+  if(month===null)return null;
+  if(day===null)day=15;
+  const now=new Date();
+  let y=now.getFullYear();
+  const d=new Date(y,month,day);
+  if(d.getTime()<now.getTime()-7*86400000)d.setFullYear(y+1);
+  return d;
+}
+
+function humanizeDeadline(dl){
+  const d=parseDeadline(dl);
+  if(!d)return dl||'Sem prazo';
+  const now=new Date();
+  const days=Math.ceil((d-now)/86400000);
+  if(days<0)return dl+' Â· atrasado';
+  if(days===0)return'Hoje';
+  if(days===1)return'AmanhÃ£';
+  if(days<14)return`Em ${days} dias`;
+  if(days<60)return`Em ${Math.round(days/7)} semanas`;
+  return`Em ${Math.round(days/30)} meses`;
+}
+
+function renderLanding(){
+  if(!document.querySelector('.landing'))return;
+  const done=D.systems.filter(s=>s.status==='done').length;
+  const wip=D.systems.filter(s=>s.status==='wip').length;
+  const total=D.systems.length;
+  const pct=total?Math.round(done/total*100):0;
+
+  // Hero
+  document.getElementById('hero-pct').textContent=pct+'%';
+  const wipList=D.systems.filter(s=>s.status==='wip');
+  document.getElementById('hero-wip').innerHTML=wipList.length
+    ? escHTML(wipList[0].name)+(wipList.length>1?` <span style="font-size:0.75rem;color:var(--ash);">+${wipList.length-1}</span>`:'')
+    : 'A preparar prÃ³ximo capÃ­tulo';
+
+  // Overview stats
+  const totalAssets=D.assets.length;
+  const doneAssets=D.assets.filter(a=>a.status==='done').length;
+  const milestones=D.timeline.length;
+  const completedMilestones=D.timeline.filter(t=>t.status==='done').length;
+  document.getElementById('lp-overview').innerHTML=`
+    <div class="l-ov-cell"><div class="l-ov-icon">â</div><div class="l-ov-num">${total}</div><div class="l-ov-label">Sistemas</div></div>
+    <div class="l-ov-cell"><div class="l-ov-icon">â¦</div><div class="l-ov-num">${done}</div><div class="l-ov-label">Forjados</div></div>
+    <div class="l-ov-cell"><div class="l-ov-icon">â</div><div class="l-ov-num">${wip}</div><div class="l-ov-label">Em Forja</div></div>
+    <div class="l-ov-cell"><div class="l-ov-icon">â</div><div class="l-ov-num">${completedMilestones}/${milestones}</div><div class="l-ov-label">Marcos</div></div>
+  `;
+
+  // Progress ring
+  const circ=2*Math.PI*105;
+  const offset=circ-(pct/100)*circ;
+  setTimeout(()=>{
+    const ringFg=document.getElementById('lp-ring-fg');
+    if(ringFg)ringFg.style.strokeDashoffset=offset;
+    document.getElementById('lp-ring-num').textContent=pct+'%';
+  },300);
+
+  // Phase bars
+  const phases=[1,2,3];
+  document.getElementById('lp-phase-bars').innerHTML=phases.map(p=>{
+    const items=D.systems.filter(s=>s.phase===p);
+    const d=items.filter(s=>s.status==='done').length;
+    const pp=items.length?Math.round(d/items.length*100):0;
+    return`<div class="l-phase-bar"><div class="l-phase-bar-label">Fase ${['I','II','III'][p-1]}</div><div class="l-phase-bar-track"><div class="l-phase-bar-fill" style="width:0%" data-w="${pp}"></div></div><div class="l-phase-bar-count">${d}/${items.length}</div></div>`;
+  }).join('');
+  setTimeout(()=>{document.querySelectorAll('.l-phase-bar-fill').forEach(b=>b.style.width=b.dataset.w+'%');},400);
+
+  // Countdown
+  const launch=new Date(2026,5,15);
+  const now=new Date();
+  let diff=Math.max(0,launch-now);
+  const days=Math.floor(diff/86400000);
+  const hours=Math.floor((diff%86400000)/3600000);
+  const mins=Math.floor((diff%3600000)/60000);
+  const secs=Math.floor((diff%60000)/1000);
+  document.getElementById('lp-countdown').innerHTML=`
+    <div class="l-cd-cell"><div class="l-cd-num">${String(days).padStart(2,'0')}</div><div class="l-cd-label">Dias</div></div>
+    <div class="l-cd-cell"><div class="l-cd-num">${String(hours).padStart(2,'0')}</div><div class="l-cd-label">Horas</div></div>
+    <div class="l-cd-cell"><div class="l-cd-num">${String(mins).padStart(2,'0')}</div><div class="l-cd-label">Minutos</div></div>
+    <div class="l-cd-cell"><div class="l-cd-num">${String(secs).padStart(2,'0')}</div><div class="l-cd-label">Segundos</div></div>
+  `;
+
+  // Current work (wip systems + nearest todo with deadline)
+  const currentItems=[...D.systems.filter(s=>s.status==='wip')];
+  if(currentItems.length<3){
+    const upcoming=D.systems.filter(s=>s.status==='todo'&&s.deadline).slice(0,3-currentItems.length);
+    currentItems.push(...upcoming);
+  }
+  if(!currentItems.length){
+    document.getElementById('lp-current').innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--ash);font-family:var(--body-serif);font-style:italic;">A forja repousa. PrÃ³ximo capÃ­tulo a ser preparado.</div>`;
+  }else{
+    document.getElementById('lp-current').innerHTML=currentItems.slice(0,6).map(s=>{
+      const isWip=s.status==='wip';
+      return`<div class="l-current-card">
+        <div class="l-current-card-head">
+          <div class="l-current-card-name">${escHTML(s.name)}</div>
+          <div class="l-current-pill">${isWip?'Em Forja':'A Caminho'}</div>
+        </div>
+        <div class="l-current-card-desc">${escHTML((s.desc||'').slice(0,180))}${s.desc&&s.desc.length>180?'â¦':''}</div>
+        <div class="l-current-card-foot">
+          <span class="l-current-foot-label">Fase ${['I','II','III'][s.phase-1]||'?'}</span>
+          <span class="l-current-foot-val">${s.deadline?humanizeDeadline(s.deadline):'A definir'}</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Saga (timeline)
+  document.getElementById('lp-saga').innerHTML=D.timeline.map((t,i)=>{
+    const st=t.status==='done'?'done':t.status==='active'?'active':'';
+    return`<div class="l-saga-item">
+      <div class="l-saga-dot ${st}"><span>${st==='done'?'â':String(i+1).padStart(2,'0')}</span></div>
+      <div class="l-saga-date ${st==='done'?'done-d':''}">${escHTML(t.date)}</div>
+      <div class="l-saga-title ${st==='done'?'done-t':''}">${escHTML(t.title)}</div>
+      <div class="l-saga-desc">${escHTML(t.desc)}</div>
+    </div>`;
+  }).join('');
+
+  // Pillars / phases
+  const phaseDef=[
+    {n:1,title:'Porto Real & ExploraÃ§Ã£o',when:'VerÃ£o 2026',featured:true,more:'CapÃ­tulo de abertura'},
+    {n:2,title:'Winterfell & ExpansÃ£o',when:'ApÃ³s validaÃ§Ã£o',featured:false,more:'CapÃ­tulo de expansÃ£o'},
+    {n:3,title:'PolÃ­tica & Endgame',when:'2027',featured:false,more:'CapÃ­tulo de prestÃ­gio'},
+  ];
+  document.getElementById('lp-pillars').innerHTML=phaseDef.map(ph=>{
+    const items=D.systems.filter(s=>s.phase===ph.n);
+    const d=items.filter(s=>s.status==='done').length;
+    const pp=items.length?Math.round(d/items.length*100):0;
+    const sample=items.slice(0,5);
+    const more=items.length-sample.length;
+    return`<div class="l-pillar ${ph.featured?'featured':''}">
+      <div class="l-pillar-num">Fase ${['I','II','III'][ph.n-1]}</div>
+      <div class="l-pillar-title">${ph.title}</div>
+      <div class="l-pillar-when">${ph.when}</div>
+      <div class="l-pillar-progress"><div class="l-pillar-bar"><div class="l-pillar-bar-fill" style="width:0%" data-w="${pp}"></div></div><span class="l-pillar-count">${d}/${items.length}</span></div>
+      <ul class="l-pillar-list">${sample.map(s=>`<li class="${s.status==='done'?'done-li':''}">${escHTML(s.name)}</li>`).join('')}</ul>
+      ${more>0?`<div class="l-pillar-more">+ ${more} ${more===1?'outro sistema':'outros sistemas'}</div>`:''}
+    </div>`;
+  }).join('');
+  setTimeout(()=>{document.querySelectorAll('.l-pillar-bar-fill').forEach(b=>b.style.width=b.dataset.w+'%');},600);
+
+  // Vault (completed)
+  const completed=D.systems.filter(s=>s.status==='done');
+  if(!completed.length){
+    document.getElementById('lp-vault').innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--ash);font-family:var(--body-serif);font-style:italic;">O cofre ainda aguarda os primeiros tesouros.</div>`;
+  }else{
+    document.getElementById('lp-vault').innerHTML=completed.map(s=>`<div class="l-vault-item"><span class="l-vault-icon">â¦</span><span class="l-vault-name">${escHTML(s.name.replace(/\s*\(\d+\)\s*/,''))}</span></div>`).join('');
+  }
+
+  // Tomos (decisions)
+  document.getElementById('lp-tomos').innerHTML=D.decisions.slice(0,6).map(d=>`<div class="l-tomo"><div class="l-tomo-title">${escHTML(d.title)}</div><div class="l-tomo-reason">${escHTML(d.reason)}</div></div>`).join('');
+
+  // Footer meta
+  document.getElementById('lp-foot-update').textContent='Ãltima actualizaÃ§Ã£o Â· '+new Date().toLocaleDateString('pt-PT',{day:'2-digit',month:'long',year:'numeric'});
+}
+
+// Countdown updater
+setInterval(()=>{
+  if(document.body.classList.contains('view-public')){
+    const el=document.getElementById('lp-countdown');
+    if(!el)return;
+    const launch=new Date(2026,5,15);
+    const now=new Date();
+    let diff=Math.max(0,launch-now);
+    const days=Math.floor(diff/86400000);
+    const hours=Math.floor((diff%86400000)/3600000);
+    const mins=Math.floor((diff%3600000)/60000);
+    const secs=Math.floor((diff%60000)/1000);
+    const cells=el.querySelectorAll('.l-cd-num');
+    if(cells.length===4){
+      cells[0].textContent=String(days).padStart(2,'0');
+      cells[1].textContent=String(hours).padStart(2,'0');
+      cells[2].textContent=String(mins).padStart(2,'0');
+      cells[3].textContent=String(secs).padStart(2,'0');
+    }
+  }
+},1000);
+
+// Scroll effects
+window.addEventListener('scroll',()=>{
+  const nav=document.getElementById('l-nav');
+  if(!nav)return;
+  nav.classList.toggle('scrolled',window.scrollY>40);
+},{passive:true});
+
+// IntersectionObserver for fadeUp
+const _io=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');_io.unobserve(e.target);}});
+},{threshold:0.12,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.fadeUp').forEach(el=>_io.observe(el));
+
+// Close login modal on outside click & ESC
+document.getElementById('m-login').addEventListener('click',e=>{
+  if(e.target.id==='m-login'&&document.body.classList.contains('view-public'))closeDevLogin();
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&document.body.classList.contains('view-public')&&document.getElementById('m-login').classList.contains('open'))closeDevLogin();
+});
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updatePassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, getDocs, updateDoc, addDoc, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDWOlV0QnecMwW60ix4ZOu86wCywrC9vLc",
+  authDomain: "cgf-projecthub.firebaseapp.com",
+  projectId: "cgf-projecthub",
+  storageBucket: "cgf-projecthub.firebasestorage.app",
+  messagingSenderId: "592638617488",
+  appId: "1:592638617488:web:25cc7ff0c679d8c814f515"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
+
+let currentRole = 'guest';
+let currentUsername = '';
+let userSub = null;
+let dataSub = null;
+let commentsSub = null;
+let changelogSub = null;
+
+// Owner emails list
+const OWNER_EMAILS = ['dino5651@got.com', 'bernardinobravo9@gmail.com'];
+function isOwnerEmail(email) {
+  return email && OWNER_EMAILS.includes(email.toLowerCase());
+}
+
+// Helper to normalize username/email input
+function getEmail(val) {
+  const trimmed = val.trim();
+  if(!trimmed) return '';
+  return trimmed.includes('@') ? trimmed : `${trimmed}@got.com`;
+}
+
+// âââ TAB SWITCHING âââââââââââââââââââââââââââââââââââââââ
+window.switchAuthTab = (tab) => {
+  const tLogin = document.getElementById('tab-login');
+  const tReg = document.getElementById('tab-register');
+  const vLogin = document.getElementById('view-login');
+  const vReg = document.getElementById('view-register');
+  document.getElementById('auth-error').textContent = '';
+  document.getElementById('reg-error').textContent = '';
+  if(tab === 'login') {
+    vLogin.style.display = '';
+    vReg.style.display = 'none';
+    tLogin.style.borderBottomColor = 'var(--accent)';
+    tLogin.style.fontWeight = '700';
+    tReg.style.borderBottomColor = 'transparent';
+    tReg.style.fontWeight = '';
+  } else {
+    vLogin.style.display = 'none';
+    vReg.style.display = '';
+    tReg.style.borderBottomColor = 'var(--accent)';
+    tReg.style.fontWeight = '700';
+    tLogin.style.borderBottomColor = 'transparent';
+    tLogin.style.fontWeight = '';
+  }
+};
+
+// âââ LOGIN WITH EMAIL ââââââââââââââââââââââââââââââââââââ
+window.loginUser = async () => {
+  const emailInput = document.getElementById('auth-email').value;
+  const e = getEmail(emailInput);
+  const p = document.getElementById('auth-pass').value;
+  const errEl = document.getElementById('auth-error');
+  
+  if(!e || !p) { errEl.textContent = "Por favor preencha todos os campos."; return; }
+  
+  try {
+    await signInWithEmailAndPassword(auth, e, p);
+    errEl.textContent = '';
+    location.reload();
+  } catch(err) {
+    // Auto-create owner accounts on first login attempt
+    if (isOwnerEmail(e)) {
+      try {
+        const res = await createUserWithEmailAndPassword(auth, e, p);
+        await setDoc(doc(db, "users", res.user.uid), {
+          email: e, role: 'owner', status: 'active', last_online: new Date().toISOString()
+        });
+        errEl.textContent = '';
+        toast("Conta de Dono criada com sucesso!");
+        setTimeout(() => { location.reload(); }, 1500);
+        return;
+      } catch(regErr) {
+        console.error("Auto-registration error", regErr);
+      }
+    }
+    errEl.textContent = "Utilizador/E-mail ou senha invÃ¡lidos.";
+  }
+};
+
+// âââ LOGIN WITH GOOGLE âââââââââââââââââââââââââââââââââââ
+window.loginWithGoogle = async () => {
+  try {
+    await signInWithPopup(auth, googleProvider);
+    // onAuthStateChanged will handle the rest
+    location.reload();
+  } catch(err) {
+    if (err.code === 'auth/popup-closed-by-user') return;
+    const errEl = document.getElementById('auth-error');
+    const errElReg = document.getElementById('reg-error');
+    if (errEl) errEl.textContent = "Erro ao entrar com Google: " + err.message;
+    if (errElReg) errElReg.textContent = "Erro ao entrar com Google: " + err.message;
+  }
+};
+
+// âââ REGISTER WITH EMAIL âââââââââââââââââââââââââââââââââ
+window.registerUser = async () => {
+  const emailInput = document.getElementById('reg-email').value;
+  const e = getEmail(emailInput);
+  const p = document.getElementById('reg-pass').value;
+  const p2 = document.getElementById('reg-pass2').value;
+  const errEl = document.getElementById('reg-error');
+  
+  if(!e || !p) { errEl.textContent = "Por favor preencha todos os campos."; return; }
+  if(p.length < 6) { errEl.textContent = "A senha deve ter pelo menos 6 caracteres."; return; }
+  if(p !== p2) { errEl.textContent = "As senhas nÃ£o coincidem."; return; }
+  
+  try {
+    const res = await createUserWithEmailAndPassword(auth, e, p);
+    const role = isOwnerEmail(e) ? 'owner' : 'guest';
+    await setDoc(doc(db, "users", res.user.uid), {
+      email: e, role: role, status: 'active', last_online: new Date().toISOString()
+    });
+    errEl.textContent = '';
+    toast(role === 'owner' ? "Conta de Dono criada!" : "Conta criada! A aguardar aprovaÃ§Ã£o.");
+    setTimeout(() => {
+      location.reload();
+    }, 1500);
+  } catch(err) {
+    if (err.code === 'auth/email-already-in-use') {
+      errEl.textContent = "Este utilizador jÃ¡ existe. Vai ao separador Entrar.";
+    } else {
+      errEl.textContent = "Erro ao criar conta: " + err.message;
+    }
+  }
+};
+
+// âââ CHANGE PASSWORD âââââââââââââââââââââââââââââââââââââ
+window.changePassword = async () => {
+  const newPass = document.getElementById('new-password').value;
+  const confPass = document.getElementById('confirm-password').value;
+  const errorEl = document.getElementById('password-error');
+  
+  if (!newPass) { errorEl.textContent = "Introduza a nova senha."; return; }
+  if (newPass.length < 6) { errorEl.textContent = "A senha deve ter pelo menos 6 caracteres."; return; }
+  if (newPass !== confPass) { errorEl.textContent = "As senhas nÃ£o coincidem."; return; }
+  
+  try {
+    if (auth.currentUser) {
+      await updatePassword(auth.currentUser, newPass);
+      errorEl.textContent = "";
+      document.getElementById('new-password').value = "";
+      document.getElementById('confirm-password').value = "";
+      closeModal('m-password');
+      toast("Senha alterada com sucesso!");
+    } else {
+      errorEl.textContent = "Utilizador nÃ£o autenticado.";
+    }
+  } catch(err) {
+    if (err.code === 'auth/requires-recent-login') {
+      errorEl.textContent = "SessÃ£o expirou. Saia e entre novamente para alterar.";
+    } else {
+      errorEl.textContent = "Erro: " + err.message;
+    }
+  }
+};
+
+// âââ LOGOUT ââââââââââââââââââââââââââââââââââââââââââââââ
+window.logoutUser = async () => { 
+  if (userSub) { userSub(); userSub = null; }
+  if (dataSub) { dataSub(); dataSub = null; }
+  await signOut(auth); 
+  location.reload();
+};
+
+// âââ APPLY ROLE UI âââââââââââââââââââââââââââââââââââââââ
+function applyRoleUI(role) {
+  currentRole = role;
+  const mLogin = document.getElementById('m-login');
+  const mPending = document.getElementById('m-pending');
+  
+  // Close login modal
+  mLogin.classList.remove('open');
+  document.body.classList.remove('show-login');
+  
+  // Owner/dev â switch to dev view. Otherwise stay on public landing.
+  if(role === 'owner' || role === 'dev') {
+    document.body.classList.remove('view-public');
+    document.body.classList.add('view-dev');
+    mPending.classList.remove('open');
+
+    // Show logout + change password buttons
+    document.getElementById('btn-change-pass').style.display = 'inline-flex';
+    document.getElementById('btn-logout').style.display = 'inline-flex';
+
+    if(role === 'owner') {
+      document.querySelectorAll('.auth-owner').forEach(el => el.style.display = 'inline-flex');
+    } else {
+      document.querySelectorAll('.auth-owner').forEach(el => el.style.display = 'none');
+    }
+    document.querySelectorAll('.auth-write').forEach(el => el.style.display = 'inline-flex');
+
+    // Show tutorial first time
+    if(!localStorage.getItem('cgf_tut')) showTutorial();
+  } else {
+    // Guest/anonymous â keep landing view
+    document.body.classList.add('view-public');
+    document.body.classList.remove('view-dev');
+    document.querySelectorAll('.auth-write').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.auth-owner').forEach(el => el.style.display = 'none');
+    // If user just tried to log in and is now stuck as guest, show pending
+    if(auth.currentUser && !auth.currentUser.isAnonymous) {
+      mPending.classList.add('open');
+    } else {
+      mPending.classList.remove('open');
+    }
+  }
+}
+
+function resetUI() {
+  // Public landing is the default â do NOT auto-open login modal
+  document.body.classList.add('view-public');
+  document.body.classList.remove('view-dev');
+  document.getElementById('m-login').classList.remove('open');
+  document.body.classList.remove('show-login');
+  document.getElementById('m-pending').classList.remove('open');
+  document.querySelectorAll('.auth-write, .auth-owner').forEach(el => el.style.display = 'none');
+  document.getElementById('btn-change-pass').style.display = 'none';
+  document.getElementById('btn-logout').style.display = 'none';
+  document.getElementById('hdr-user').style.display = 'none';
+  document.getElementById('hdr-online').style.display = 'none';
+}
+
+// âââ AUTH STATE CHANGE âââââââââââââââââââââââââââââââââââ
+onAuthStateChanged(auth, async (user) => {
+  // Clean up previous listeners
+  if (userSub) { userSub(); userSub = null; }
+  if (dataSub) { dataSub(); dataSub = null; }
+
+  if(commentsSub){commentsSub();commentsSub=null;}
+  if(changelogSub){changelogSub();changelogSub=null;}
+  if(!user) { resetUI(); return; }
+
+  // User logged in â setup Firestore user doc
+  const uDocRef = doc(db, "users", user.uid);
+  const ownerFlag = isOwnerEmail(user.email);
+  let udata;
+  try {
+    const udoc = await getDoc(uDocRef);
+    udata = udoc.data();
+  } catch(e) {
+    console.error("Firestore getDoc failed:", e);
+    // Fallback: if owner email, grant owner UI; otherwise show login
+    if(ownerFlag) { applyRoleUI('owner'); } else { resetUI(); }
+    return;
+  }
+  
+  if(!udata) {
+    udata = {
+      email: user.email,
+      role: ownerFlag ? 'owner' : 'guest',
+      status: 'active',
+      last_online: new Date().toISOString()
+    };
+    await setDoc(uDocRef, udata);
+  } else if (ownerFlag && udata.role !== 'owner') {
+    await updateDoc(uDocRef, { role: 'owner' });
+  }
+  
+  // Update last_online once on login
+  await updateDoc(uDocRef, { last_online: new Date().toISOString() }).catch(() => {});
+
+  // Show current user in header
+  currentUsername = user.email ? user.email.split('@')[0] : '';
+  window.setCurrentUser(user.email);
+
+  // Comments real-time listener
+  if(commentsSub){commentsSub();commentsSub=null;}
+  commentsSub = onSnapshot(collection(db, "comments"), (snap) => {
+    window.allComments = {};
+    snap.forEach(d => {
+      const c = d.data();
+      if(!window.allComments[c.sysId]) window.allComments[c.sysId] = [];
+      window.allComments[c.sysId].push({...c, _id: d.id});
+    });
+    Object.keys(window.allComments).forEach(k => window.allComments[k].sort((a,b) => new Date(a.date)-new Date(b.date)));
+    if(document.getElementById('p-sys').classList.contains('active')) renderSys();
+  });
+
+  // Changelog real-time listener
+  if(changelogSub){changelogSub();changelogSub=null;}
+  changelogSub = onSnapshot(query(collection(db, "changelog"), orderBy("date","desc"), limit(20)), (snap) => {
+    window.changelogItems = [];
+    snap.forEach(d => window.changelogItems.push(d.data()));
+    renderChangelog();
+  });
+
+  // Keep last_online fresh + update online count every minute
+  updateOnlineCount();
+  setInterval(async () => {
+    if(auth.currentUser) await updateDoc(doc(db, "users", auth.currentUser.uid), { last_online: new Date().toISOString() }).catch(()=>{});
+    updateOnlineCount();
+  }, 60000);
+  
+  // Real-time listener for user role/status changes (e.g. owner approves a guest)
+  userSub = onSnapshot(uDocRef, async (snap) => {
+    const data = snap.data();
+    if(!data) return;
+
+    if(data.status === 'banned') {
+      document.getElementById('auth-error').textContent = "Esta conta foi banida.";
+      if (userSub) { userSub(); userSub = null; }
+      await signOut(auth);
+      return;
+    }
+
+    applyRoleUI(data.role);
+
+    // Load Team if owner
+    if(data.role === 'owner') loadTeam();
+  });
+
+  // Listen to remote project data
+  dataSub = onSnapshot(doc(db, "projects", "cgf"), (dSnap) => {
+    if(dSnap.exists()){
+      const incoming = dSnap.data();
+      // Real-time notification: someone else changed the data
+      if(incoming._lastBy && incoming._lastBy !== currentUsername && incoming._lastAt) {
+        const diff = Date.now() - new Date(incoming._lastAt).getTime();
+        if(diff < 25000) toast(`${incoming._lastBy} atualizou o projeto`);
+      }
+      // Strip metadata fields before storing in D
+      const {_lastBy, _lastAt, ...rest} = incoming;
+      D = rest;
+      if(!D.nid) D.nid=100;
+      if(!D.systems) D.systems=[];
+      if(!D.assets) D.assets=[];
+      if(!D.timeline) D.timeline=[];
+      if(!D.decisions) D.decisions=[];
+      renderDash(); updateSidebarCounts();
+      renderSys();
+      renderModel(); renderTL(); renderDec();
+      renderLanding();
+    } else {
+      window.cloudSave(D);
+    }
+  });
+});
+
+// âââ CLOUD SAVE ââââââââââââââââââââââââââââââââââââââââââ
+window.cloudSave = async (data) => {
+  if(currentRole !== 'owner' && currentRole !== 'dev') return;
+  try {
+    await setDoc(doc(db, "projects", "cgf"), {
+      ...data,
+      _lastBy: currentUsername,
+      _lastAt: new Date().toISOString()
+    });
+  } catch(e) {
+    console.error("Cloud save error", e);
+    toast("Erro ao guardar na nuvem!");
+  }
+};
+
+// âââ COMMENTS ââââââââââââââââââââââââââââââââââââââââââââ
+window.addComment = async (sysId) => {
+  const inp = document.getElementById('cm'+sysId);
+  if(!inp) return;
+  const text = inp.value.trim();
+  if(!text || !currentUsername) return;
+  inp.value = '';
+  try {
+    await addDoc(collection(db, "comments"), {
+      sysId, user: currentUsername, text, date: new Date().toISOString()
+    });
+  } catch(e) { toast('Erro ao enviar comentÃ¡rio.'); }
+};
+
+// âââ CHANGELOG WRITER ââââââââââââââââââââââââââââââââââââ
+window.logChange = async (action) => {
+  if(!currentUsername) return;
+  try {
+    await addDoc(collection(db, "changelog"), {
+      user: currentUsername, action, date: new Date().toISOString()
+    });
+  } catch(e) {}
+};
+
+// âââ ONLINE COUNT ââââââââââââââââââââââââââââââââââââââââ
+async function updateOnlineCount() {
+  try {
+    const snap = await getDocs(collection(db, "users"));
+    const now = new Date();
+    let count = 0;
+    snap.forEach(d => { const u = d.data(); if(u.last_online && (now - new Date(u.last_online)) < 300000) count++; });
+    window.setOnlineCount(count);
+  } catch(e) {}
+}
+
+// âââ TEAM MANAGEMENT âââââââââââââââââââââââââââââââââââââ
+async function loadTeam(){
+  const snap = await getDocs(collection(db, "users"));
+  const html = [];
+  snap.forEach(d => {
+    const u = d.data();
+    const id = d.id;
+    const isOnline = (new Date() - new Date(u.last_online)) < 300000;
+    const onlineBadge = isOnline ? `<span style="color:#10b981;font-size:0.7rem;margin-left:5px;">â Online</span>` : '';
+    const dStr = new Date(u.last_online).toLocaleString('pt-PT');
+    const uName = u.email ? u.email.split('@')[0] : 'Anon';
+    html.push(`<tr>
+      <td>${uName} <span style="color:var(--fg3);font-size:0.75rem;">(${u.email || ''})</span>${onlineBadge}</td>
+      <td>
+        <select class="inp" style="padding:0.2rem;font-size:0.75rem;" onchange="window.changeRole('${id}', this.value)">
+          <option value="guest" ${u.role==='guest'?'selected':''}>Visitante</option>
+          <option value="dev" ${u.role==='dev'?'selected':''}>Dev</option>
+          <option value="owner" ${u.role==='owner'?'selected':''}>Dono</option>
+        </select>
+      </td>
+      <td>${dStr}</td>
+      <td>
+        <button class="btn btn-sm ${u.status==='banned'?'btn-accent':'btn-danger'}" onclick="window.toggleBan('${id}', '${u.status}')">
+          ${u.status==='banned'?'Desbanir':'Banir'}
+        </button>
+      </td>
+    </tr>`);
+  });
+  document.getElementById('team-list').innerHTML = html.join('');
+}
+
+window.changeRole = async (uid, newRole) => {
+  await updateDoc(doc(db, "users", uid), { role: newRole });
+  toast("FunÃ§Ã£o actualizada.");
+  loadTeam();
+};
+
+window.toggleBan = async (uid, currStatus) => {
+  const ns = currStatus === 'banned' ? 'active' : 'banned';
+  await updateDoc(doc(db, "users", uid), { status: ns });
+  toast("Estado actualizado.");
+  loadTeam();
+};
+</script>
+
+</body>
+</html>

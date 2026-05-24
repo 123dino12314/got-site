@@ -101,15 +101,6 @@ a{color:var(--accent);text-decoration:none;}
 .b-todo{background:rgba(161,161,170,0.08);color:var(--fg3);border:1px solid rgba(161,161,170,0.2);}
 .b-blocked{background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd);}
 .b-phase{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-bd);font-size:0.6rem;}
-.imp-dot{display:inline-block;width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-right:1px;}
-.imp-dot.high{background:var(--red);}
-.imp-dot.medium{background:var(--accent);}
-.imp-dot.low{background:var(--green);}
-.imp-sel{font-size:0.72rem;padding:0.18rem 0.4rem;border-radius:4px;border:1px solid var(--border2);background:var(--bg3);color:var(--fg);cursor:pointer;font-family:var(--font);}
-.imp-sel:focus{outline:none;border-color:var(--accent);}
-.imp-high{color:var(--red);}
-.imp-medium{color:var(--accent);}
-.imp-low{color:var(--green);}
 
 /* FORM */
 .field{margin-bottom:0.75rem;}
@@ -280,10 +271,6 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .task-del:hover{color:var(--red) !important;}
 .task-add{display:flex;gap:0.4rem;margin-top:0.5rem;}
 .task-add .inp{font-size:0.78rem;padding:0.3rem 0.5rem;}
-.task-dl{font-size:0.62rem;background:none;border:none;border-bottom:1px dashed var(--border2);padding:0 0.15rem;font-family:var(--mono);color:var(--fg3);cursor:pointer;width:88px;flex-shrink:0;}
-.task-dl:focus{outline:none;border-bottom-color:var(--accent);color:var(--fg);}
-.task-dl.overdue{color:var(--red)!important;border-bottom-color:var(--red);}
-.task-dl::-webkit-calendar-picker-indicator{opacity:0.35;cursor:pointer;width:10px;filter:invert(0.6);}
 
 /* DRAG & DROP */
 .sys[draggable]{cursor:grab;}
@@ -321,35 +308,6 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 .lbl{font-size:0.7rem;font-weight:600;color:var(--fg3);margin-bottom:0.3rem;display:block;}
 .modal-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
 .modal-h h2{font-size:1rem;font-weight:700;margin:0;}
-/* NOTIFICATIONS */
-.notif-wrap{position:relative;}
-.notif-btn{background:none;border:none;color:var(--fg2);font-size:1rem;cursor:pointer;padding:0.25rem 0.45rem;border-radius:var(--radius);line-height:1;}
-.notif-btn:hover{background:var(--bg3);color:var(--fg);}
-.notif-badge{position:absolute;top:1px;right:1px;background:var(--red);color:#fff;font-size:0.5rem;font-weight:700;min-width:14px;height:14px;border-radius:7px;display:flex;align-items:center;justify-content:center;padding:0 2px;pointer-events:none;}
-.notif-panel{position:fixed;top:calc(var(--header) + 6px);right:1rem;width:300px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);z-index:500;box-shadow:0 8px 24px rgba(0,0,0,0.5);max-height:380px;overflow-y:auto;display:none;}
-.notif-panel.open{display:block;}
-.notif-panel-hd{font-size:0.68rem;font-weight:700;color:var(--fg3);padding:0.55rem 0.75rem;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:0.07em;}
-.notif-item{display:flex;gap:0.5rem;align-items:flex-start;padding:0.55rem 0.75rem;border-bottom:1px solid var(--border);}
-.notif-item:last-child{border-bottom:none;}
-.notif-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:0.28rem;}
-.notif-dot.overdue{background:var(--red);}
-.notif-dot.soon{background:var(--accent);}
-.notif-i-name{font-size:0.78rem;color:var(--fg);font-weight:500;}
-.notif-i-sub{font-size:0.67rem;color:var(--fg3);margin-top:0.08rem;}
-/* USER AVATAR */
-.u-av{width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:0.58rem;font-weight:700;color:#fff;flex-shrink:0;vertical-align:middle;}
-.u-av-lg{width:44px;height:44px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;color:#fff;flex-shrink:0;}
-/* PROFILE BTN IN HEADER */
-.hdr-profile-btn{display:flex;align-items:center;gap:0.4rem;cursor:pointer;padding:0.2rem 0.5rem;border-radius:var(--radius);border:1px solid transparent;background:none;color:var(--fg2);font-size:0.72rem;transition:background 0.15s,border-color 0.15s;}
-.hdr-profile-btn:hover{background:var(--bg3);border-color:var(--border);}
-/* EMOJI PICKER */
-.emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:0.3rem;margin:0.5rem 0;}
-.emoji-opt{font-size:1.4rem;cursor:pointer;padding:0.2rem;border-radius:6px;text-align:center;border:2px solid transparent;transition:border-color 0.15s,background 0.15s;}
-.emoji-opt:hover{background:var(--bg3);}
-.emoji-opt.selected{border-color:var(--accent);background:rgba(138,101,52,0.15);}
-/* SYS HISTORY */
-.sys-hist{border-top:1px solid var(--border);margin-top:0.75rem;padding-top:0.5rem;}
-.sys-hist-row{display:flex;gap:0.4rem;align-items:center;font-size:0.7rem;color:var(--fg3);padding:0.12rem 0;}
 
 /* ═══════════════════════════════════════════════════════════
    PUBLIC LANDING — Medieval / GOT-inspired player view
@@ -442,7 +400,7 @@ body.view-public.show-login .landing-section{filter:blur(2px) brightness(0.4);po
 .section-sub{font-family:var(--body-serif);font-style:italic;font-size:1.05rem;color:#9c8d70;max-width:580px;margin:0 auto;line-height:1.55;}
 
 /* OVERVIEW STATS */
-.l-overview{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:rgba(201,169,97,0.15);border:1px solid rgba(201,169,97,0.2);}
+.l-overview{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(201,169,97,0.15);border:1px solid rgba(201,169,97,0.2);}
 .l-ov-cell{background:linear-gradient(180deg,#15110c 0%,#0e0b08 100%);padding:2rem 1.3rem;text-align:center;position:relative;transition:background 0.25s;}
 .l-ov-cell:hover{background:linear-gradient(180deg,#1a150f 0%,#13100b 100%);}
 .l-ov-icon{font-size:1.3rem;color:var(--gold);margin-bottom:0.65rem;font-family:var(--serif);}
@@ -533,34 +491,6 @@ body.view-public.show-login .landing-section{filter:blur(2px) brightness(0.4);po
 .l-tomo-title{font-family:var(--serif);font-weight:600;font-size:1.05rem;color:#f0e4c5;letter-spacing:0.02em;margin:0.4rem 0 0.6rem;line-height:1.35;}
 .l-tomo-reason{font-family:var(--body-serif);font-style:italic;font-size:0.97rem;color:#a89a7e;line-height:1.6;}
 
-/* LORE — Crónicas */
-.l-lore-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.3rem;}
-.l-lore-card{background:linear-gradient(135deg,rgba(28,22,16,0.7),rgba(15,12,9,0.7));border:1px solid rgba(160,120,180,0.2);padding:1.6rem;position:relative;transition:all 0.25s;}
-.l-lore-card:hover{transform:translateY(-3px);border-color:rgba(168,85,247,0.35);}
-.l-lore-card-title{font-family:var(--serif);font-weight:600;font-size:1.05rem;color:#f0e4c5;letter-spacing:0.02em;margin-bottom:0.6rem;line-height:1.3;}
-.l-lore-card-text{font-family:var(--body-serif);font-style:italic;font-size:0.95rem;color:#a89a7e;line-height:1.6;margin-bottom:0.9rem;}
-.l-lore-tags{display:flex;flex-wrap:wrap;gap:0.4rem;}
-.l-lore-tag{font-family:var(--serif);font-size:0.6rem;letter-spacing:0.15em;color:rgba(168,85,247,0.9);background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.2);padding:0.2rem 0.55rem;text-transform:uppercase;}
-
-/* BUILDS — Construções */
-.l-builds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;}
-.l-build-card{padding:1.2rem 1.3rem;border:1px solid rgba(201,169,97,0.15);background:rgba(20,16,12,0.4);transition:all 0.2s;}
-.l-build-card:hover{border-color:rgba(201,169,97,0.35);background:rgba(28,22,16,0.6);}
-.l-build-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;}
-.l-build-card-name{font-family:var(--serif);font-weight:600;font-size:0.98rem;color:#f0e4c5;letter-spacing:0.02em;line-height:1.25;}
-.l-build-pill{font-family:var(--serif);font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;padding:0.2rem 0.6rem;flex-shrink:0;}
-.l-build-pill.done{color:#c9a961;background:rgba(201,169,97,0.1);border:1px solid rgba(201,169,97,0.25);}
-.l-build-pill.wip{color:var(--gold-bright);background:rgba(232,200,120,0.08);border:1px solid rgba(232,200,120,0.2);}
-.l-build-pill.todo{color:#7d6f54;background:rgba(125,111,84,0.06);border:1px solid rgba(125,111,84,0.15);}
-.l-build-card-zone{font-family:var(--body-serif);font-size:0.88rem;color:#7d6f54;font-style:italic;}
-
-/* DEV PREVIEW BAR */
-body.dev-previewing .l-nav{top:38px;}
-#dev-preview-bar{position:fixed;top:0;left:0;right:0;z-index:9999;display:none;background:rgba(168,85,247,0.95);backdrop-filter:blur(8px);padding:0.55rem 1.25rem;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(168,85,247,0.5);}
-#dev-preview-bar .preview-label{font-family:var(--font);font-size:0.75rem;font-weight:600;color:#fff;letter-spacing:0.04em;}
-#dev-preview-bar .preview-back{font-family:var(--font);font-size:0.72rem;font-weight:600;padding:0.3rem 0.85rem;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;border-radius:4px;cursor:pointer;transition:background 0.15s;}
-#dev-preview-bar .preview-back:hover{background:rgba(255,255,255,0.25);}
-
 /* COUNTDOWN */
 .l-countdown{padding:3rem 2rem;text-align:center;background:linear-gradient(180deg,rgba(30,22,15,0.5),rgba(15,12,9,0.5));border:1px solid rgba(201,169,97,0.2);position:relative;margin-bottom:3rem;}
 .l-countdown-label{font-family:var(--serif);font-size:0.66rem;letter-spacing:0.35em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem;}
@@ -643,8 +573,6 @@ body.dev-previewing .l-nav{top:38px;}
       <a class="l-nav-link" onclick="scrollToSection('sec-forja')">Em Forja</a>
       <a class="l-nav-link" onclick="scrollToSection('sec-pillars')">As Três Fases</a>
       <a class="l-nav-link" onclick="scrollToSection('sec-cofre')">O Cofre</a>
-      <a class="l-nav-link" onclick="scrollToSection('sec-lore')">Crónicas</a>
-      <a class="l-nav-link" onclick="scrollToSection('sec-builds')">Construções</a>
       <a class="l-nav-link" onclick="scrollToSection('sec-tomos')">Tomos</a>
     </div>
     <button class="l-dev-btn" onclick="openDevLogin()">
@@ -664,7 +592,7 @@ body.dev-previewing .l-nav{top:38px;}
     <div class="hero-flame-r"></div>
 
     <div class="hero-inner">
-      <div class="hero-eyebrow fadeUp" id="hero-eyebrow">Estado da Coroa · —</div>
+      <div class="hero-eyebrow fadeUp">Estado da Coroa · Mai 2026</div>
       <h1 class="hero-title fadeUp">Crônicas de Gelo <span class="amp">&amp;</span> Fogo</h1>
       <p class="hero-tagline fadeUp">Onde a forja não pára, a sept se ergue, e o reino se constrói pedra a pedra. Acompanha aqui cada passo desta saga — entre o cobre, o aço e a fé dos Sete.</p>
 
@@ -792,30 +720,6 @@ body.dev-previewing .l-nav{top:38px;}
     </div>
   </section>
 
-  <!-- LORE — "Crónicas" -->
-  <section class="landing-section" id="sec-lore">
-    <div class="section-head fadeUp">
-      <div class="section-eyebrow">Crónicas do Reino</div>
-      <h2 class="section-title">O Lore que Dá Vida ao Mundo</h2>
-      <p class="section-sub">Os fragmentos de história, mito e lenda que constroem o espírito do reino. Cada entrada é um pedaço da alma do projecto.</p>
-    </div>
-    <div class="l-lore-grid fadeUp" id="lp-lore">
-      <!-- populated by JS -->
-    </div>
-  </section>
-
-  <!-- BUILDS — "Construções" -->
-  <section class="landing-section" id="sec-builds">
-    <div class="section-head fadeUp">
-      <div class="section-eyebrow">A Grande Obra</div>
-      <h2 class="section-title">As Construções do Reino</h2>
-      <p class="section-sub">As estruturas que erguem o mundo — desde as muralhas às tavernas, do trono ao mercado. A pedra e a madeira que tornam o reino real.</p>
-    </div>
-    <div class="l-builds-grid fadeUp" id="lp-builds">
-      <!-- populated by JS -->
-    </div>
-  </section>
-
   <!-- DECISIONS — "Tomos" -->
   <section class="landing-section" id="sec-tomos">
     <div class="section-head fadeUp">
@@ -850,35 +754,16 @@ body.dev-previewing .l-nav{top:38px;}
      END PUBLIC LANDING
      ═══════════════════════════════════════════════════════════ -->
 
-<!-- DEV PREVIEW BAR — visible when a logged-in dev previews the player site -->
-<div id="dev-preview-bar">
-  <span class="preview-label">👁 Modo Pré-visualização · Vista dos Players</span>
-  <button class="preview-back" onclick="exitPlayerPreview()">← Voltar ao Dashboard</button>
-</div>
-
 <header class="hdr">
   <div class="hdr-left">
     <button class="hdr-burger" onclick="toggleSidebar()">☰</button>
     <div class="hdr-logo"><div class="hdr-dot"></div><span class="hdr-title">CGF Project Hub</span><span class="hdr-tag">v1.0</span></div>
   </div>
   <div style="display:flex;align-items:center;gap:0.5rem;flex:1;justify-content:flex-end;margin-right:0.5rem;">
-    <button class="hdr-profile-btn" id="hdr-user" style="display:none;" onclick="openProfile()" title="Editar perfil">
-      <span id="hdr-avatar-preview" style="width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;color:#fff;"></span>
-      <span id="hdr-username"></span>
-      <span style="font-size:0.6rem;color:var(--fg3);">✏</span>
-    </button>
+    <div class="hdr-user" id="hdr-user" style="display:none;"><div class="hdr-user-dot"></div><span id="hdr-username"></span></div>
     <div class="hdr-online" id="hdr-online" style="display:none;"><div class="hdr-online-dot"></div><span id="hdr-online-count">1</span> online</div>
-    <span id="save-indicator" style="font-size:0.7rem;transition:color 0.3s;"></span>
-    <div class="notif-wrap auth-write" id="notif-wrap" style="display:none;">
-      <button class="notif-btn" onclick="toggleNotifPanel()" title="Alertas de prazo">🔔<span class="notif-badge" id="notif-count" style="display:none;"></span></button>
-      <div class="notif-panel" id="notif-panel">
-        <div class="notif-panel-hd">Alertas de Prazo</div>
-        <div id="notif-list"><div style="padding:0.8rem;color:var(--fg3);font-size:0.78rem;text-align:center;">Sem alertas.</div></div>
-      </div>
-    </div>
   </div>
   <div class="hdr-actions">
-    <button class="btn btn-ghost" id="btn-preview-player" onclick="enterPlayerPreview()" title="Ver como os players vêem o site">👁 Site Players</button>
     <button class="btn btn-ghost" onclick="showTutorial()">? Guia</button>
     <button class="btn" onclick="exportData()">↓ Exportar</button>
     <button class="btn" onclick="exportPDF()" title="Exportar PDF">📄 PDF</button>
@@ -905,8 +790,6 @@ body.dev-previewing .l-nav{top:38px;}
     <div class="side-label">Produção</div>
     <div class="side-item" data-p="sys"><span class="side-icon">⚙</span>Sistemas</div>
     <div class="side-item" data-p="model"><span class="side-icon">◻</span>Modelador</div>
-    <div class="side-item" data-p="lore"><span class="side-icon">📜</span>Lore</div>
-    <div class="side-item" data-p="build"><span class="side-icon">🏗</span>Construção</div>
   </div>
   <div class="side-section">
     <div class="side-label">Ferramentas</div>
@@ -963,7 +846,7 @@ body.dev-previewing .l-nav{top:38px;}
 <div class="card">
   <div class="card-title">Adicionar Marco</div>
   <div class="g2">
-    <div class="field"><div class="field-l">Data</div><input class="inp" type="date" id="tl-i-date"></div>
+    <div class="field"><div class="field-l">Data</div><input class="inp" id="tl-i-date" placeholder="ex: 20 Jun"></div>
     <div class="field"><div class="field-l">Estado</div><select class="sel" id="tl-i-st"><option value="">A Fazer</option><option value="active">Em Progresso</option><option value="done">Concluído</option></select></div>
   </div>
   <div class="field"><div class="field-l">Título</div><input class="inp" id="tl-i-title" placeholder="Nome do marco"></div>
@@ -1008,42 +891,7 @@ body.dev-previewing .l-nav{top:38px;}
 <div class="pg-sub">Assets 3D — prioridade, prazos e entregas</div>
 <div class="g3" id="model-stats"></div>
 <div style="margin-bottom:0.75rem;text-align:right;"><button class="btn btn-accent" onclick="openModal('m-asset')">+ Asset</button></div>
-<div class="table-wrap"><table><thead><tr><th>#</th><th>Asset</th><th>Categoria</th><th>Fase</th><th>Prazo</th><th>Estado</th><th>Ações</th></tr></thead><tbody id="model-table"></tbody></table></div>
-</div>
-
-<!-- LORE -->
-<div class="panel" id="p-lore">
-<div class="pg-title">📜 Lore Maker</div>
-<div class="pg-sub">Caderno de ideias — rascunha livremente, depois transforma em sistemas</div>
-<div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem;">
-  <button class="btn btn-sm btn-accent" id="ls-all" onclick="setLoreStatus('')">Todas</button>
-  <button class="btn btn-sm" id="ls-draft" onclick="setLoreStatus('draft')">📝 Rascunho</button>
-  <button class="btn btn-sm" id="ls-developed" onclick="setLoreStatus('developed')">✦ Desenvolvida</button>
-  <button class="btn btn-sm" id="ls-archived" onclick="setLoreStatus('archived')">🗃 Arquivada</button>
-</div>
-<div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:0.75rem;flex-wrap:wrap;">
-  <input class="search-inp" id="lore-search" placeholder="🔍 Pesquisar por título ou tag…" style="flex:1;min-width:180px;" oninput="renderLore()">
-  <div id="lore-stats" style="font-size:0.73rem;color:var(--fg3);white-space:nowrap;"></div>
-  <button class="btn btn-accent auth-write" onclick="openModal('m-lore')">+ Nova Ideia</button>
-</div>
-<div id="lore-list"></div>
-</div>
-
-<!-- BUILD -->
-<div class="panel" id="p-build">
-<div class="pg-title">🏗 Construção</div>
-<div class="pg-sub">Zonas e estruturas a construir — progresso, prazos e subtarefas</div>
-<div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.5rem;">
-  <button class="btn btn-sm" onclick="setBuildFilter('')" id="bf-all">Todas</button>
-  <button class="btn btn-sm" onclick="setBuildFilter('todo')" id="bf-todo">Por Fazer</button>
-  <button class="btn btn-sm" onclick="setBuildFilter('wip')" id="bf-wip">Em Construção</button>
-  <button class="btn btn-sm" onclick="setBuildFilter('done')" id="bf-done">Concluído</button>
-</div>
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem;">
-  <div id="build-stats" style="font-size:0.73rem;color:var(--fg3);"></div>
-  <button class="btn btn-accent auth-write" onclick="openModal('m-build')">+ Nova Zona</button>
-</div>
-<div id="build-list"></div>
+<div class="table-wrap"><table><thead><tr><th>#</th><th>Asset</th><th>Categoria</th><th>Prazo</th><th>Estado</th><th>Ações</th></tr></thead><tbody id="model-table"></tbody></table></div>
 </div>
 
 <!-- AI -->
@@ -1051,32 +899,12 @@ body.dev-previewing .l-nav{top:38px;}
 <div class="pg-title">IA Assistente</div>
 <div class="pg-sub">Chat com memória de conversa · Muda de modo conforme o que precisas</div>
 
-<!-- API KEY SETUP BANNER -->
-<div id="ai-setup-banner" style="display:none;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.35);border-radius:var(--radius);padding:0.9rem 1rem;margin-bottom:0.75rem;">
-  <div style="font-size:0.82rem;font-weight:700;color:var(--accent);margin-bottom:0.5rem;">⚙ Configura a chave da IA antes de começar</div>
-  <div style="font-size:0.78rem;color:var(--fg2);line-height:1.6;margin-bottom:0.65rem;">
-    A IA usa a API do Google Gemini (gratuita). Cada membro da equipa precisa de configurar a sua própria chave — é rápido:
-    <ol style="margin:0.4rem 0 0 1.1rem;padding:0;display:flex;flex-direction:column;gap:0.2rem;">
-      <li>Abre <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--accent);font-weight:600;">aistudio.google.com/apikey</a></li>
-      <li>Clica <strong>"Create API key"</strong> e copia a chave</li>
-      <li>Cola no campo abaixo e clica <strong>Guardar</strong></li>
-    </ol>
-  </div>
-  <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
-    <input class="inp" type="password" id="banner-gemini-key" placeholder="Cole aqui a tua chave Gemini…" style="flex:1;min-width:200px;font-size:0.78rem;padding:0.3rem 0.5rem;">
-    <button class="btn btn-accent" style="font-size:0.78rem;" onclick="saveBannerKey()">Guardar e activar</button>
-  </div>
-  <div style="font-size:0.65rem;color:var(--fg3);margin-top:0.4rem;">A chave fica guardada só no teu browser — nunca é partilhada ou enviada para o código.</div>
-</div>
-
 <!-- Role Tabs -->
 <div class="ai-roles" id="ai-roles">
   <button class="ai-role active" data-role="geral" onclick="switchRole('geral')"><span class="ai-role-icon">◈</span>Geral</button>
   <button class="ai-role" data-role="prog" onclick="switchRole('prog')"><span class="ai-role-icon">⚙</span>Programador</button>
   <button class="ai-role" data-role="model" onclick="switchRole('model')"><span class="ai-role-icon">◻</span>Modelador</button>
   <button class="ai-role" data-role="ideias" onclick="switchRole('ideias')"><span class="ai-role-icon">✦</span>Ideias &amp; Design</button>
-  <button class="ai-role" data-role="lore" onclick="switchRole('lore')"><span class="ai-role-icon">📜</span>Lore Maker</button>
-  <button class="ai-role" data-role="builder" onclick="switchRole('builder')"><span class="ai-role-icon">🏗</span>Builder</button>
 </div>
 
 <!-- Quick Actions -->
@@ -1128,10 +956,7 @@ body.dev-previewing .l-nav{top:38px;}
     <div class="field"><div class="field-l">Fase</div><select class="sel" id="ms-phase"><option value="1">Fase 1</option><option value="2">Fase 2</option><option value="3">Fase 3</option></select></div>
     <div class="field"><div class="field-l">Estado</div><select class="sel" id="ms-st"><option value="todo">A Fazer</option><option value="wip">Em Dev</option><option value="done">Completo</option></select></div>
   </div>
-  <div class="g2">
-    <div class="field"><div class="field-l">Prazo</div><input class="inp" type="date" id="ms-deadline"></div>
-    <div class="field"><div class="field-l">Importância</div><select class="sel" id="ms-imp"><option value="high">🔴 Alta — Crítico</option><option value="medium" selected>🟡 Média — Importante</option><option value="low">🟢 Baixa — Nice-to-have</option></select></div>
-  </div>
+  <div class="field"><div class="field-l">Prazo</div><input class="inp" id="ms-deadline" placeholder="ex: 10 Jun"></div>
   <div class="field"><div class="field-l">Descrição</div><textarea class="txta" id="ms-desc" placeholder="Como vai funcionar"></textarea></div>
   <div class="field"><div class="field-l">Integração</div><textarea class="txta" id="ms-int" placeholder="Como liga ao que já existe"></textarea></div>
   <div class="modal-foot"><button class="btn" onclick="closeModal('m-sys')">Cancelar</button><button class="btn btn-accent" onclick="addSys()">Adicionar</button></div>
@@ -1143,85 +968,17 @@ body.dev-previewing .l-nav{top:38px;}
   <div class="field"><div class="field-l">Nome</div><input class="inp" id="ma-name" placeholder="ex: Espada de Aço Tier 2"></div>
   <div class="g2">
     <div class="field"><div class="field-l">Categoria</div><select class="sel" id="ma-cat"><option>Arma</option><option>Armadura</option><option>NPC / Personagem</option><option>Ambiente</option><option>Prop</option><option>UI</option><option>Outro</option></select></div>
-    <div class="field"><div class="field-l">Fase</div><select class="sel" id="ma-phase"><option value="1">Fase 1</option><option value="2">Fase 2</option><option value="3">Fase 3</option></select></div>
+    <div class="field"><div class="field-l">Prazo</div><input class="inp" id="ma-dl" placeholder="ex: 10 Jun"></div>
   </div>
-  <div class="g2">
-    <div class="field"><div class="field-l">Prazo</div><input class="inp" type="date" id="ma-dl"></div>
-    <div class="field"><div class="field-l">Prioridade (1 = urgente)</div><input class="inp" type="number" id="ma-pri" value="1" min="1"></div>
-  </div>
-  <div class="g2">
-    <div class="field"><div class="field-l">Importância</div><select class="sel" id="ma-imp"><option value="high">🔴 Alta — Crítico</option><option value="medium" selected>🟡 Média — Importante</option><option value="low">🟢 Baixa — Nice-to-have</option></select></div>
-  </div>
+  <div class="field"><div class="field-l">Prioridade (1 = urgente)</div><input class="inp" type="number" id="ma-pri" value="1" min="1"></div>
   <div class="modal-foot"><button class="btn" onclick="closeModal('m-asset')">Cancelar</button><button class="btn btn-accent" onclick="addAsset()">Adicionar</button></div>
 </div></div>
 
-<!-- MODAL: RENAME -->
-<div class="modal-bg" id="m-rename"><div class="modal" style="max-width:400px;">
-  <div class="modal-t">✏ Editar Perfil</div>
-  <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
-    <span id="profile-avatar-big" class="u-av-lg"></span>
-    <div>
-      <div style="font-size:0.78rem;font-weight:600;color:var(--fg);" id="profile-name-preview">—</div>
-      <div style="font-size:0.68rem;color:var(--fg3);">Clica num avatar abaixo para mudar</div>
-    </div>
-  </div>
-  <div class="field"><div class="field-l">Nome exibido</div><input class="inp" id="rename-inp" placeholder="Ex: Dino" maxlength="20" oninput="updateProfilePreview()"></div>
-  <div style="font-size:0.72rem;color:var(--fg3);margin-bottom:0.5rem;">Aparece nos comentários e no changelog.</div>
-  <div class="field-l" style="margin-bottom:0.4rem;">Avatar</div>
-  <div class="emoji-grid" id="emoji-grid"></div>
-  <div style="font-size:0.68rem;color:var(--fg3);margin-bottom:0.75rem;">Selecciona um ícone que te represente.</div>
-  <div class="modal-foot">
-    <button class="btn" onclick="closeModal('m-rename')">Cancelar</button>
-    <button class="btn btn-accent" onclick="window.saveProfile()">Guardar Perfil</button>
-  </div>
-</div></div>
-
 <!-- MODAL: EDIT TIMELINE -->
-<!-- MODAL: LORE -->
-<div class="modal-bg" id="m-lore"><div class="modal">
-  <div class="modal-t">📜 Nova Ideia de Lore</div>
-  <div class="field"><div class="field-l">Título *</div><input class="inp" id="ml-name" placeholder="Ex: A Ordem dos Corvos"></div>
-  <div class="g2">
-    <div class="field"><div class="field-l">Fase</div><select class="sel" id="ml-phase"><option value="1">Fase 1</option><option value="2">Fase 2</option><option value="3">Fase 3</option></select></div>
-    <div class="field"><div class="field-l">Importância</div><select class="sel" id="ml-imp"><option value="high">🔴 Alta — Crítico</option><option value="medium">🟡 Média — Importante</option><option value="low" selected>🟢 Baixa — Nice-to-have</option></select></div>
-  </div>
-  <div class="field"><div class="field-l">Tags <span style="font-weight:400;color:var(--fg3);">(separadas por vírgula)</span></div><input class="inp" id="ml-tags" placeholder="Ex: magia, facção, norte, segredo"></div>
-  <div class="field"><div class="field-l">Texto / Ideia</div><textarea class="inp" id="ml-text" rows="5" placeholder="Escreve o que tiveres — pode ser um parágrafo, um nome, uma citação, qualquer coisa. A IA ajuda a desenvolver depois."></textarea></div>
-  <div class="modal-foot">
-    <button class="btn" onclick="closeModal('m-lore')">Cancelar</button>
-    <button class="btn btn-accent" onclick="addLore()">Guardar Ideia</button>
-  </div>
-</div></div>
-
-<!-- MODAL: BUILD -->
-<div class="modal-bg" id="m-build"><div class="modal">
-  <div class="modal-t">🏗 Nova Zona de Construção</div>
-  <div class="g2">
-    <div class="field"><div class="field-l">Nome *</div><input class="inp" id="mb-name" placeholder="Ex: Torre do Rei"></div>
-    <div class="field"><div class="field-l">Zona / Área</div><input class="inp" id="mb-zone" placeholder="Ex: Castelo Norte"></div>
-  </div>
-  <div class="g2">
-    <div class="field"><div class="field-l">Estado inicial</div>
-      <select class="inp" id="mb-st">
-        <option value="todo">Por Fazer</option><option value="wip">Em Construção</option><option value="done">Concluído</option>
-      </select>
-    </div>
-    <div class="field"><div class="field-l">Fase</div><select class="sel" id="mb-phase"><option value="1">Fase 1</option><option value="2">Fase 2</option><option value="3">Fase 3</option></select></div>
-  </div>
-  <div class="g2">
-    <div class="field"><div class="field-l">Prazo</div><input class="inp" type="date" id="mb-dl"></div>
-    <div class="field"><div class="field-l">Importância</div><select class="sel" id="mb-imp"><option value="high">🔴 Alta — Crítico</option><option value="medium" selected>🟡 Média — Importante</option><option value="low">🟢 Baixa — Nice-to-have</option></select></div>
-  </div>
-  <div class="modal-foot">
-    <button class="btn" onclick="closeModal('m-build')">Cancelar</button>
-    <button class="btn btn-accent" onclick="addBuild()">Criar Zona</button>
-  </div>
-</div></div>
-
 <div class="modal-bg" id="m-tl-edit"><div class="modal">
   <div class="modal-t">Editar Marco</div>
   <div class="g2">
-    <div class="field"><div class="field-l">Data</div><input class="inp" type="date" id="te-date"></div>
+    <div class="field"><div class="field-l">Data</div><input class="inp" id="te-date"></div>
     <div class="field"><div class="field-l">Estado</div><select class="sel" id="te-st"><option value="">A Fazer</option><option value="active">Em Progresso</option><option value="done">Concluído</option></select></div>
   </div>
   <div class="field"><div class="field-l">Título</div><input class="inp" id="te-title"></div>
@@ -1235,23 +992,21 @@ body.dev-previewing .l-nav{top:38px;}
 
 <!-- TUTORIAL -->
 <div class="tut-bg" id="tut-bg">
-<div class="tut" style="max-width:600px;max-height:85vh;overflow-y:auto;">
+<div class="tut">
   <div class="tut-header">
-    <h2>Bem-vindo ao CGF Project Hub</h2>
-    <p>Centro de operações do Crônicas de Gelo e Fogo · Lê isto uma vez e tens tudo</p>
+    <h2>Bem-vindo ao Project Hub</h2>
+    <p>O centro de operações do Crônicas de Gelo e Fogo</p>
   </div>
   <div class="tut-steps">
-    <div class="tut-step"><div class="tut-num">1</div><div class="tut-text"><h4>Dashboard</h4><p>Visão geral automática — <strong>progresso ponderado</strong> do projeto (sistemas, assets, builds e lore com peso por importância), próximas datas e log de alterações em tempo real. O breakdown <span style="color:var(--red);">🔴</span><span style="color:var(--accent);">🟡</span><span style="color:var(--green);">🟢</span> mostra o avanço por nível de prioridade.</p></div></div>
-    <div class="tut-step"><div class="tut-num">2</div><div class="tut-text"><h4>Sistemas</h4><p>Cada sistema vive aqui. Expande → edita descrição, estado, prazo, fase e <strong>importância</strong> (🔴 Alta / 🟡 Média / 🟢 Baixa — afecta o cálculo do progresso geral). Subtarefas e comentários dentro de cada sistema.</p></div></div>
-    <div class="tut-step"><div class="tut-num">3</div><div class="tut-text"><h4>Modelador</h4><p>Assets 3D com prioridade, prazo, <strong>fase</strong> e importância. Marca como entregue quando receberes. Os prazos aparecem no calendário e nos alertas 🔔. A coluna Fase organiza o asset na fase certa do projeto.</p></div></div>
-    <div class="tut-step"><div class="tut-num">4</div><div class="tut-text"><h4>📜 Lore Maker</h4><p>Caderno criativo livre — sem datas, sem pressão. Usa <strong>tags</strong> e <strong>fase</strong> para organizar. Quando madurar, clica <strong>⚙ → Sistema</strong> para promover a ideia. A IA ajuda: <em>💡 Desenvolver</em> expande a ideia, <em>✍ Completar</em> escreve o texto.</p></div></div>
-    <div class="tut-step"><div class="tut-num">5</div><div class="tut-text"><h4>🏗 Construção</h4><p>Zonas a construir com estado, <strong>fase</strong>, prazo e subtarefas. Importância pesa no progresso geral. Usa <strong>🏰 Inspiração</strong> para referências visuais e <strong>📋 Sugerir Subtarefas</strong> para a IA dividir o trabalho.</p></div></div>
-    <div class="tut-step"><div class="tut-num">6</div><div class="tut-text"><h4>Calendário</h4><p>Vista unificada — sistemas, assets, builds e marcos ordenados por data. Atrasados a vermelho. O ✎ edita marcos. O 🔔 alerta prazos próximos. No painel <strong>Fases</strong> vês tudo agrupado por Fase 1/2/3 com todos os tipos de item.</p></div></div>
-    <div class="tut-step"><div class="tut-num">7</div><div class="tut-text"><h4>IA Assistente</h4><p>6 modos: Geral, Programador, Modelador, Ideias, Lore Maker e Builder. Dentro do Lore e Construções tens IA inline contextual. Configura a chave Gemini em <strong>✦ IA Assistente → ⚙ Configurar Chave</strong> antes de usar.</p></div></div>
-    <div class="tut-step"><div class="tut-num">8</div><div class="tut-text"><h4>Site dos Players + Perfil</h4><p>Clica <strong>👁 Site Players</strong> no header para pré-visualizar o site público sem sair da conta. Clica o teu avatar para editar nome e emoji. O Dono gere a equipa em <strong>👥 Equipa</strong>: aprova, recusa, kick ou bane. Cargos: Dono, Desenvolvedor, Lore Maker, Builder.</p></div></div>
-    <div class="tut-step"><div class="tut-num">9</div><div class="tut-text"><h4>Guardar / Exportar</h4><p>Tudo guarda automaticamente na nuvem. O header mostra <strong>✓ Guardado</strong> após cada alteração. O botão <strong>↓ Exportar</strong> gera um .txt completo. O site dos players actualiza em tempo real — o que mudas aqui aparece lá de imediato.</p></div></div>
+    <div class="tut-step"><div class="tut-num">1</div><div class="tut-text"><h4>Dashboard</h4><p>Visão geral do projecto — percentagem de progresso, próximas datas e decisões chave. Tudo se actualiza automaticamente.</p></div></div>
+    <div class="tut-step"><div class="tut-num">2</div><div class="tut-text"><h4>Sistemas</h4><p>Cada sistema do jogo está listado aqui. Clica num para expandir, editar a descrição, mudar o estado ou remover. Usa o botão "+ Sistema" para adicionar novos.</p></div></div>
+    <div class="tut-step"><div class="tut-num">3</div><div class="tut-text"><h4>Modelador</h4><p>Lista de assets 3D com prioridade e prazos. O modelador sabe exactamente o que fazer e por que ordem. Marca como entregue quando receberes.</p></div></div>
+    <div class="tut-step"><div class="tut-num">4</div><div class="tut-text"><h4>Calendário</h4><p>Marcos com datas editáveis. Clica no ✎ para mudar qualquer data ou conteúdo. Adiciona novos marcos na parte inferior.</p></div></div>
+    <div class="tut-step"><div class="tut-num">5</div><div class="tut-text"><h4>IA Assistente</h4><p>Chat com memória de conversa e 4 modos: <strong>Geral</strong> (visão geral), <strong>Programador</strong> (Luau, arquitectura, debugging), <strong>Modelador</strong> (specs, pipeline, prioridades) e <strong>Ideias</strong> (mecânicas, lore, game design). Usa os botões rápidos para perguntas comuns.</p></div></div>
+    <div class="tut-step"><div class="tut-num">6</div><div class="tut-text"><h4>Exportar</h4><p>O botão "↓ Exportar" gera um ficheiro .txt com todo o estado actual. Cola-o numa conversa com o Claude para análise completa e sugestões.</p></div></div>
+    <div class="tut-step"><div class="tut-num">7</div><div class="tut-text"><h4>Decisões</h4><p>Regista aqui todas as decisões importantes. Evita voltar ao mesmo assunto semanas depois — está tudo documentado.</p></div></div>
   </div>
-  <div class="tut-foot"><button class="btn btn-accent" onclick="closeTutorial()">Entendi, vamos começar →</button></div>
+  <div class="tut-foot"><button class="btn btn-accent" onclick="closeTutorial()">Entendi, vamos começar</button></div>
 </div>
 </div>
 
@@ -1304,7 +1059,7 @@ body.dev-previewing .l-nav{top:38px;}
   <div class="modal" style="text-align:center;">
     <div class="modal-h"><h2>A Aguardar Aprovação ⏳</h2></div>
     <div class="modal-b">
-      <p style="color:var(--fg2); margin-bottom:1.5rem;">A tua conta foi criada. Aguarda a aprovação do Dono do projeto — assim que aprovado, recebes automaticamente o cargo de <strong>Desenvolvedor</strong> e terás acesso ao dashboard.</p>
+      <p style="color:var(--fg2); margin-bottom:1.5rem;">A tua conta foi criada, mas precisa de ser aprovada pelo Dono do projeto (dino5651) para teres acesso ao conteúdo.</p>
       <button class="btn btn-ghost" onclick="window.logoutUser()">Sair da Conta</button>
     </div>
   </div>
@@ -1340,13 +1095,8 @@ body.dev-previewing .l-nav{top:38px;}
       <button class="btn btn-sm btn-icon" onclick="closeModal('m-team')">✕</button>
     </div>
     <div class="modal-b">
-      <div id="team-pending-section" style="margin-bottom:1rem;display:none;">
-        <div style="font-size:0.7rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;">⏳ A Aguardar Aprovação</div>
-        <table class="team-table"><tbody id="team-pending"></tbody></table>
-      </div>
-      <div style="font-size:0.7rem;font-weight:700;color:var(--fg3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;">Equipa Ativa</div>
       <table class="team-table">
-        <thead><tr><th>Utilizador</th><th>Cargo</th><th>Último Acesso</th><th>Ações</th></tr></thead>
+        <thead><tr><th>Email</th><th>Função</th><th>Último Acesso</th><th>Ações</th></tr></thead>
         <tbody id="team-list"></tbody>
       </table>
     </div>
@@ -1429,9 +1179,6 @@ function nav(p){
   if(p==='dec')renderDec();
   if(p==='dash')renderDash();
   if(p==='phases')renderPhases();
-  if(p==='lore')renderLore();
-  if(p==='build')renderBuild();
-  if(p==='ai')updateAISetupBanner();
   if(window.innerWidth<769){document.getElementById('sidebar').classList.remove('open');document.getElementById('mob-overlay').classList.remove('open');}
 }
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('mob-overlay').classList.toggle('open');}
@@ -1441,38 +1188,21 @@ function renderDash(){
   const done=D.systems.filter(s=>s.status==='done').length;
   const wip=D.systems.filter(s=>s.status==='wip').length;
   const todo=D.systems.filter(s=>s.status==='todo'||s.status==='blocked').length;
-  const pct=calcWeightedProgress();
-  const bk=calcWeightedBreakdown();
+  const pct=Math.round(done/D.systems.length*100);
   document.getElementById('dash-stats').innerHTML=`
-    <div class="stat"><div class="stat-n c-green">${done}</div><div class="stat-l">Sistemas Prontos</div></div>
+    <div class="stat"><div class="stat-n c-green">${done}</div><div class="stat-l">Completos</div></div>
     <div class="stat"><div class="stat-n c-accent">${wip}</div><div class="stat-l">Em Dev</div></div>
     <div class="stat"><div class="stat-n c-fg3">${todo}</div><div class="stat-l">Por Fazer</div></div>
-    <div class="stat"><div class="stat-n" style="color:var(--fg);">${pct}%</div><div class="stat-l">Progresso Geral ⚖</div></div>`;
-  // Barra de progresso ponderada
-  document.getElementById('dash-progress').innerHTML=`
-    <div style="height:6px;background:var(--bg);border-radius:3px;overflow:hidden;margin-bottom:0.5rem;"><div class="prog-bar-inner" id="prog-bar"></div></div>
-    <div style="display:flex;gap:0.75rem;font-size:0.68rem;color:var(--fg3);">
-      <span title="Alta prioridade">🔴 ${Math.round(bk.high.totalW?bk.high.doneW/bk.high.totalW*100:0)}% <span style="color:var(--fg3);font-size:0.6rem;">(${bk.high.total} itens)</span></span>
-      <span title="Média prioridade">🟡 ${Math.round(bk.medium.totalW?bk.medium.doneW/bk.medium.totalW*100:0)}% <span style="color:var(--fg3);font-size:0.6rem;">(${bk.medium.total} itens)</span></span>
-      <span title="Baixa prioridade">🟢 ${Math.round(bk.low.totalW?bk.low.doneW/bk.low.totalW*100:0)}% <span style="color:var(--fg3);font-size:0.6rem;">(${bk.low.total} itens)</span></span>
-    </div>`;
+    <div class="stat"><div class="stat-n" style="color:var(--fg);">${pct}%</div><div class="stat-l">Progresso</div></div>`;
+  // Barra de progresso com animação ao entrar
+  document.getElementById('dash-progress').innerHTML=`<div style="height:6px;background:var(--bg);border-radius:3px;overflow:hidden;"><div class="prog-bar-inner" id="prog-bar"></div></div>`;
   requestAnimationFrame(()=>setTimeout(()=>{const b=document.getElementById('prog-bar');if(b)b.style.width=pct+'%';},50));
   const sl={done:'Feito',wip:'Em Dev',todo:'A Fazer'};
   document.getElementById('dash-summary').innerHTML=
     D.systems.filter(s=>s.status==='done').map(s=>`<div style="margin-bottom:0.3rem;"><span class="badge b-done badge-link" onclick="navFilterSys(${s.phase})" title="Ver Fase ${s.phase}">Feito</span> <span style="margin-left:0.3rem;">${s.name}</span></div>`).join('')+
     D.systems.filter(s=>s.status==='wip').map(s=>`<div style="margin-bottom:0.3rem;"><span class="badge b-wip badge-link" onclick="navFilterSys(${s.phase})" title="Ver Fase ${s.phase}">Em Dev</span> <span style="margin-left:0.3rem;">${s.name}${s.deadline?' — '+s.deadline:''}</span></div>`).join('')+
     D.systems.filter(s=>s.status==='todo'&&s.phase===1).map(s=>`<div style="margin-bottom:0.3rem;"><span class="badge b-todo badge-link" onclick="navFilterSys(${s.phase})" title="Ver Fase ${s.phase}">A Fazer</span> <span style="margin-left:0.3rem;">${s.name}</span></div>`).join('');
-  const upcomingAll=buildUnifiedTimeline().filter(t=>t.status!=='done'&&t.sortDate!=='9999-12-31');
-  const tColor={milestone:'var(--fg3)',system:'var(--accent)',asset:'var(--blue)'};
-  document.getElementById('dash-dates').innerHTML=upcomingAll.slice(0,6).map(t=>{
-    const od=isOverdue(t.date);
-    const nav_=t._type==='system'?`navFilterSys(${t._phase});nav('sys');`:t._type==='asset'?`nav('model');`:`nav('tl');`;
-    return`<div style="margin-bottom:0.45rem;display:flex;align-items:center;gap:0.4rem;cursor:pointer;" onclick="${nav_}">
-      <span class="badge ${t.status==='active'?'b-wip':od?'b-blocked':'b-todo'}" style="flex-shrink:0;">${displayDate(t.date)}</span>
-      <span style="font-size:0.72rem;color:${tColor[t._type]};">●</span>
-      <span style="font-size:0.78rem;">${t.title}</span>
-    </div>`;
-  }).join('')||`<div style="color:var(--fg3);font-size:0.8rem;">Sem prazos pendentes.</div>`;
+  document.getElementById('dash-dates').innerHTML=D.timeline.filter(t=>t.status!=='done').slice(0,5).map(t=>`<div style="margin-bottom:0.5rem;"><span class="badge ${t.status==='active'?'b-wip':'b-todo'}">${t.date}</span> <span style="margin-left:0.3rem;">${t.title}</span></div>`).join('');
   document.getElementById('dash-decisions').innerHTML=D.decisions.slice(0,4).map(d=>`<div style="margin-bottom:0.3rem;">◈ <strong>${d.title}</strong> — <span style="color:var(--fg3);">${d.reason}</span></div>`).join('');
   renderPhaseProgress();
   renderProgressChart();
@@ -1504,12 +1234,11 @@ function renderSys(){
     const td=tasks.filter(t=>t.done).length;
     const tasksHtml=`<div class="task-list">
       <div class="field-l" style="margin-bottom:0.4rem;">Subtarefas <span style="font-weight:400;">${td}/${tasks.length}</span></div>
-      ${tasks.map(t=>{const od=t.deadline&&new Date(t.deadline+'T23:59:59')<new Date()&&!t.done;return`<div class="task-item${t.done?' done-task':''}" id="ti${s.id}-${t.id}">
+      ${tasks.map(t=>`<div class="task-item${t.done?' done-task':''}" id="ti${s.id}-${t.id}">
         <input type="checkbox"${t.done?' checked':''} onclick="event.stopPropagation();toggleTask(${s.id},${t.id})">
-        <span style="flex:1;">${t.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>
-        <input type="date" class="task-dl${od?' overdue':''}" value="${t.deadline||''}" title="${od?'Atrasado!':'Prazo da subtarefa'}" onclick="event.stopPropagation()" onchange="event.stopPropagation();setTaskDeadline(${s.id},${t.id},this.value)">
+        <span>${t.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>
         <button class="task-del" onclick="event.stopPropagation();deleteTask(${s.id},${t.id})">✕</button>
-      </div>`}).join('')}
+      </div>`).join('')}
       <div class="task-add" onclick="event.stopPropagation()">
         <input class="inp" id="ta${s.id}" placeholder="Nova subtarefa..." onkeydown="if(event.key==='Enter'){event.stopPropagation();addTask(${s.id});}">
         <button class="btn btn-sm btn-accent" onclick="event.stopPropagation();addTask(${s.id})">+</button>
@@ -1518,14 +1247,12 @@ function renderSys(){
     const cmts=(window.allComments&&window.allComments[s.id])||[];
     const commentsHtml=`<div class="comment-section">
       <div class="field-l" style="margin-bottom:0.4rem;">Comentários <span style="font-weight:400;">(${cmts.length})</span></div>
-      ${cmts.length?cmts.map(c=>`<div class="comment"><div class="comment-meta"><span style="display:flex;align-items:center;gap:0.3rem;">${userAvatar(c.user)}<span class="comment-user" style="color:${userColor(c.user)};">${c.user}</span></span><span>${formatRelTime(c.date)}</span></div><div class="comment-text">${c.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`).join(''):'<div style="color:var(--fg3);font-size:0.75rem;padding:0.2rem 0;">Sem comentários ainda.</div>'}
+      ${cmts.length?cmts.map(c=>`<div class="comment"><div class="comment-meta"><span class="comment-user">${c.user}</span><span>${formatRelTime(c.date)}</span></div><div class="comment-text">${c.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`).join(''):'<div style="color:var(--fg3);font-size:0.75rem;padding:0.2rem 0;">Sem comentários ainda.</div>'}
       <div class="comment-add" onclick="event.stopPropagation()">
         <input class="inp" id="cm${s.id}" placeholder="Adicionar comentário..." onkeydown="if(event.key==='Enter'){event.stopPropagation();window.addComment&&window.addComment(${s.id});}">
         <button class="btn btn-sm" onclick="event.stopPropagation();window.addComment&&window.addComment(${s.id})">Enviar</button>
       </div>
     </div>`;
-    const hist=(window.changelogItems||[]).filter(c=>c.sysId===s.id).slice(0,5);
-    const histHtml=hist.length?`<div class="sys-hist"><div class="field-l" style="margin-bottom:0.3rem;">Histórico</div>${hist.map(c=>`<div class="sys-hist-row">${userAvatar(c.user)}<span style="color:${userColor(c.user)};font-weight:600;">${c.user}</span> — ${c.action}<span style="margin-left:auto;">${formatRelTime(c.date)}</span></div>`).join('')}</div>`:'';
     return`<div class="sys" id="s${s.id}" draggable="true"
       ondragstart="dragSysStart(event,${s.id})"
       ondragover="dragSysOver(event,${s.id})"
@@ -1535,7 +1262,6 @@ function renderSys(){
       <div class="sys-h">
         <span style="color:var(--fg3);font-size:0.75rem;cursor:grab;flex-shrink:0;" title="Arrastar para reordenar">⠿</span>
         <span class="badge b-phase">F${s.phase}</span>
-        <span class="imp-dot ${s.importance||'medium'}" title="${{high:'Alta — Crítico',medium:'Média — Importante',low:'Baixa — Nice-to-have'}[s.importance||'medium']}"></span>
         <span class="sys-name">${s.name}</span>
         ${tasks.length?`<span style="font-size:0.65rem;color:var(--fg3);flex-shrink:0;">☑ ${td}/${tasks.length}</span>`:''}
         ${deadlineSpan(s.deadline)}
@@ -1546,13 +1272,11 @@ function renderSys(){
         <div class="field"><div class="field-l">Descrição</div><textarea class="txta" id="sd${s.id}">${s.desc}</textarea></div>
         <div class="field"><div class="field-l">Integração</div><textarea class="txta" id="si${s.id}">${s.integration}</textarea></div>
         <div class="g2">
-          <div class="field"><div class="field-l">Prazo</div><input class="inp" type="date" id="sdl${s.id}" value="${toISODate(s.deadline)}"></div>
+          <div class="field"><div class="field-l">Prazo</div><input class="inp" id="sdl${s.id}" value="${s.deadline||''}"></div>
           <div class="field"><div class="field-l">Fase</div><select class="sel" id="sp${s.id}"><option value="1"${s.phase===1?' selected':''}>Fase 1</option><option value="2"${s.phase===2?' selected':''}>Fase 2</option><option value="3"${s.phase===3?' selected':''}>Fase 3</option></select></div>
         </div>
-        <div class="field"><div class="field-l">Importância no progresso geral</div><select class="imp-sel" id="simp${s.id}" style="width:100%;" onchange="D.systems.find(x=>x.id===${s.id}).importance=this.value;save();renderDash();"><option value="high"${(s.importance||'medium')==='high'?' selected':''}>🔴 Alta — Crítico (peso 3)</option><option value="medium"${(s.importance||'medium')==='medium'?' selected':''}>🟡 Média — Importante (peso 2)</option><option value="low"${(s.importance||'medium')==='low'?' selected':''}>🟢 Baixa — Nice-to-have (peso 1)</option></select></div>
         ${tasksHtml}
         ${commentsHtml}
-        ${histHtml}
         <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.5rem;">
           <button class="btn btn-sm" style="border-color:var(--green);color:var(--green);" onclick="chSys(${s.id},'done')">✓ Completo</button>
           <button class="btn btn-sm" style="border-color:var(--accent);color:var(--accent);" onclick="chSys(${s.id},'wip')">⚙ Em Dev</button>
@@ -1572,16 +1296,6 @@ function addTask(sysId){
   if(!s.tasks)s.tasks=[];
   s.tasks.push({id:++D.nid,text,done:false});
   inp.value='';renderSys();save();
-  if(window.logChange)window.logChange(`Adicionou subtarefa em "${s.name}": ${text}`,sysId);
-}
-function setTaskDeadline(sysId,taskId,date){
-  const s=D.systems.find(x=>x.id===sysId);
-  const t=(s.tasks||[]).find(x=>x.id===taskId);
-  if(!t)return;
-  t.deadline=date;
-  save();
-  const inp=document.querySelector(`#ti${sysId}-${taskId} .task-dl`);
-  if(inp){const od=date&&new Date(date+'T23:59:59')<new Date()&&!t.done;inp.classList.toggle('overdue',!!od);}
 }
 function toggleTask(sysId,taskId){
   const s=D.systems.find(x=>x.id===sysId);
@@ -1597,10 +1311,10 @@ function deleteTask(sysId,taskId){
   renderSys();save();
 }
 function togSys(id){document.getElementById('s'+id).classList.toggle('open');}
-function chSys(id,st){const s=D.systems.find(x=>x.id===id);s.status=st;renderSys();save();const ll={done:'Completo',wip:'Em Dev',todo:'A Fazer'};if(window.logChange)window.logChange(`Marcou "${s.name}" como ${ll[st]||st}`,id);}
+function saveSys(id){const s=D.systems.find(x=>x.id===id);s.desc=document.getElementById('sd'+id).value;s.integration=document.getElementById('si'+id).value;s.deadline=document.getElementById('sdl'+id).value;s.phase=parseInt(document.getElementById('sp'+id).value);save();toast('Sistema guardado.');}
+function chSys(id,st){const s=D.systems.find(x=>x.id===id);s.status=st;renderSys();save();const ll={done:'Completo',wip:'Em Dev',todo:'A Fazer'};if(window.logChange)window.logChange(`Marcou "${s.name}" como ${ll[st]||st}`);}
 function delSys(id){if(!confirm('Remover?'))return;const s=D.systems.find(x=>x.id===id);D.systems=D.systems.filter(x=>x.id!==id);renderSys();save();if(window.logChange&&s)window.logChange(`Removeu o sistema "${s.name}"`);}
-function saveSys(id){const s=D.systems.find(x=>x.id===id);s.desc=document.getElementById('sd'+id).value;s.integration=document.getElementById('si'+id).value;s.deadline=document.getElementById('sdl'+id).value;s.phase=parseInt(document.getElementById('sp'+id).value);s.importance=document.getElementById('simp'+id).value||s.importance||'medium';save();renderDash();if(window.logChange)window.logChange(`Editou "${s.name}"`,id);toast('Sistema guardado.');}
-function addSys(){const n=document.getElementById('ms-name').value.trim();if(!n)return;const nid=++D.nid;D.systems.push({id:nid,name:n,phase:parseInt(document.getElementById('ms-phase').value),status:document.getElementById('ms-st').value,deadline:document.getElementById('ms-deadline').value,importance:document.getElementById('ms-imp').value||'medium',desc:document.getElementById('ms-desc').value,integration:document.getElementById('ms-int').value,tasks:[]});closeModal('m-sys');['ms-name','ms-desc','ms-int','ms-deadline'].forEach(x=>document.getElementById(x).value='');document.getElementById('ms-imp').value='medium';nav('sys');toast('Sistema adicionado.');save();if(window.logChange)window.logChange(`Adicionou o sistema "${n}"`,nid);}
+function addSys(){const n=document.getElementById('ms-name').value.trim();if(!n)return;D.systems.push({id:++D.nid,name:n,phase:parseInt(document.getElementById('ms-phase').value),status:document.getElementById('ms-st').value,deadline:document.getElementById('ms-deadline').value,desc:document.getElementById('ms-desc').value,integration:document.getElementById('ms-int').value,tasks:[]});closeModal('m-sys');['ms-name','ms-desc','ms-int','ms-deadline'].forEach(x=>document.getElementById(x).value='');nav('sys');toast('Sistema adicionado.');save();if(window.logChange)window.logChange(`Adicionou o sistema "${n}"`);}
 
 // ─── RENDER: MODELER ─────────────────────────────────────
 function renderModel(){
@@ -1616,280 +1330,35 @@ function renderModel(){
   const sorted=[...D.assets].sort((a,b)=>a.priority-b.priority);
   document.getElementById('model-table').innerHTML=sorted.map(a=>`<tr>
     <td style="font-weight:700;color:var(--accent);">#${a.priority}</td>
-    <td style="font-weight:600;color:var(--fg);"><span class="imp-dot ${a.importance||'medium'}" title="Importância"></span>${a.name}</td>
+    <td style="font-weight:600;color:var(--fg);">${a.name}</td>
     <td>${a.cat}</td>
-    <td><select class="imp-sel" title="Fase" onchange="D.assets.find(x=>x.id===${a.id}).phase=parseInt(this.value);save();"><option value="1"${(a.phase||1)===1?' selected':''}>F1</option><option value="2"${(a.phase||1)===2?' selected':''}>F2</option><option value="3"${(a.phase||1)===3?' selected':''}>F3</option></select></td>
     <td>${deadlineInput(a.id,a.deadline)}</td>
     <td><span class="badge ${sb[a.status]}">${sl[a.status]}</span></td>
-    <td style="white-space:nowrap;display:flex;align-items:center;gap:0.3rem;flex-wrap:wrap;">
-      <select class="imp-sel" title="Importância" onchange="D.assets.find(x=>x.id===${a.id}).importance=this.value;save();renderDash();"><option value="high"${(a.importance||'medium')==='high'?' selected':''}>🔴</option><option value="medium"${(a.importance||'medium')==='medium'?' selected':''}>🟡</option><option value="low"${(a.importance||'medium')==='low'?' selected':''}>🟢</option></select>
+    <td style="white-space:nowrap;">
       <button class="btn btn-sm btn-icon" style="border-color:var(--green);color:var(--green);" onclick="chAsset(${a.id},'done')">✓</button>
       <button class="btn btn-sm btn-icon" style="border-color:var(--accent);color:var(--accent);" onclick="chAsset(${a.id},'wip')">⚙</button>
       <button class="btn btn-sm btn-icon btn-danger" onclick="delAsset(${a.id})">✕</button>
     </td>
   </tr>`).join('');
 }
-function chAsset(id,st){const a=D.assets.find(x=>x.id===id);a.status=st;renderModel();save();const ll={done:'Entregue',wip:'Em Produção',todo:'A Fazer'};if(window.logChange)window.logChange(`Marcou asset "${a.name}" como ${ll[st]||st}`);}
-function delAsset(id){const a=D.assets.find(x=>x.id===id);D.assets=D.assets.filter(x=>x.id!==id);renderModel();save();if(window.logChange&&a)window.logChange(`Removeu asset "${a.name}"`);}
-function addAssetLog(n){if(window.logChange)window.logChange(`Adicionou asset "${n}"`);}
-function addAsset(){const n=document.getElementById('ma-name').value.trim();if(!n)return;D.assets.push({id:++D.nid,name:n,cat:document.getElementById('ma-cat').value,phase:parseInt(document.getElementById('ma-phase').value)||1,deadline:document.getElementById('ma-dl').value,priority:parseInt(document.getElementById('ma-pri').value)||99,importance:document.getElementById('ma-imp').value||'medium',status:'todo'});closeModal('m-asset');document.getElementById('ma-name').value='';renderModel();toast('Asset adicionado.');save();addAssetLog(n);}
+function chAsset(id,st){D.assets.find(x=>x.id===id).status=st;renderModel();save();}
+function delAsset(id){D.assets=D.assets.filter(x=>x.id!==id);renderModel();save();}
+function addAsset(){const n=document.getElementById('ma-name').value.trim();if(!n)return;D.assets.push({id:++D.nid,name:n,cat:document.getElementById('ma-cat').value,deadline:document.getElementById('ma-dl').value,priority:parseInt(document.getElementById('ma-pri').value)||99,status:'todo'});closeModal('m-asset');document.getElementById('ma-name').value='';renderModel();toast('Asset adicionado.');save();}
 
-// ─── RENDER: LORE ────────────────────────────────────────
-let loreStatusFilter='';
-function setLoreStatus(s){
-  loreStatusFilter=s;
-  document.querySelectorAll('#p-lore .btn.btn-sm').forEach(b=>b.classList.remove('btn-accent'));
-  const ids={'':'ls-all','draft':'ls-draft','developed':'ls-developed','archived':'ls-archived'};
-  const el=document.getElementById(ids[s]);if(el)el.classList.add('btn-accent');
-  renderLore();
-}
-function renderLore(){
-  if(!D.lore)D.lore=[];
-  const q=(document.getElementById('lore-search')?.value||'').toLowerCase();
-  let list=loreStatusFilter?D.lore.filter(l=>l.status===loreStatusFilter):D.lore;
-  if(q) list=list.filter(l=>l.name.toLowerCase().includes(q)||(l.tags||'').toLowerCase().includes(q)||(l.text||'').toLowerCase().includes(q));
-  const total=D.lore.length;
-  const developed=D.lore.filter(l=>l.status==='developed').length;
-  document.getElementById('lore-stats').textContent=`${total} ideias · ${developed} desenvolvidas`;
-  const statusBadge={draft:'<span class="badge badge-todo">📝 Rascunho</span>',developed:'<span class="badge badge-wip">✦ Desenvolvida</span>',archived:'<span style="font-size:0.65rem;color:var(--fg3);padding:0.1rem 0.4rem;border:1px solid var(--border);border-radius:4px;">🗃 Arquivada</span>'};
-  const el=document.getElementById('lore-list');
-  if(!list.length){el.innerHTML=`<div style="color:var(--fg3);font-size:0.8rem;padding:1.5rem 0;text-align:center;">${q||loreStatusFilter?'Nenhuma ideia encontrada.':'O caderno está vazio. Escreve a primeira ideia!'}</div>`;return;}
-  el.innerHTML=list.map(l=>{
-    const tags=(l.tags||'').split(',').map(t=>t.trim()).filter(Boolean);
-    const tagChips=tags.map(t=>`<span style="font-size:0.6rem;background:rgba(168,85,247,0.12);color:#a855f7;border:1px solid rgba(168,85,247,0.3);border-radius:10px;padding:0.05rem 0.45rem;">${t}</span>`).join('');
-    const preview=l.text?(l.text.slice(0,140)+(l.text.length>140?'…':'')).replace(/</g,'&lt;'):'<em style="color:var(--fg3);">Sem texto ainda — clica para escrever.</em>';
-    return `<div class="sys" id="lo${l.id}">
-      <div class="sys-hd" onclick="togLore(${l.id})">
-        <div style="display:flex;flex-direction:column;gap:0.25rem;flex:1;min-width:0;">
-          <div style="display:flex;align-items:center;gap:0.5rem;">
-            <span class="imp-dot ${l.importance||'low'}" title="${{high:'Alta — Crítico',medium:'Média — Importante',low:'Baixa — Nice-to-have'}[l.importance||'low']}"></span>
-            <span class="badge b-phase">F${l.phase||1}</span>
-            <span class="sys-name">${l.name}</span>
-            ${statusBadge[l.status]||statusBadge.draft}
-          </div>
-          ${tags.length?`<div style="display:flex;gap:0.25rem;flex-wrap:wrap;">${tagChips}</div>`:''}
-        </div>
-        <span class="sys-arrow">›</span>
-      </div>
-      <div class="sys-body">
-        <div style="font-size:0.78rem;color:var(--fg3);margin-bottom:0.75rem;font-style:italic;">${preview}</div>
-        <div class="g2">
-          <div class="field"><div class="field-l">Título</div><input class="inp" value="${l.name.replace(/"/g,'&quot;')}" onchange="D.lore.find(x=>x.id===${l.id}).name=this.value;" onblur="save();renderLore();" placeholder="Nome da ideia"></div>
-          <div class="field"><div class="field-l">Estado</div>
-            <select class="inp" onchange="chLoreStatus(${l.id},this.value)">
-              <option value="draft"${(l.status||'draft')==='draft'?' selected':''}>📝 Rascunho</option>
-              <option value="developed"${l.status==='developed'?' selected':''}>✦ Desenvolvida</option>
-              <option value="archived"${l.status==='archived'?' selected':''}>🗃 Arquivada</option>
-            </select>
-          </div>
-        </div>
-        <div class="g2">
-          <div class="field"><div class="field-l">Tags <span style="font-weight:400;color:var(--fg3);">(separadas por vírgula)</span></div><input class="inp" value="${(l.tags||'').replace(/"/g,'&quot;')}" onchange="D.lore.find(x=>x.id===${l.id}).tags=this.value;" onblur="save();renderLore();" placeholder="Ex: magia, facção, norte"></div>
-          <div class="field"><div class="field-l">Importância</div><select class="imp-sel" style="width:100%;" onchange="D.lore.find(x=>x.id===${l.id}).importance=this.value;save();renderDash();"><option value="high"${(l.importance||'low')==='high'?' selected':''}>🔴 Alta</option><option value="medium"${(l.importance||'low')==='medium'?' selected':''}>🟡 Média</option><option value="low"${(l.importance||'low')==='low'?' selected':''}>🟢 Baixa</option></select></div>
-          <div class="field"><div class="field-l">Fase</div><select class="imp-sel" style="width:100%;" onchange="D.lore.find(x=>x.id===${l.id}).phase=parseInt(this.value);save();renderLore();"><option value="1"${(l.phase||1)===1?' selected':''}>Fase 1 — Porto Real</option><option value="2"${(l.phase||1)===2?' selected':''}>Fase 2 — Winterfell</option><option value="3"${(l.phase||1)===3?' selected':''}>Fase 3 — Endgame</option></select></div>
-        </div>
-        <div class="field"><div class="field-l">Texto / Ideia</div><textarea class="inp" rows="7" style="resize:vertical;font-family:var(--font);line-height:1.6;" onchange="D.lore.find(x=>x.id===${l.id}).text=this.value;save();" placeholder="Escreve livremente…">${(l.text||'').replace(/</g,'&lt;')}</textarea></div>
-        <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.4rem;align-items:center;">
-          <button class="btn btn-sm" style="background:rgba(168,85,247,0.12);color:#a855f7;border-color:#a855f7;" onclick="loreAIIdea(this,${l.id})">💡 Desenvolver com IA</button>
-          <button class="btn btn-sm" style="background:rgba(168,85,247,0.12);color:#a855f7;border-color:#a855f7;" onclick="loreAIComplete(this,${l.id})">✍️ Completar Texto</button>
-          <button class="btn btn-sm" style="background:rgba(34,197,94,0.1);color:var(--green);border-color:var(--green);" onclick="loreToSystem(${l.id})" title="Transforma esta ideia num Sistema">⚙ → Sistema</button>
-          <button class="btn btn-sm btn-danger" style="margin-left:auto;" onclick="delLore(${l.id})">✕</button>
-        </div>
-        <div id="lore-ai-out-${l.id}" style="display:none;margin-top:0.5rem;background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.25);border-radius:var(--radius);padding:0.6rem 0.75rem;font-size:0.78rem;color:var(--fg2);white-space:pre-wrap;line-height:1.55;"></div>
-      </div>
-    </div>`;
-  }).join('');
-}
-function togLore(id){document.getElementById('lo'+id).classList.toggle('open');}
-function chLoreStatus(id,val){const l=D.lore.find(x=>x.id===id);if(!l)return;l.status=val;save();renderLore();const ll={developed:'Desenvolvida',draft:'Rascunho',archived:'Arquivada'};if(window.logChange)window.logChange(`Marcou lore "${l.name}" como ${ll[val]||val}`);}
-function chBuildStatus(id,val){const b=D.builds.find(x=>x.id===id);if(!b)return;b.status=val;save();renderBuild();const ll={done:'Concluída',wip:'Em Obra',todo:'A Iniciar'};if(window.logChange)window.logChange(`Marcou build "${b.name}" como ${ll[val]||val}`);}
-function delLore(id){if(!confirm('Remover esta ideia de lore?'))return;const l=D.lore.find(x=>x.id===id);D.lore=D.lore.filter(x=>x.id!==id);renderLore();save();if(window.logChange&&l)window.logChange(`Removeu lore "${l.name}"`);}
-function addLore(){
-  const name=document.getElementById('ml-name').value.trim();if(!name)return;
-  const entry={id:++D.nid,name,phase:parseInt(document.getElementById('ml-phase').value)||1,tags:document.getElementById('ml-tags').value.trim(),importance:document.getElementById('ml-imp').value||'low',status:'draft',text:document.getElementById('ml-text').value};
-  D.lore.push(entry);closeModal('m-lore');
-  ['ml-name','ml-tags','ml-text'].forEach(x=>document.getElementById(x).value='');document.getElementById('ml-imp').value='low';
-  renderLore();save();toast('Ideia guardada!');
-  if(window.logChange)window.logChange(`Adicionou lore "${name}"`);
-}
-function loreToSystem(id){
-  const l=D.lore.find(x=>x.id===id);if(!l)return;
-  document.getElementById('ms-name').value=l.name;
-  document.getElementById('ms-desc').value=(l.text||'').slice(0,200);
-  openModal('m-sys');
-  toast('Preenche os detalhes do sistema — texto do lore foi copiado.');
-}
-
-// ─── RENDER: BUILD ────────────────────────────────────────
-let buildFilter='';
-function setBuildFilter(f){
-  buildFilter=f;
-  document.querySelectorAll('#p-build .btn').forEach(b=>b.classList.remove('btn-accent'));
-  const ids={'':'bf-all','todo':'bf-todo','wip':'bf-wip','done':'bf-done'};
-  const el=document.getElementById(ids[f]);if(el)el.classList.add('btn-accent');
-  renderBuild();
-}
-function renderBuild(){
-  if(!D.builds)D.builds=[];
-  const list=buildFilter?D.builds.filter(b=>b.status===buildFilter):D.builds;
-  const done=D.builds.filter(b=>b.status==='done').length;
-  const wip=D.builds.filter(b=>b.status==='wip').length;
-  const todo=D.builds.filter(b=>b.status==='todo').length;
-  document.getElementById('build-stats').textContent=`${D.builds.length} zonas · ${done} concluídas · ${wip} em curso · ${todo} por fazer`;
-  const statusLabel={todo:'Por Fazer',wip:'Em Construção',done:'Concluído'};
-  const statusBadge={todo:'<span class="badge badge-todo">Por Fazer</span>',wip:'<span class="badge badge-wip">Em Construção</span>',done:'<span class="badge badge-done">Concluído</span>'};
-  const el=document.getElementById('build-list');
-  if(!list.length){el.innerHTML=`<div style="color:var(--fg3);font-size:0.8rem;padding:1rem 0;text-align:center;">Sem zonas de construção ainda. Cria a primeira!</div>`;return;}
-  el.innerHTML=list.map(b=>{
-    const tasks=b.subtasks||[];
-    const tasksDone=tasks.filter(t=>t.done).length;
-    const dlSafe=b.deadline?`<span style="font-size:0.65rem;color:${isOverdue(b.deadline)?'var(--red)':'var(--fg3)'};">⏱ ${displayDate(b.deadline)}</span>`:'';
-    const progressBar=tasks.length?`<div style="background:var(--bg3);border-radius:4px;height:4px;margin:0.3rem 0;overflow:hidden;"><div style="height:100%;background:var(--green);width:${Math.round(tasksDone/tasks.length*100)}%;transition:width 0.3s;"></div></div>`:'';
-    return `<div class="sys" id="bd${b.id}">
-      <div class="sys-hd" onclick="togBuild(${b.id})">
-        <div style="display:flex;align-items:center;gap:0.5rem;flex:1;min-width:0;">
-          <span class="imp-dot ${b.importance||'medium'}" title="${{high:'Alta — Crítico',medium:'Média — Importante',low:'Baixa — Nice-to-have'}[b.importance||'medium']}"></span>
-          <span class="badge b-phase">F${b.phase||1}</span>
-          <span class="sys-name">🏗 ${b.name}</span>
-          ${b.zone?`<span style="font-size:0.65rem;color:var(--fg3);">[${b.zone}]</span>`:''}
-          ${dlSafe}
-        </div>
-        <div style="display:flex;align-items:center;gap:0.4rem;">
-          ${tasks.length?`<span style="font-size:0.65rem;color:var(--fg3);">${tasksDone}/${tasks.length}</span>`:''}
-          ${statusBadge[b.status]||''}
-          <span class="sys-arrow">›</span>
-        </div>
-      </div>
-      <div class="sys-body">
-        ${progressBar}
-        <div class="g2">
-          <div class="field"><div class="field-l">Nome</div><input class="inp" value="${b.name.replace(/"/g,'&quot;')}" onchange="D.builds.find(x=>x.id===${b.id}).name=this.value;save();renderBuild();" placeholder="Nome da zona"></div>
-          <div class="field"><div class="field-l">Zona / Área</div><input class="inp" value="${(b.zone||'').replace(/"/g,'&quot;')}" onchange="D.builds.find(x=>x.id===${b.id}).zone=this.value;save();" placeholder="Ex: Castelo Norte"></div>
-        </div>
-        <div class="g2">
-          <div class="field"><div class="field-l">Estado</div>
-            <select class="inp" onchange="chBuildStatus(${b.id},this.value)">
-              <option value="todo"${b.status==='todo'?' selected':''}>Por Fazer</option>
-              <option value="wip"${b.status==='wip'?' selected':''}>Em Construção</option>
-              <option value="done"${b.status==='done'?' selected':''}>Concluído</option>
-            </select>
-          </div>
-          <div class="field"><div class="field-l">Prazo</div><input class="inp" type="date" value="${toISODate(b.deadline||'')}" onchange="D.builds.find(x=>x.id===${b.id}).deadline=this.value;save();renderBuild();"></div>
-        </div>
-        <div class="g2">
-          <div class="field"><div class="field-l">Importância</div><select class="imp-sel" style="width:100%;" onchange="D.builds.find(x=>x.id===${b.id}).importance=this.value;save();renderDash();"><option value="high"${(b.importance||'medium')==='high'?' selected':''}>🔴 Alta (peso 3)</option><option value="medium"${(b.importance||'medium')==='medium'?' selected':''}>🟡 Média (peso 2)</option><option value="low"${(b.importance||'medium')==='low'?' selected':''}>🟢 Baixa (peso 1)</option></select></div>
-          <div class="field"><div class="field-l">Fase</div><select class="imp-sel" style="width:100%;" onchange="D.builds.find(x=>x.id===${b.id}).phase=parseInt(this.value);save();renderBuild();"><option value="1"${(b.phase||1)===1?' selected':''}>Fase 1 — Porto Real</option><option value="2"${(b.phase||1)===2?' selected':''}>Fase 2 — Winterfell</option><option value="3"${(b.phase||1)===3?' selected':''}>Fase 3 — Endgame</option></select></div>
-        </div>
-        <div class="field"><div class="field-l">Notas</div><textarea class="inp" rows="3" style="resize:vertical;" onchange="D.builds.find(x=>x.id===${b.id}).notes=this.value;save();" placeholder="Notas, referências, descrição da zona…">${(b.notes||'').replace(/</g,'&lt;')}</textarea></div>
-        <div class="field-l" style="margin-bottom:0.3rem;">Subtarefas <span style="font-weight:400;color:var(--fg3);">(${tasksDone}/${tasks.length})</span></div>
-        <div id="btasks-${b.id}">${renderBuildTasks(b)}</div>
-        <div style="display:flex;gap:0.4rem;margin-top:0.3rem;">
-          <input class="inp" id="bt-inp-${b.id}" placeholder="Nova subtarefa…" style="flex:1;font-size:0.78rem;padding:0.2rem 0.4rem;" onkeydown="if(event.key==='Enter')addBuildTask(${b.id})">
-          <button class="btn btn-sm" onclick="addBuildTask(${b.id})">+</button>
-        </div>
-        <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.6rem;">
-          <button class="btn btn-sm" style="background:rgba(6,182,212,0.12);color:#06b6d4;border-color:#06b6d4;" onclick="buildAIInspire(this,${b.id})">🏰 Inspiração</button>
-          <button class="btn btn-sm" style="background:rgba(6,182,212,0.12);color:#06b6d4;border-color:#06b6d4;" onclick="buildAITasks(this,${b.id})">📋 Sugerir Subtarefas</button>
-          <button class="btn btn-sm btn-danger" style="margin-left:auto;" onclick="delBuild(${b.id})">✕ Remover</button>
-        </div>
-        <div id="build-ai-out-${b.id}" style="display:none;margin-top:0.5rem;background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.25);border-radius:var(--radius);padding:0.6rem 0.75rem;font-size:0.78rem;color:var(--fg2);white-space:pre-wrap;"></div>
-      </div>
-    </div>`;
-  }).join('');
-}
-function renderBuildTasks(b){
-  const tasks=b.subtasks||[];
-  if(!tasks.length)return`<div style="color:var(--fg3);font-size:0.72rem;padding:0.2rem 0;">Sem subtarefas ainda.</div>`;
-  return tasks.map(t=>{const od=t.deadline&&new Date(t.deadline+'T23:59:59')<new Date()&&!t.done;return`<div class="sys-task${t.done?' done-task':''}" id="bti${b.id}-${t.id}">
-    <input type="checkbox"${t.done?' checked':''} onchange="toggleBuildTask(${b.id},${t.id})">
-    <span class="task-text" style="flex:1;">${t.text.replace(/</g,'&lt;')}</span>
-    <input type="date" class="task-dl${od?' overdue':''}" value="${t.deadline||''}" title="${od?'Atrasado!':'Prazo da subtarefa'}" onchange="setBuildTaskDeadline(${b.id},${t.id},this.value)">
-    <button class="btn btn-sm btn-icon btn-danger" style="opacity:0.6;" onclick="delBuildTask(${b.id},${t.id})">✕</button>
-  </div>`;}).join('');
-}
-function togBuild(id){document.getElementById('bd'+id).classList.toggle('open');}
-function delBuild(id){if(!confirm('Remover esta zona?'))return;const b=D.builds.find(x=>x.id===id);D.builds=D.builds.filter(x=>x.id!==id);renderBuild();save();if(window.logChange&&b)window.logChange(`Removeu build "${b.name}"`);}
-function addBuild(){
-  const name=document.getElementById('mb-name').value.trim();if(!name)return;
-  D.builds.push({id:++D.nid,name,zone:document.getElementById('mb-zone').value.trim(),phase:parseInt(document.getElementById('mb-phase').value)||1,status:document.getElementById('mb-st').value,deadline:document.getElementById('mb-dl').value,importance:document.getElementById('mb-imp').value||'medium',notes:'',subtasks:[]});
-  closeModal('m-build');['mb-name','mb-zone','mb-dl'].forEach(x=>document.getElementById(x).value='');document.getElementById('mb-imp').value='medium';
-  renderBuild();save();toast('Zona adicionada!');
-  if(window.logChange)window.logChange(`Adicionou build "${name}"`);
-}
-function addBuildTask(bid){
-  const inp=document.getElementById('bt-inp-'+bid);const txt=inp.value.trim();if(!txt)return;
-  const b=D.builds.find(x=>x.id===bid);if(!b)return;
-  if(!b.subtasks)b.subtasks=[];
-  b.subtasks.push({id:++D.nid,text:txt,done:false});
-  inp.value='';save();
-  if(window.logChange)window.logChange(`Adicionou subtarefa em build "${b.name}": ${txt}`);
-  document.getElementById('btasks-'+bid).innerHTML=renderBuildTasks(b);
-  document.getElementById('build-stats').textContent=`${D.builds.length} zonas · ${D.builds.filter(x=>x.status==='done').length} concluídas`;
-}
-function setBuildTaskDeadline(bid,tid,date){
-  const b=D.builds.find(x=>x.id===bid);
-  const t=(b.subtasks||[]).find(x=>x.id===tid);
-  if(!t)return;
-  t.deadline=date;
-  save();
-  const inp=document.querySelector(`#bti${bid}-${tid} .task-dl`);
-  if(inp){const od=date&&new Date(date+'T23:59:59')<new Date()&&!t.done;inp.classList.toggle('overdue',!!od);}
-}
-function toggleBuildTask(bid,tid){
-  const b=D.builds.find(x=>x.id===bid);const t=(b.subtasks||[]).find(x=>x.id===tid);if(!t)return;
-  t.done=!t.done;
-  const el=document.getElementById('bti'+bid+'-'+tid);if(el)el.classList.toggle('done-task',t.done);
-  save();
-}
-function delBuildTask(bid,tid){
-  const b=D.builds.find(x=>x.id===bid);if(!b)return;
-  b.subtasks=(b.subtasks||[]).filter(x=>x.id!==tid);
-  document.getElementById('btasks-'+bid).innerHTML=renderBuildTasks(b);
-  save();
-}
-
-// ─── RENDER: TIMELINE (unified) ──────────────────────────
+// ─── RENDER: TIMELINE ────────────────────────────────────
 let editTLId=null;
-function buildUnifiedTimeline(){
-  const stMap={done:'done',wip:'active',todo:'',blocked:''};
-  const items=[];
-  D.timeline.forEach(t=>items.push({_type:'milestone',_id:t.id,date:t.date,sortDate:toISODate(t.date)||'9999-12-31',title:t.title,desc:t.desc||'',status:t.status||''}));
-  D.systems.filter(s=>s.deadline).forEach(s=>items.push({_type:'system',_id:s.id,_phase:s.phase,date:s.deadline,sortDate:toISODate(s.deadline)||'9999-12-31',title:s.name,desc:`Sistema · Fase ${s.phase}`,status:stMap[s.status]||''}));
-  D.assets.filter(a=>a.deadline).forEach(a=>items.push({_type:'asset',_id:a.id,date:a.deadline,sortDate:toISODate(a.deadline)||'9999-12-31',title:a.name,desc:`Asset · ${a.cat}`,status:a.status==='done'?'done':''}));
-  // Lore entries are a scratchpad — no deadlines, not in the timeline
-  (D.builds||[]).filter(b=>b.deadline).forEach(b=>items.push({_type:'build',_id:b.id,date:b.deadline,sortDate:toISODate(b.deadline)||'9999-12-31',title:b.name,desc:`Build${b.zone?' · '+b.zone:''}`,status:b.status==='done'?'done':''}));
-  // Subtasks with deadlines (from systems and builds)
-  D.systems.forEach(s=>(s.tasks||[]).filter(t=>t.deadline&&!t.done).forEach(t=>items.push({_type:'subtask',_id:s.id,_phase:s.phase,date:t.deadline,sortDate:toISODate(t.deadline)||'9999-12-31',title:t.text,desc:`Subtarefa de "${s.name}"`,status:''})));
-  (D.builds||[]).forEach(b=>(b.subtasks||[]).filter(t=>t.deadline&&!t.done).forEach(t=>items.push({_type:'subtask',_id:b.id,date:t.deadline,sortDate:toISODate(t.deadline)||'9999-12-31',title:t.text,desc:`Subtarefa de build "${b.name}"`,status:''})));
-  return items.sort((a,b)=>a.sortDate.localeCompare(b.sortDate));
-}
 function renderTL(){
-  const items=buildUnifiedTimeline();
-  const tLabel={milestone:'Marco',system:'Sistema',asset:'Asset',build:'Build',subtask:'Subtarefa'};
-  const tColor={milestone:'var(--fg3)',system:'var(--accent)',asset:'var(--blue)',build:'#06b6d4',subtask:'#8b5cf6'};
-  document.getElementById('tl-list').innerHTML=items.length?items.map(t=>{
-    const od=t.status!=='done'&&isOverdue(t.date);
-    let editBtn='';
-    if(t._type==='milestone') editBtn=`<button class="btn btn-sm btn-ghost" style="font-size:0.6rem;padding:0.1rem 0.3rem;" onclick="editTL(${t._id})">✎</button>`;
-    else if(t._type==='system') editBtn=`<button class="btn btn-sm btn-ghost" style="font-size:0.6rem;padding:0.1rem 0.3rem;" onclick="navFilterSys(${t._phase});nav('sys');" title="Ver sistema">↗</button>`;
-    else if(t._type==='build') editBtn=`<button class="btn btn-sm btn-ghost" style="font-size:0.6rem;padding:0.1rem 0.3rem;" onclick="nav('build');" title="Ver construção">↗</button>`;
-    else if(t._type==='subtask') editBtn=`<button class="btn btn-sm btn-ghost" style="font-size:0.6rem;padding:0.1rem 0.3rem;" onclick="nav(${t.desc.includes('build')?`'build'`:`'sys'`});" title="Ver item">↗</button>`;
-    else editBtn=`<button class="btn btn-sm btn-ghost" style="font-size:0.6rem;padding:0.1rem 0.3rem;" onclick="nav('model');" title="Ver assets">↗</button>`;
-    return`<div class="tl-item">
+  document.getElementById('tl-list').innerHTML=D.timeline.map(t=>`
+    <div class="tl-item">
       <div class="tl-dot ${t.status}"></div>
-      <div class="tl-date" style="${od?'color:var(--red);':`color:var(--fg2);`}">
-        ${displayDate(t.date)}${od?' ⚠':''}&nbsp;
-        <span style="font-size:0.6rem;color:${tColor[t._type]};background:${tColor[t._type]}22;padding:0.1rem 0.35rem;border-radius:4px;font-weight:600;">${tLabel[t._type]}</span>
-        ${editBtn}
-      </div>
+      <div class="tl-date">${t.date} <button class="btn btn-sm btn-ghost" style="font-size:0.65rem;padding:0.1rem 0.3rem;" onclick="editTL(${t.id})">✎</button></div>
       <div class="tl-title">${t.title}</div>
       <div class="tl-desc">${t.desc}</div>
-    </div>`;
-  }).join(''):`<div style="color:var(--fg3);padding:1rem 0;font-size:0.8rem;">Nenhum prazo definido ainda. Adiciona prazos aos sistemas ou cria marcos abaixo.</div>`;
+    </div>`).join('');
 }
 function editTL(id){
   editTLId=id;const t=D.timeline.find(x=>x.id===id);
-  document.getElementById('te-date').value=toISODate(t.date)||t.date;
+  document.getElementById('te-date').value=t.date;
   document.getElementById('te-st').value=t.status;
   document.getElementById('te-title').value=t.title;
   document.getElementById('te-desc').value=t.desc;
@@ -1902,15 +1371,13 @@ function saveTLEdit(){
   t.title=document.getElementById('te-title').value;
   t.desc=document.getElementById('te-desc').value;
   closeModal('m-tl-edit');renderTL();save();toast('Marco actualizado.');
-  if(window.logChange)window.logChange(`Editou marco "${t.title}" → ${t.date}`);
 }
-function deleteTL(){const t=D.timeline.find(x=>x.id===editTLId);D.timeline=D.timeline.filter(x=>x.id!==editTLId);closeModal('m-tl-edit');renderTL();save();toast('Marco removido.');if(window.logChange&&t)window.logChange(`Removeu marco "${t.title}"`);}
+function deleteTL(){D.timeline=D.timeline.filter(x=>x.id!==editTLId);closeModal('m-tl-edit');renderTL();save();toast('Marco removido.');}
 function addTL(){
   const t=document.getElementById('tl-i-title').value.trim();if(!t)return;
   D.timeline.push({id:++D.nid,date:document.getElementById('tl-i-date').value,status:document.getElementById('tl-i-st').value,title:t,desc:document.getElementById('tl-i-desc').value});
   ['tl-i-date','tl-i-title','tl-i-desc'].forEach(x=>document.getElementById(x).value='');
   renderTL();save();toast('Marco adicionado.');
-  if(window.logChange)window.logChange(`Adicionou marco "${t}"`);
 }
 
 // ─── RENDER: PHASES ──────────────────────────────────────
@@ -1918,28 +1385,11 @@ function renderPhases(){
   const phases=[{n:1,title:'Fase 1 — Porto Real + Exploração',sub:'Verão 2026',accent:true},{n:2,title:'Fase 2 — Winterfell + Expansão',sub:'Após validação Fase 1'},{n:3,title:'Fase 3 — Política + Endgame',sub:'2027'}];
   const sb={done:'b-done',wip:'b-wip',todo:'b-todo',blocked:'b-blocked'};
   const sl={done:'Feito',wip:'Em Dev',todo:'A Fazer',blocked:'Bloqueado'};
-  const asl={done:'Entregue',wip:'Em Prod.',todo:'A Fazer'};
-  const bsl={done:'Concluída',wip:'Em Obra',todo:'A Iniciar'};
-  const lsl={developed:'Desenvolvida',draft:'Rascunho',archived:'Arquivada'};
   document.getElementById('phases-content').innerHTML=phases.map(ph=>{
-    const syss=D.systems.filter(s=>s.phase===ph.n);
-    const assets=D.assets.filter(a=>(a.phase||1)===ph.n);
-    const builds=(D.builds||[]).filter(b=>(b.phase||1)===ph.n);
-    const lore=(D.lore||[]).filter(l=>(l.phase||1)===ph.n);
-    const total=syss.length+assets.length+builds.length+lore.length;
-    const done=syss.filter(s=>s.status==='done').length+assets.filter(a=>a.status==='done').length+builds.filter(b=>b.status==='done').length+lore.filter(l=>l.status==='developed').length;
+    const items=D.systems.filter(s=>s.phase===ph.n);
     return`<div class="card" style="margin-bottom:0.75rem;${ph.accent?'border-color:rgba(245,158,11,0.3);':''}">
-      <div class="card-title" style="${ph.accent?'color:var(--accent);':''}display:flex;justify-content:space-between;align-items:center;">
-        <span>${ph.title}<span style="font-weight:400;font-size:0.6rem;text-transform:none;letter-spacing:0;color:var(--fg3);margin-left:0.5rem;">${ph.sub}</span></span>
-        <span style="font-size:0.7rem;font-weight:600;color:var(--fg3);">${done}/${total} concluídos</span>
-      </div>
-      <div class="card-body">
-        ${syss.length?`<div style="font-size:0.65rem;font-weight:600;color:var(--fg3);text-transform:uppercase;letter-spacing:0.06em;margin:0.4rem 0 0.3rem;">⚙ Sistemas</div>${syss.map(s=>`<div style="margin-bottom:0.3rem;"><span class="badge ${sb[s.status]}">${sl[s.status]}</span> <span class="imp-dot ${s.importance||'medium'}" style="vertical-align:middle;"></span> <span style="margin-left:0.2rem;">${s.name}${s.deadline?' — '+s.deadline:''}</span></div>`).join('')}`:''}
-        ${assets.length?`<div style="font-size:0.65rem;font-weight:600;color:var(--fg3);text-transform:uppercase;letter-spacing:0.06em;margin:0.6rem 0 0.3rem;">◻ Modelação</div>${assets.map(a=>`<div style="margin-bottom:0.3rem;"><span class="badge ${sb[a.status]||'b-todo'}">${asl[a.status]||'A Fazer'}</span> <span class="imp-dot ${a.importance||'medium'}" style="vertical-align:middle;"></span> <span style="margin-left:0.2rem;">${a.name}</span></div>`).join('')}`:''}
-        ${builds.length?`<div style="font-size:0.65rem;font-weight:600;color:var(--fg3);text-transform:uppercase;letter-spacing:0.06em;margin:0.6rem 0 0.3rem;">🏗 Construções</div>${builds.map(b=>`<div style="margin-bottom:0.3rem;"><span class="badge ${sb[b.status]||'b-todo'}">${bsl[b.status]||'A Iniciar'}</span> <span class="imp-dot ${b.importance||'medium'}" style="vertical-align:middle;"></span> <span style="margin-left:0.2rem;">${b.name}${b.zone?' ['+b.zone+']':''}</span></div>`).join('')}`:''}
-        ${lore.length?`<div style="font-size:0.65rem;font-weight:600;color:var(--fg3);text-transform:uppercase;letter-spacing:0.06em;margin:0.6rem 0 0.3rem;">📜 Lore</div>${lore.map(l=>`<div style="margin-bottom:0.3rem;"><span class="badge ${l.status==='developed'?'b-done':l.status==='archived'?'b-blocked':'b-todo'}">${lsl[l.status]||'Rascunho'}</span> <span class="imp-dot ${l.importance||'low'}" style="vertical-align:middle;"></span> <span style="margin-left:0.2rem;">${l.name}</span></div>`).join('')}`:''}
-        ${!total?`<div style="color:var(--fg3);font-size:0.8rem;">Nenhum item nesta fase ainda.</div>`:''}
-      </div>
+      <div class="card-title" style="${ph.accent?'color:var(--accent);':''}">${ph.title}<span style="font-weight:400;font-size:0.6rem;text-transform:none;letter-spacing:0;color:var(--fg3);margin-left:0.5rem;">${ph.sub}</span></div>
+      <div class="card-body">${items.map(s=>`<div style="margin-bottom:0.3rem;"><span class="badge ${sb[s.status]}">${sl[s.status]}</span> <span style="margin-left:0.3rem;">${s.name}${s.deadline?' — '+s.deadline:''}</span></div>`).join('')}</div>
     </div>`;
   }).join('');
 }
@@ -1957,9 +1407,8 @@ function renderDec(){
       </div>
     </div>`).join('');
 }
-function addDec(){const t=document.getElementById('dec-i-t').value.trim();if(!t)return;const now=new Date();const m=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];D.decisions.push({id:++D.nid,title:t,reason:document.getElementById('dec-i-r').value,date:`${m[now.getMonth()]} ${now.getFullYear()}`});document.getElementById('dec-i-t').value='';document.getElementById('dec-i-r').value='';renderDec();save();toast('Decisão registada.');if(window.logChange)window.logChange(`Registou decisão "${t}"`);}
-function delDec(id){const d=D.decisions.find(x=>x.id===id);D.decisions=D.decisions.filter(x=>x.id!==id);renderDec();save();if(window.logChange&&d)window.logChange(`Removeu decisão "${d.title}"`);}
-
+function addDec(){const t=document.getElementById('dec-i-t').value.trim();if(!t)return;const now=new Date();const m=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];D.decisions.push({id:++D.nid,title:t,reason:document.getElementById('dec-i-r').value,date:`${m[now.getMonth()]} ${now.getFullYear()}`});document.getElementById('dec-i-t').value='';document.getElementById('dec-i-r').value='';renderDec();save();toast('Decisão registada.');}
+function delDec(id){D.decisions=D.decisions.filter(x=>x.id!==id);renderDec();save();}
 
 // ─── AI ──────────────────────────────────────────────────
 let aiRole='geral';
@@ -1968,11 +1417,9 @@ const aiWelcome={
   geral:'Olá. Tenho contexto completo do projecto — sistemas, prazos, decisões, assets. Pergunta o que precisares.',
   prog:'Modo Programador activo. Posso ajudar com arquitectura Luau/Roblox, debugging, integração de sistemas, estrutura de módulos, networking. Manda código ou descreve o problema.',
   model:'Modo Modelador activo. Posso ajudar com prioridades de assets, especificações técnicas (poly count, textures, rigs), pipeline de entrega, e referências visuais para cada peça.',
-  ideias:'Modo Ideias & Design activo. Vamos explorar mecânicas, loops de gameplay, narrativa, progressão, eventos. Posso propor features novas, analisar se encaixam no que já existe, e ajudar a expandir o GDD.',
-  lore:'Modo Lore Maker activo. Posso criar facções, personagens, regiões e eventos para o universo de Crônicas de Gelo e Fogo. Diz-me o que queres desenvolver — começo do zero ou expando o que já tens.',
-  builder:'Modo Builder activo. Posso ajudar a planear zonas de construção — arquitetura medieval, referências visuais, paletas de cor, ordem de construção e subtarefas detalhadas. Que zona vamos trabalhar?'
+  ideias:'Modo Ideias & Design activo. Vamos explorar mecânicas, loops de gameplay, narrativa, progressão, eventos. Posso propor features novas, analisar se encaixam no que já existe, e ajudar a expandir o GDD.'
 };
-const aiLabels={geral:'Assistente CGF',prog:'Assistente · Programador',model:'Assistente · Modelador',ideias:'Assistente · Ideias',lore:'Assistente · Lore Maker',builder:'Assistente · Builder'};
+const aiLabels={geral:'Assistente CGF',prog:'Assistente · Programador',model:'Assistente · Modelador',ideias:'Assistente · Ideias'};
 const quickActions={
   geral:[
     {label:'Estado do projecto',msg:'Dá-me um resumo rápido do estado actual do projecto — o que está feito, o que falta, e os próximos passos.'},
@@ -2001,22 +1448,6 @@ const quickActions={
     {label:'Monetização',msg:'Ideias de monetização éticas para Roblox que não sejam pay-to-win e respeitem o espírito RPG do jogo.'},
     {label:'Narrativa / Lore',msg:'Ajuda a expandir o lore do universo próprio — facções, conflitos, personagens NPC que enriqueçam o mundo.'},
     {label:'Onboarding',msg:'Como deve ser a primeira hora de um jogador novo? Propõe um fluxo de onboarding que ensine sem ser tutorial forçado.'}
-  ],
-  lore:[
-    {label:'Criar uma facção',msg:'Cria uma facção original para o universo de Crônicas de Gelo e Fogo — nome, história de origem, objetivos, símbolo, território e personalidades notáveis. Que seja única e integre com o tema medieval.'},
-    {label:'Criar um personagem',msg:'Cria um personagem NPC memorável — nome, origem, motivações, segredos, aparência e como interage com os jogadores. Deve ter profundidade e contribuir para o lore.'},
-    {label:'Criar uma região',msg:'Descreve uma região do mundo — geografia, clima, habitantes, história, recursos e conflitos locais. Detalha o suficiente para um builder poder visualizá-la.'},
-    {label:'Criar um evento histórico',msg:'Cria um evento histórico significativo do passado do mundo — uma batalha, traição, descoberta ou catástrofe. Deve ter consequências visíveis no presente.'},
-    {label:'Criar um item lendário',msg:'Cria um item lendário — nome, origem, poderes, lenda associada, quem o detém e o que acontece se for destruído.'},
-    {label:'Expandir lore existente',msg:'Tenho lore já escrito. Vou partilhar — ajuda-me a aprofundá-lo, identificar contradições, e sugerir onde pode ramificar.'}
-  ],
-  builder:[
-    {label:'Planear uma zona',msg:'Quero planear uma nova zona de construção. Diz-me o que preciso de considerar: escala, estilo medieval, fluxo de movimento dos jogadores, pontos de interesse e integração com as mecânicas de jogo.'},
-    {label:'Arquitetura do castelo principal',msg:'Sugere a estrutura e divisões do castelo principal do jogo — muralhas, torres, salões, masmorras, pátios. Como deve ser organizado para RPG?'},
-    {label:'Referências visuais medievais',msg:'Que referências visuais devo seguir para as construções do jogo? Épocas históricas, castelos reais, filmes/séries. Foco em manter coerência com o estilo GOT/medieval.'},
-    {label:'Subtarefas para uma zona',msg:'Vou dar-te o nome de uma zona. Divide a construção em subtarefas concretas e ordenadas: estrutura base, interiores, iluminação, decoração, props, polish.'},
-    {label:'Paleta de cores',msg:'Sugere paletas de cores para diferentes zonas do jogo — tons para zonas frias (Norte), quentes (Sul), neutras (tavernas, mercados) e sombrias (masmorras).'},
-    {label:'Escala e proporções Roblox',msg:'Quais são as melhores práticas de escala e proporção para construções medievais no Roblox? Alturas de porta, espessura de paredes, escala humana.'}
   ]
 };
 
@@ -2045,7 +1476,7 @@ function clearChat(){
 function updateMsgCount(){
   const c=aiHistory.filter(m=>m.role==='user').length;
   document.getElementById('ai-msg-count').textContent=c;
-  const labels={geral:'Geral',prog:'Programador',model:'Modelador',ideias:'Ideias',lore:'Lore Maker',builder:'Builder'};
+  const labels={geral:'Geral',prog:'Programador',model:'Modelador',ideias:'Ideias'};
   document.getElementById('ai-status').innerHTML=`Modo: ${labels[aiRole]} · <span id="ai-msg-count">${c}</span> mensagens`;
 }
 
@@ -2071,12 +1502,6 @@ ${D.timeline.map(t=>`[${t.status||'todo'}] ${t.date} — ${t.title}: ${t.desc}`)
 DECISÕES TOMADAS:
 ${D.decisions.map(d=>`- ${d.title}: ${d.reason}`).join('\n')}
 
-LORE DO UNIVERSO (${(D.lore||[]).length} entradas):
-${(D.lore||[]).slice(0,20).map(l=>`[${l.cat}] ${l.name} (${l.status}): ${(l.text||'').slice(0,150)}`).join('\n')||'Sem lore registado ainda.'}
-
-CONSTRUÇÕES (${(D.builds||[]).length} zonas):
-${(D.builds||[]).map(b=>`[${b.status}] ${b.name}${b.zone?' ('+b.zone+')':''}${b.deadline?' — prazo: '+b.deadline:''}`).join('\n')||'Sem zonas registadas ainda.'}
-
 REFERÊNCIAS: Skyrim (progressão por uso), Witcher 3 (mundo/narrativa), GTA RP (interacção social)
 ATRIBUTOS: Força, Destreza, Resistência, Magia, Stamina (progressão por uso, sem classes)
 LANÇAMENTO: Exclusivo Jun 2026 (testers). Público 2027.
@@ -2099,21 +1524,7 @@ Português. Sem emojis. Directo.`,
 Foco: Game design, mecânicas, loops de gameplay, progressão, narrativa, eventos, monetização, UX, worldbuilding.
 Quando propuseres features, analisa sempre: como integra com o que já existe? Qual o custo de dev? Vale a pena para Fase 1 ou adia para depois?
 Sê criativo mas prático. Fundamenta as ideias no que o projecto já tem.
-Português. Sem emojis. Estrutura as propostas com prós, contras e integração.`,
-    lore:`\n\nMODO LORE MAKER ACTIVO.
-Tens acesso a todo o lore já registado no projecto (ver LORE DO UNIVERSO acima).
-Foco: Criação e expansão de lore coerente — facções, personagens, regiões, eventos, itens, magia.
-Princípios: o universo é medieval/fantasia, inspirado em GOT mas original. Sem anacronismos. Consistência interna é prioridade.
-Quando criares algo novo, verifica que não contradiz o lore existente.
-Quando expandires lore existente, mantém o tom e estilo.
-Escreve em português. Texto imersivo e literário (não técnico). Sem emojis.`,
-    builder:`\n\nMODO BUILDER ACTIVO.
-Tens acesso às zonas de construção do projecto (ver CONSTRUÇÕES acima).
-Foco: Planeamento e execução de construções medievais no Roblox — escala, arquitetura, materiais, iluminação, props, polish.
-Quando deres subtarefas, sê concreto e ordenado (blockout → estrutura → interiores → decoração → polish).
-Considera as limitações do Roblox: performance, streaming, poly budget.
-Referências visuais preferidas: GOT, Vikings, Witcher, castelos medievais reais.
-Português. Prático e directo. Sem emojis.`
+Português. Sem emojis. Estrutura as propostas com prós, contras e integração.`
   };
   return base+(roleCtx[aiRole]||roleCtx.geral);
 }
@@ -2140,7 +1551,7 @@ function parseMD(text){
   return h;
 }
 
-const GEMINI_KEY='';
+const GEMINI_KEY='AIzaSyC8_FrrEF8rNgY6Qa_4_UlJcYRy-ZTqQ9k';
 
 // Models to try in order (fallback chain)
 const GEMINI_MODELS = [
@@ -2148,21 +1559,6 @@ const GEMINI_MODELS = [
   'gemini-2.0-flash',
   'gemini-2.0-flash-lite'
 ];
-
-function updateAISetupBanner(){
-  const banner = document.getElementById('ai-setup-banner');
-  if(!banner) return;
-  const hasKey = !!localStorage.getItem('custom_gemini_key');
-  banner.style.display = hasKey ? 'none' : 'block';
-}
-
-window.saveBannerKey = function() {
-  const key = document.getElementById('banner-gemini-key').value.trim();
-  if(!key){ toast('Cola a chave antes de guardar.'); return; }
-  localStorage.setItem('custom_gemini_key', key);
-  updateAISetupBanner();
-  toast('Chave activada! Já podes usar a IA.');
-};
 
 window.toggleApiKeyInput = function() {
   const container = document.getElementById('api-key-container');
@@ -2179,13 +1575,12 @@ window.saveCustomKey = function() {
   const key = document.getElementById('custom-gemini-key').value.trim();
   if (key) {
     localStorage.setItem('custom_gemini_key', key);
-    toast('Chave Gemini API guardada!');
+    toast('Chave Gemini API guardada! A IA agora usa a tua chave.');
   } else {
     localStorage.removeItem('custom_gemini_key');
-    toast('Chave removida.');
+    toast('Chave removida. A usar a chave padrão do site.');
   }
   document.getElementById('api-key-container').style.display = 'none';
-  updateAISetupBanner();
 };
 
 // Core API call with fallback models
@@ -2254,12 +1649,6 @@ async function sendAI(isRetry) {
   const hist = aiHistory.slice(-20);
   const activeKey = localStorage.getItem('custom_gemini_key') || GEMINI_KEY;
 
-  if(!activeKey) {
-    const lastBot = document.querySelector('.ai-msg.bot:last-child .ai-bubble');
-    if(lastBot) lastBot.innerHTML = `<div style="color:var(--accent);font-size:0.8rem;">Precisas de configurar a tua chave Gemini.<br><br>Clica em <strong>⚙ API Key</strong> abaixo, cria uma chave grátis em <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--accent);">aistudio.google.com/apikey</a> e cola aqui.</div>`;
-    return;
-  }
-
   try {
     const text = await callGeminiAPI(sysPrompt, hist, activeKey);
     aiHistory.push({role: 'model', parts: [{text: text}]});
@@ -2290,64 +1679,6 @@ async function sendAI(isRetry) {
   }
 }
 function addMsg(r,t){const m=document.getElementById('ai-msgs');const d=document.createElement('div');d.className='ai-msg '+r;const label=r==='usr'?'Tu':aiLabels[aiRole];d.innerHTML=`<div><div class="ai-who">${label}</div><div class="ai-bubble">${r==='bot'?t:t.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`;m.appendChild(d);m.scrollTop=m.scrollHeight;}
-
-// ─── INLINE AI: LORE ─────────────────────────────────────
-async function loreQuickCall(prompt, outId, btnEl){
-  const out=document.getElementById(outId);
-  if(!out)return;
-  const activeKey=localStorage.getItem('custom_gemini_key')||GEMINI_KEY;
-  if(!activeKey){out.style.display='block';out.textContent='Sem chave API. Clica em ⚙ API Key na secção IA Assistente para configurar.';return;}
-  out.style.display='block';
-  out.textContent='A gerar…';
-  if(btnEl){btnEl.disabled=true;btnEl.textContent='A gerar…';}
-  const loreCtx=D.lore&&D.lore.length?`LORE EXISTENTE:\n${D.lore.map(l=>`[${l.cat}] ${l.name}: ${(l.text||'').slice(0,200)}`).join('\n')}`:'';
-  const sys=`És o lore master do projecto "Crônicas de Gelo e Fogo" — universo medieval/fantasia original baseado em GOT (211 AC). ${loreCtx}\nResponde em português. Sem emojis. Texto fluido e imersivo.`;
-  try{
-    const text=await callGeminiAPI(sys,[{role:'user',parts:[{text:prompt}]}],activeKey);
-    out.textContent=text;
-  }catch(e){out.textContent='Erro: '+e.message;}
-  finally{if(btnEl){btnEl.disabled=false;}}
-}
-function loreAIIdea(btn, id){
-  const l=D.lore.find(x=>x.id===id);if(!l)return;
-  const tags=l.tags?` Tags: ${l.tags}.`:'';
-  const prompt=`Desenvolve a ideia de lore intitulada "${l.name}".${tags} Expande com: origem, motivações, detalhes do mundo, e 2-3 ganchos narrativos que possam ligar a outras partes do universo. O tom deve ser medieval/fantasia, sombrio e imersivo.`;
-  loreQuickCall(prompt,'lore-ai-out-'+id,btn);
-}
-function loreAIComplete(btn, id){
-  const l=D.lore.find(x=>x.id===id);if(!l)return;
-  if(!l.text||l.text.trim().length<10){toast('Escreve pelo menos algumas linhas antes de completar.');return;}
-  const tags=l.tags?` (tags: ${l.tags})`:'';
-  const prompt=`Continua e expande este texto de lore intitulado "${l.name}"${tags}:\n\n${l.text}\n\nMantém o mesmo estilo, voz e tom. Adiciona detalhes, aprofunda a narrativa, sugere consequências ou ramificações.`;
-  loreQuickCall(prompt,'lore-ai-out-'+id,btn);
-}
-
-// ─── INLINE AI: BUILD ─────────────────────────────────────
-async function buildQuickCall(prompt, outId, btnEl){
-  const out=document.getElementById(outId);
-  if(!out)return;
-  const activeKey=localStorage.getItem('custom_gemini_key')||GEMINI_KEY;
-  if(!activeKey){out.style.display='block';out.textContent='Sem chave API. Clica em ⚙ API Key na secção IA Assistente para configurar.';return;}
-  out.style.display='block';
-  out.textContent='A gerar…';
-  if(btnEl){btnEl.disabled=true;}
-  const sys=`És o assistente de construção do projecto "Crônicas de Gelo e Fogo" — jogo medieval/fantasia no Roblox. Ajudas builders a planear zonas, arquitetura medieval, escala Roblox e organização de trabalho.\nResponde em português. Sem emojis. Prático e concreto.`;
-  try{
-    const text=await callGeminiAPI(sys,[{role:'user',parts:[{text:prompt}]}],activeKey);
-    out.textContent=text;
-  }catch(e){out.textContent='Erro: '+e.message;}
-  finally{if(btnEl){btnEl.disabled=false;}}
-}
-function buildAIInspire(btn, id){
-  const b=D.builds.find(x=>x.id===id);if(!b)return;
-  const prompt=`Dá-me inspiração visual e descritiva para construir a zona "${b.name}"${b.zone?' na área "'+b.zone+'"':''}. Inclui: estilo arquitectónico, materiais típicos, paleta de cores, atmosfera, 2-3 referências reais ou de filmes/séries medievais, e 1 detalhe único que tornará esta zona memorável no jogo.`;
-  buildQuickCall(prompt,'build-ai-out-'+id,btn);
-}
-function buildAITasks(btn, id){
-  const b=D.builds.find(x=>x.id===id);if(!b)return;
-  const prompt=`Divide a construção da zona "${b.name}"${b.zone?' (área: '+b.zone+')':''} em subtarefas concretas e ordenadas para um builder de Roblox. Usa esta estrutura: 1) Blockout/estrutura base, 2) Paredes e teto, 3) Interiores, 4) Iluminação, 5) Decoração e props, 6) Polish final. Sê específico ao tipo de zona.`;
-  buildQuickCall(prompt,'build-ai-out-'+id,btn);
-}
 
 // ─── HELPERS ─────────────────────────────────────────────
 function formatRelTime(d){
@@ -2399,35 +1730,10 @@ function renderProgressChart(){
 
 // ─── CHANGELOG ───────────────────────────────────────────
 window.changelogItems=[];
-let clShowAll=false;
-function clActionIcon(action){
-  if(/adicionou|criou/i.test(action))return{icon:'＋',col:'var(--green)'};
-  if(/removeu|apagou/i.test(action))return{icon:'✕',col:'var(--red)'};
-  if(/marcou|completou/i.test(action))return{icon:'✓',col:'var(--accent)'};
-  if(/editou|actualizou|guardou/i.test(action))return{icon:'✎',col:'var(--blue)'};
-  if(/reordenou/i.test(action))return{icon:'⇅',col:'var(--fg3)'};
-  if(/registou|decisão/i.test(action))return{icon:'◈',col:'var(--purple)'};
-  if(/estado|marco|fase/i.test(action))return{icon:'◆',col:'var(--accent)'};
-  return{icon:'·',col:'var(--fg3)'};
-}
 function renderChangelog(){
   const el=document.getElementById('dash-changelog');if(!el)return;
   const items=window.changelogItems||[];
-  if(!items.length){el.innerHTML=`<div style="color:var(--fg3);font-size:0.78rem;">Sem alterações registadas.</div>`;return;}
-  const show=clShowAll?items:items.slice(0,12);
-  el.innerHTML=show.map(c=>{
-    const{icon,col}=clActionIcon(c.action||'');
-    return`<div class="cl-item">
-      <span style="width:16px;height:16px;border-radius:50%;background:${col}22;color:${col};display:inline-flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;flex-shrink:0;">${icon}</span>
-      ${userAvatar(c.user||'?')}
-      <span class="cl-who" style="color:${userColor(c.user||'?')};">${c.user||'?'}</span>
-      <span class="cl-what">${c.action}</span>
-      <span class="cl-when">${formatRelTime(c.date)}</span>
-    </div>`;
-  }).join('');
-  if(items.length>12){
-    el.innerHTML+=`<div style="text-align:center;margin-top:0.5rem;"><button class="btn btn-sm btn-ghost" style="font-size:0.7rem;" onclick="clShowAll=!clShowAll;renderChangelog();">${clShowAll?'▲ Mostrar menos':'▼ Ver todos ('+items.length+')'}</button></div>`;
-  }
+  el.innerHTML=items.length?items.slice(0,15).map(c=>`<div class="cl-item"><span class="cl-who">${c.user||'?'}</span><span class="cl-what">${c.action}</span><span class="cl-when">${formatRelTime(c.date)}</span></div>`).join(''):`<div style="color:var(--fg3);font-size:0.78rem;">Sem alterações registadas.</div>`;
 }
 
 // ─── PDF EXPORT ──────────────────────────────────────────
@@ -2499,9 +1805,6 @@ function closeTutorial(){document.getElementById('tut-bg').classList.remove('ope
 // ─── HELPERS ─────────────────────────────────────────────
 function isOverdue(dl){
   if(!dl)return false;
-  // ISO format YYYY-MM-DD
-  if(/^\d{4}-\d{2}-\d{2}$/.test(dl)) return new Date()>new Date(dl+'T23:59:59');
-  // Portuguese text format
   const ms={Jan:0,Fev:1,Mar:2,Abr:3,Mai:4,Jun:5,Jul:6,Ago:7,Set:8,Out:9,Nov:10,Dez:11};
   const parts=dl.trim().split(/[\s\-\/]+/);
   let day=null,month=null;
@@ -2511,89 +1814,6 @@ function isOverdue(dl){
   const now=new Date();
   return now>new Date(now.getFullYear(),month,day,23,59,59);
 }
-function toISODate(dl){
-  if(!dl)return '';
-  if(/^\d{4}-\d{2}-\d{2}$/.test(dl))return dl;
-  const ms={Jan:0,Fev:1,Mar:2,Abr:3,Mai:4,Jun:5,Jul:6,Ago:7,Set:8,Out:9,Nov:10,Dez:11};
-  const parts=dl.trim().split(/[\s\-\/]+/);
-  let day=null,month=null;
-  for(const p of parts){if(ms[p]!==undefined)month=ms[p];else{const n=parseInt(p);if(!isNaN(n)&&n>=1&&n<=31)day=n;}}
-  if(month===null)return '';
-  if(day===null)day=1;
-  const y=new Date().getFullYear();
-  return `${y}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-}
-function displayDate(dl){
-  if(!dl)return '';
-  if(/^\d{4}-\d{2}-\d{2}$/.test(dl)){
-    const d=new Date(dl+'T12:00:00');
-    const mn=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-    return `${d.getDate()} ${mn[d.getMonth()]} ${d.getFullYear()}`;
-  }
-  return dl;
-}
-function userColor(name){
-  if(!name)return '#6b7280';
-  let h=0;for(let i=0;i<name.length;i++)h=name.charCodeAt(i)+((h<<5)-h);
-  const c=['#f59e0b','#3b82f6','#a855f7','#10b981','#ef4444','#06b6d4','#f97316','#84cc16','#ec4899'];
-  return c[Math.abs(h)%c.length];
-}
-function userAvatar(name){
-  const emoji = window.userEmojis && window.userEmojis[name];
-  if(emoji) return `<span class="u-av" style="background:var(--bg3);font-size:0.85rem;">${emoji}</span>`;
-  const col=userColor(name);
-  const init=(name||'?').slice(0,1).toUpperCase();
-  return `<span class="u-av" style="background:${col};">${init}</span>`;
-}
-function checkDeadlines(){
-  const now=new Date();
-  const soon=new Date(now.getTime()+3*864e5);
-  const items=[];
-  buildUnifiedTimeline().filter(t=>t.status!=='done'&&t.sortDate!=='9999-12-31').forEach(t=>{
-    const d=new Date(t.sortDate+'T23:59:59');
-    const ctx={milestone:'Marco',system:'Sistema',asset:'Asset',build:'Build'}[t._type];
-    if(d<now)items.push({type:'overdue',name:t.title,dl:displayDate(t.date),ctx});
-    else if(d<=soon)items.push({type:'soon',name:t.title,dl:displayDate(t.date),ctx});
-  });
-  const badge=document.getElementById('notif-count');
-  if(badge){if(items.length){badge.textContent=items.length;badge.style.display='flex';}else badge.style.display='none';}
-  const list=document.getElementById('notif-list');
-  if(list){
-    list.innerHTML=items.length?items.map(it=>`<div class="notif-item">
-      <div class="notif-dot ${it.type}"></div>
-      <div><div class="notif-i-name">${it.name}</div>
-      <div class="notif-i-sub">${it.ctx} · ${it.type==='overdue'?'<span style="color:var(--red)">Atrasado</span>':'<span style="color:var(--accent)">Em 3 dias</span>'} — ${it.dl}</div></div>
-    </div>`).join(''):`<div style="padding:0.8rem;color:var(--fg3);font-size:0.78rem;text-align:center;">Sem alertas.</div>`;
-  }
-}
-function toggleNotifPanel(){
-  document.getElementById('notif-panel').classList.toggle('open');
-}
-const PROFILE_EMOJIS=['⚔️','🛡️','🐉','🏰','👑','🧙','🗡️','🦅','🌑','🔥','🌊','⚡','🎯','🐺','🦁','🗺️','💎','🌿','🎭','🏹','🐴','🧝','🐗','🌙','🔮','⚗️','🦊','🐍'];
-function openProfile(){
-  document.getElementById('rename-inp').value = window._currentUsername || '';
-  window._selectedEmoji = window._currentUserEmoji || '';
-  updateProfilePreview();
-  const grid = document.getElementById('emoji-grid');
-  grid.innerHTML = PROFILE_EMOJIS.map(e =>
-    `<span class="emoji-opt${e===(window._selectedEmoji)?' selected':''}" onclick="selectEmoji(this,'${e}')" title="${e}">${e}</span>`
-  ).join('');
-  openModal('m-rename');
-}
-function openRename(){ openProfile(); }
-function selectEmoji(el, e){
-  window._selectedEmoji = (window._selectedEmoji === e) ? '' : e;
-  document.querySelectorAll('.emoji-opt').forEach(x => x.classList.toggle('selected', x.textContent.trim()===window._selectedEmoji));
-  updateProfilePreview();
-}
-function updateProfilePreview(){
-  const name = document.getElementById('rename-inp').value.trim() || window._currentUsername || '?';
-  const emoji = window._selectedEmoji || '';
-  document.getElementById('profile-name-preview').textContent = name;
-  const big = document.getElementById('profile-avatar-big');
-  if(emoji){ big.textContent=emoji; big.style.background='var(--bg3)'; big.style.fontSize='1.6rem'; }
-  else { big.textContent=(name).slice(0,1).toUpperCase(); big.style.background=userColor(name); big.style.fontSize=''; }
-}
 function deadlineSpan(dl){
   if(!dl)return '';
   const od=isOverdue(dl);
@@ -2601,7 +1821,7 @@ function deadlineSpan(dl){
 }
 function deadlineInput(id,dl){
   const od=isOverdue(dl);
-  return `<input type="date" class="inp" style="width:130px;padding:0.2rem 0.4rem;font-size:0.75rem;${od?'border-color:var(--red);color:var(--red);':''}" value="${toISODate(dl)}" onchange="D.assets.find(x=>x.id===${id}).deadline=this.value;save();renderModel();">`;
+  return `<input class="inp" style="width:80px;padding:0.2rem 0.4rem;font-size:0.75rem;${od?'border-color:var(--red);color:var(--red);':''}" value="${dl}" onchange="D.assets.find(x=>x.id===${id}).deadline=this.value;save();renderModel();">`;
 }
 
 function renderPhaseProgress(){
@@ -2665,14 +1885,9 @@ function handleImport(e){
 
 // ─── KEYBOARD SHORTCUTS ──────────────────────────────────
 const navKeys={1:'dash',2:'tl',3:'phases',4:'sys',5:'model',6:'ai',7:'dec'};
-document.addEventListener('click',e=>{
-  const panel=document.getElementById('notif-panel');
-  const wrap=document.getElementById('notif-wrap');
-  if(panel&&panel.classList.contains('open')&&!wrap.contains(e.target))panel.classList.remove('open');
-});
 document.addEventListener('keydown',e=>{
   if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')return;
-  if(e.key==='Escape'){document.querySelectorAll('.modal-bg.open:not(#m-login):not(#m-pending)').forEach(m=>m.classList.remove('open'));document.getElementById('tut-bg').classList.remove('open');document.getElementById('notif-panel')?.classList.remove('open');return;}
+  if(e.key==='Escape'){document.querySelectorAll('.modal-bg.open:not(#m-login):not(#m-pending)').forEach(m=>m.classList.remove('open'));document.getElementById('tut-bg').classList.remove('open');return;}
   if(e.key==='/'){e.preventDefault();const s=document.getElementById('sys-search');if(s){nav('sys');setTimeout(()=>s.focus(),100);}return;}
   if(navKeys[e.key])nav(navKeys[e.key]);
 });
@@ -2690,21 +1905,10 @@ document.addEventListener('input',e=>{
 window.addEventListener('beforeunload',e=>{if(document.querySelector('.sys.open'))e.preventDefault();});
 
 // ─── CURRENT USER DISPLAY ────────────────────────────────
-window.setCurrentUser = function(name, emoji) {
-  document.getElementById('hdr-username').textContent = name || '?';
+window.setCurrentUser = function(email) {
+  const name = email ? email.split('@')[0] : '';
+  document.getElementById('hdr-username').textContent = name;
   document.getElementById('hdr-user').style.display = 'flex';
-  const av = document.getElementById('hdr-avatar-preview');
-  if(av) {
-    if(emoji) {
-      av.textContent = emoji;
-      av.style.background = 'var(--bg3)';
-      av.style.fontSize = '0.9rem';
-    } else {
-      av.textContent = (name||'?').slice(0,1).toUpperCase();
-      av.style.background = userColor(name);
-      av.style.fontSize = '';
-    }
-  }
 };
 window.setOnlineCount = function(n) {
   document.getElementById('hdr-online-count').textContent = n;
@@ -2740,20 +1944,6 @@ function toggleLandingNav(){
   document.querySelector('.l-nav-links')?.classList.toggle('l-nav-open');
 }
 
-function enterPlayerPreview(){
-  renderLanding();
-  document.body.classList.remove('view-dev');
-  document.body.classList.add('view-public','dev-previewing');
-  document.getElementById('dev-preview-bar').style.display='flex';
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function exitPlayerPreview(){
-  document.body.classList.remove('view-public','dev-previewing');
-  document.body.classList.add('view-dev');
-  document.getElementById('dev-preview-bar').style.display='none';
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
 function escHTML(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
 // Parse a "DD Mmm" or "Mmm" Portuguese date (current year, with rollover) → Date
@@ -2785,58 +1975,12 @@ function humanizeDeadline(dl){
   return`Em ${Math.round(days/30)} meses`;
 }
 
-function calcWeightedProgress(){
-  const W={high:3,medium:2,low:1};
-  const completion={
-    system:{done:1,wip:0.5,todo:0,blocked:0},
-    asset:{done:1,wip:0.5,todo:0},
-    build:{done:1,wip:0.5,todo:0},
-    lore:{developed:1,draft:0.2,archived:0}
-  };
-  let totalW=0,doneW=0;
-  D.systems.forEach(s=>{const w=W[s.importance||'medium'];totalW+=w;doneW+=(completion.system[s.status]||0)*w;});
-  D.assets.forEach(a=>{const w=W[a.importance||'medium'];totalW+=w;doneW+=(completion.asset[a.status]||0)*w;});
-  (D.builds||[]).forEach(b=>{const w=W[b.importance||'medium'];totalW+=w;doneW+=(completion.build[b.status]||0)*w;});
-  (D.lore||[]).filter(l=>l.status!=='archived').forEach(l=>{const w=W[l.importance||'low'];totalW+=w;doneW+=(completion.lore[l.status]||0)*w;});
-  return totalW?Math.round(doneW/totalW*100):0;
-}
-
-function calcWeightedBreakdown(){
-  const W={high:3,medium:2,low:1};
-  const breakdown={high:{total:0,doneW:0,totalW:0},medium:{total:0,doneW:0,totalW:0},low:{total:0,doneW:0,totalW:0}};
-  const all=[
-    ...D.systems.map(s=>({importance:s.importance||'medium',done:s.status==='done'})),
-    ...D.assets.map(a=>({importance:a.importance||'medium',done:a.status==='done'})),
-    ...(D.builds||[]).map(b=>({importance:b.importance||'medium',done:b.status==='done'})),
-    ...(D.lore||[]).filter(l=>l.status!=='archived').map(l=>({importance:l.importance||'low',done:l.status==='developed'})),
-  ];
-  all.forEach(x=>{const k=x.importance;breakdown[k].total++;breakdown[k].totalW+=W[k];if(x.done)breakdown[k].doneW+=W[k];});
-  return breakdown;
-}
-
-function getLaunchDate(milestone){
-  // Try to parse the milestone date; fallback to 15 Jun 2026
-  if(!milestone)return new Date(2026,5,15);
-  const d=parseDeadline(milestone.date);
-  if(d&&!isNaN(d))return d;
-  // Try ISO date format too
-  const iso=new Date(milestone.date);
-  if(!isNaN(iso))return iso;
-  return new Date(2026,5,15);
-}
-
 function renderLanding(){
   if(!document.querySelector('.landing'))return;
   const done=D.systems.filter(s=>s.status==='done').length;
   const wip=D.systems.filter(s=>s.status==='wip').length;
   const total=D.systems.length;
-  const pct=calcWeightedProgress();
-
-  // Hero eyebrow — dynamic month/year
-  const _months=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  const _now=new Date();
-  const eyebrow=document.getElementById('hero-eyebrow');
-  if(eyebrow)eyebrow.textContent=`Estado da Coroa · ${_months[_now.getMonth()]} ${_now.getFullYear()}`;
+  const pct=total?Math.round(done/total*100):0;
 
   // Hero
   document.getElementById('hero-pct').textContent=pct+'%';
@@ -2850,16 +1994,10 @@ function renderLanding(){
   const doneAssets=D.assets.filter(a=>a.status==='done').length;
   const milestones=D.timeline.length;
   const completedMilestones=D.timeline.filter(t=>t.status==='done').length;
-  const totalBuilds=(D.builds||[]).length;
-  const doneBuilds=(D.builds||[]).filter(b=>b.status==='done').length;
-  const totalLore=(D.lore||[]).length;
-  const developedLore=(D.lore||[]).filter(l=>l.status==='developed').length;
   document.getElementById('lp-overview').innerHTML=`
     <div class="l-ov-cell"><div class="l-ov-icon">⚔</div><div class="l-ov-num">${total}</div><div class="l-ov-label">Sistemas</div></div>
     <div class="l-ov-cell"><div class="l-ov-icon">✦</div><div class="l-ov-num">${done}</div><div class="l-ov-label">Forjados</div></div>
-    <div class="l-ov-cell"><div class="l-ov-icon">🏗</div><div class="l-ov-num">${doneBuilds}/${totalBuilds}</div><div class="l-ov-label">Construções</div></div>
-    <div class="l-ov-cell"><div class="l-ov-icon">◻</div><div class="l-ov-num">${doneAssets}/${totalAssets}</div><div class="l-ov-label">Modelação</div></div>
-    <div class="l-ov-cell"><div class="l-ov-icon">📜</div><div class="l-ov-num">${developedLore}/${totalLore}</div><div class="l-ov-label">Crónicas</div></div>
+    <div class="l-ov-cell"><div class="l-ov-icon">◆</div><div class="l-ov-num">${wip}</div><div class="l-ov-label">Em Forja</div></div>
     <div class="l-ov-cell"><div class="l-ov-icon">❖</div><div class="l-ov-num">${completedMilestones}/${milestones}</div><div class="l-ov-label">Marcos</div></div>
   `;
 
@@ -2882,12 +2020,8 @@ function renderLanding(){
   }).join('');
   setTimeout(()=>{document.querySelectorAll('.l-phase-bar-fill').forEach(b=>b.style.width=b.dataset.w+'%');},400);
 
-  // Countdown — reads launch date from timeline milestone titled "lançamento"
-  const launchMilestone=D.timeline.find(t=>/lan[çc]amento/i.test(t.title));
-  const launch=getLaunchDate(launchMilestone);
-  const launchLabel=launchMilestone?`${escHTML(launchMilestone.title)} · ${escHTML(launchMilestone.date)}`:'Lançamento Exclusivo · 15 Junho 2026';
-  const cdTitleEl=document.querySelector('.l-countdown-title');
-  if(cdTitleEl)cdTitleEl.textContent=launchLabel;
+  // Countdown
+  const launch=new Date(2026,5,15);
   const now=new Date();
   let diff=Math.max(0,launch-now);
   const days=Math.floor(diff/86400000);
@@ -2944,24 +2078,18 @@ function renderLanding(){
     {n:3,title:'Política & Endgame',when:'2027',featured:false,more:'Capítulo de prestígio'},
   ];
   document.getElementById('lp-pillars').innerHTML=phaseDef.map(ph=>{
-    const syss=D.systems.filter(s=>s.phase===ph.n);
-    const builds=(D.builds||[]).filter(b=>(b.phase||1)===ph.n);
-    const lore=(D.lore||[]).filter(l=>(l.phase||1)===ph.n);
-    const allItems=[...syss,...builds,...lore];
-    const doneCount=syss.filter(s=>s.status==='done').length+builds.filter(b=>b.status==='done').length+lore.filter(l=>l.status==='developed').length;
-    const pp=allItems.length?Math.round(doneCount/allItems.length*100):0;
-    const sample=syss.slice(0,4);
-    const moreCount=syss.length-sample.length;
-    const extras=[];
-    if(builds.length)extras.push(`${builds.length} construção${builds.length>1?'s':''}`);
-    if(lore.length)extras.push(`${lore.length} lore`);
+    const items=D.systems.filter(s=>s.phase===ph.n);
+    const d=items.filter(s=>s.status==='done').length;
+    const pp=items.length?Math.round(d/items.length*100):0;
+    const sample=items.slice(0,5);
+    const more=items.length-sample.length;
     return`<div class="l-pillar ${ph.featured?'featured':''}">
       <div class="l-pillar-num">Fase ${['I','II','III'][ph.n-1]}</div>
       <div class="l-pillar-title">${ph.title}</div>
       <div class="l-pillar-when">${ph.when}</div>
-      <div class="l-pillar-progress"><div class="l-pillar-bar"><div class="l-pillar-bar-fill" style="width:0%" data-w="${pp}"></div></div><span class="l-pillar-count">${doneCount}/${allItems.length}</span></div>
+      <div class="l-pillar-progress"><div class="l-pillar-bar"><div class="l-pillar-bar-fill" style="width:0%" data-w="${pp}"></div></div><span class="l-pillar-count">${d}/${items.length}</span></div>
       <ul class="l-pillar-list">${sample.map(s=>`<li class="${s.status==='done'?'done-li':''}">${escHTML(s.name)}</li>`).join('')}</ul>
-      ${moreCount>0||extras.length?`<div class="l-pillar-more">${[moreCount>0?`+ ${moreCount} sistema${moreCount>1?'s':''}`:'',...extras].filter(Boolean).join(' · ')}</div>`:''}
+      ${more>0?`<div class="l-pillar-more">+ ${more} ${more===1?'outro sistema':'outros sistemas'}</div>`:''}
     </div>`;
   }).join('');
   setTimeout(()=>{document.querySelectorAll('.l-pillar-bar-fill').forEach(b=>b.style.width=b.dataset.w+'%');},600);
@@ -2972,43 +2100,6 @@ function renderLanding(){
     document.getElementById('lp-vault').innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--ash);font-family:var(--body-serif);font-style:italic;">O cofre ainda aguarda os primeiros tesouros.</div>`;
   }else{
     document.getElementById('lp-vault').innerHTML=completed.map(s=>`<div class="l-vault-item"><span class="l-vault-icon">✦</span><span class="l-vault-name">${escHTML(s.name.replace(/\s*\(\d+\)\s*/,''))}</span></div>`).join('');
-  }
-
-  // Lore — Crónicas (only developed entries)
-  const loreEl=document.getElementById('lp-lore');
-  if(loreEl){
-    const developed=(D.lore||[]).filter(l=>l.status==='developed');
-    if(!developed.length){
-      loreEl.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--ash);font-family:var(--body-serif);font-style:italic;">As crónicas do reino aguardam os escribas.</div>`;
-    }else{
-      loreEl.innerHTML=developed.map(l=>{
-        const excerpt=(l.text||'').slice(0,180)+(l.text&&l.text.length>180?'…':'');
-        const tags=(l.tags||'').split(',').map(t=>t.trim()).filter(Boolean).map(t=>`<span class="l-lore-tag">${escHTML(t)}</span>`).join('');
-        return`<div class="l-lore-card">
-          <div class="l-lore-card-title">${escHTML(l.name)}</div>
-          ${excerpt?`<div class="l-lore-card-text">${escHTML(excerpt)}</div>`:''}
-          ${tags?`<div class="l-lore-tags">${tags}</div>`:''}
-        </div>`;
-      }).join('');
-    }
-  }
-
-  // Builds — Construções
-  const buildsEl=document.getElementById('lp-builds');
-  if(buildsEl){
-    const builds=D.builds||[];
-    if(!builds.length){
-      buildsEl.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--ash);font-family:var(--body-serif);font-style:italic;">O canteiro de obras começa em breve.</div>`;
-    }else{
-      const stLabel={done:'Concluída',wip:'Em Obra',todo:'A Iniciar'};
-      buildsEl.innerHTML=builds.map(b=>`<div class="l-build-card">
-        <div class="l-build-card-head">
-          <div class="l-build-card-name">${escHTML(b.name)}</div>
-          <div class="l-build-pill ${b.status||'todo'}">${stLabel[b.status]||'A Iniciar'}</div>
-        </div>
-        ${b.zone?`<div class="l-build-card-zone">📍 ${escHTML(b.zone)}</div>`:''}
-      </div>`).join('');
-    }
   }
 
   // Tomos (decisions)
@@ -3023,8 +2114,7 @@ setInterval(()=>{
   if(document.body.classList.contains('view-public')){
     const el=document.getElementById('lp-countdown');
     if(!el)return;
-    const launchM=D.timeline.find(t=>/lan[çc]amento/i.test(t.title));
-    const launch=getLaunchDate(launchM);
+    const launch=new Date(2026,5,15);
     const now=new Date();
     let diff=Math.max(0,launch-now);
     const days=Math.floor(diff/86400000);
@@ -3084,11 +2174,8 @@ const googleProvider = new GoogleAuthProvider();
 
 let currentRole = 'guest';
 let currentUsername = '';
-let currentUserEmoji = '';
-window.userEmojis = {}; // name → emoji, populated from Firestore
 let userSub = null;
 let dataSub = null;
-let publicDataSub = null;
 let commentsSub = null;
 let changelogSub = null;
 
@@ -3258,8 +2345,8 @@ function applyRoleUI(role) {
   mLogin.classList.remove('open');
   document.body.classList.remove('show-login');
   
-  // Owner/dev/loremaker/builder → switch to dev view. Otherwise stay on public landing.
-  if(role === 'owner' || role === 'dev' || role === 'loremaker' || role === 'builder') {
+  // Owner/dev → switch to dev view. Otherwise stay on public landing.
+  if(role === 'owner' || role === 'dev') {
     document.body.classList.remove('view-public');
     document.body.classList.add('view-dev');
     mPending.classList.remove('open');
@@ -3274,7 +2361,6 @@ function applyRoleUI(role) {
       document.querySelectorAll('.auth-owner').forEach(el => el.style.display = 'none');
     }
     document.querySelectorAll('.auth-write').forEach(el => el.style.display = 'inline-flex');
-    document.getElementById('notif-wrap').style.display = 'flex';
 
     // Show tutorial first time
     if(!localStorage.getItem('cgf_tut')) showTutorial();
@@ -3305,28 +2391,7 @@ function resetUI() {
   document.getElementById('btn-logout').style.display = 'none';
   document.getElementById('hdr-user').style.display = 'none';
   document.getElementById('hdr-online').style.display = 'none';
-  document.getElementById('notif-wrap').style.display = 'none';
 }
-
-// ─── PUBLIC DATA LISTENER (no auth required) ─────────────
-// Keeps the landing page live for players who are not logged in.
-publicDataSub = onSnapshot(doc(db, "projects", "cgf"), (dSnap) => {
-  // Only update if a dev is NOT logged in (dataSub handles the authenticated case)
-  if(dataSub) return;
-  if(dSnap.exists()){
-    const incoming = dSnap.data();
-    const {_lastBy, _lastAt, ...rest} = incoming;
-    D = rest;
-    if(!D.nid) D.nid=100;
-    if(!D.systems) D.systems=[];
-    if(!D.assets) D.assets=[];
-    if(!D.timeline) D.timeline=[];
-    if(!D.decisions) D.decisions=[];
-    if(!D.lore) D.lore=[];
-    if(!D.builds) D.builds=[];
-    renderLanding();
-  }
-});
 
 // ─── AUTH STATE CHANGE ───────────────────────────────────
 onAuthStateChanged(auth, async (user) => {
@@ -3361,32 +2426,15 @@ onAuthStateChanged(auth, async (user) => {
     };
     await setDoc(uDocRef, udata);
   } else if (ownerFlag && udata.role !== 'owner') {
-    udata.role = 'owner';
     await updateDoc(uDocRef, { role: 'owner' });
   }
-
-  // Apply role immediately — don't wait for userSub to fire
-  applyRoleUI(udata.role);
-
+  
   // Update last_online once on login
   await updateDoc(uDocRef, { last_online: new Date().toISOString() }).catch(() => {});
 
-  // Show current user in header (prefer displayName + emoji)
-  currentUsername = udata.displayName || (user.email ? user.email.split('@')[0] : '');
-  currentUserEmoji = udata.avatarEmoji || '';
-  window._currentUsername = currentUsername;
-  window._currentUserEmoji = currentUserEmoji;
-  window.userEmojis[currentUsername] = currentUserEmoji;
-  window.setCurrentUser(currentUsername, currentUserEmoji);
-
-  // Load all users' emojis so avatars show correctly in comments/changelog
-  getDocs(collection(db, "users")).then(snap => {
-    snap.forEach(d => {
-      const u = d.data();
-      const n = u.displayName || (u.email ? u.email.split('@')[0] : '');
-      if(n && u.avatarEmoji) window.userEmojis[n] = u.avatarEmoji;
-    });
-  }).catch(()=>{});
+  // Show current user in header
+  currentUsername = user.email ? user.email.split('@')[0] : '';
+  window.setCurrentUser(user.email);
 
   // Comments real-time listener
   if(commentsSub){commentsSub();commentsSub=null;}
@@ -3403,7 +2451,7 @@ onAuthStateChanged(auth, async (user) => {
 
   // Changelog real-time listener
   if(changelogSub){changelogSub();changelogSub=null;}
-  changelogSub = onSnapshot(query(collection(db, "changelog"), orderBy("date","desc"), limit(50)), (snap) => {
+  changelogSub = onSnapshot(query(collection(db, "changelog"), orderBy("date","desc"), limit(20)), (snap) => {
     window.changelogItems = [];
     snap.forEach(d => window.changelogItems.push(d.data()));
     renderChangelog();
@@ -3430,18 +2478,6 @@ onAuthStateChanged(auth, async (user) => {
 
     applyRoleUI(data.role);
 
-    // Refresh username/emoji if changed externally
-    if(data.displayName && data.displayName !== currentUsername) {
-      currentUsername = data.displayName;
-      window._currentUsername = currentUsername;
-    }
-    if((data.avatarEmoji || '') !== currentUserEmoji) {
-      currentUserEmoji = data.avatarEmoji || '';
-      window._currentUserEmoji = currentUserEmoji;
-      window.userEmojis[currentUsername] = currentUserEmoji;
-      window.setCurrentUser(currentUsername, currentUserEmoji);
-    }
-
     // Load Team if owner
     if(data.role === 'owner') loadTeam();
   });
@@ -3463,12 +2499,9 @@ onAuthStateChanged(auth, async (user) => {
       if(!D.assets) D.assets=[];
       if(!D.timeline) D.timeline=[];
       if(!D.decisions) D.decisions=[];
-      if(!D.lore) D.lore=[];
-      if(!D.builds) D.builds=[];
       renderDash(); updateSidebarCounts();
       renderSys();
       renderModel(); renderTL(); renderDec();
-      checkDeadlines();
       renderLanding();
     } else {
       window.cloudSave(D);
@@ -3478,30 +2511,16 @@ onAuthStateChanged(auth, async (user) => {
 
 // ─── CLOUD SAVE ──────────────────────────────────────────
 window.cloudSave = async (data) => {
-  if(currentRole !== 'owner' && currentRole !== 'dev') {
-    toast("⚠ Sem permissão para guardar. Faz login como dev.");
-    return;
-  }
-  const ind = document.getElementById('save-indicator');
-  if(ind){ ind.textContent = '↑ A guardar…'; ind.style.color = 'var(--fg3)'; }
+  if(currentRole !== 'owner' && currentRole !== 'dev') return;
   try {
-    const timeout = new Promise((_,rej) => setTimeout(() => rej(new Error('timeout')), 8000));
-    await Promise.race([
-      setDoc(doc(db, "projects", "cgf"), {
-        ...data,
-        _lastBy: currentUsername,
-        _lastAt: new Date().toISOString()
-      }),
-      timeout
-    ]);
-    if(ind){ ind.textContent = '✓ Guardado'; ind.style.color = 'var(--green)'; setTimeout(()=>{ ind.textContent=''; }, 3000); }
+    await setDoc(doc(db, "projects", "cgf"), {
+      ...data,
+      _lastBy: currentUsername,
+      _lastAt: new Date().toISOString()
+    });
   } catch(e) {
-    console.error("Cloud save error", e.message, "role:", currentRole, "user:", currentUsername);
-    if(ind){ ind.textContent = '✕ Erro ao guardar'; ind.style.color = 'var(--red)'; setTimeout(()=>{ ind.textContent=''; }, 6000); }
-    const msg = e.message === 'timeout'
-      ? 'Timeout: verifica as regras do Firestore e a ligação'
-      : e.message;
-    toast("Erro: " + msg);
+    console.error("Cloud save error", e);
+    toast("Erro ao guardar na nuvem!");
   }
 };
 
@@ -3520,35 +2539,14 @@ window.addComment = async (sysId) => {
 };
 
 // ─── CHANGELOG WRITER ────────────────────────────────────
-window.logChange = async (action, sysId=null) => {
+window.logChange = async (action) => {
   if(!currentUsername) return;
   try {
-    const entry = { user: currentUsername, action, date: new Date().toISOString() };
-    if(sysId != null) entry.sysId = sysId;
-    await addDoc(collection(db, "changelog"), entry);
+    await addDoc(collection(db, "changelog"), {
+      user: currentUsername, action, date: new Date().toISOString()
+    });
   } catch(e) {}
 };
-
-// ─── DISPLAY NAME ────────────────────────────────────────
-window.saveProfile = async () => {
-  const inp = document.getElementById('rename-inp');
-  const name = inp.value.trim();
-  if(!name || !auth.currentUser) return;
-  try {
-    const emoji = window._selectedEmoji || '';
-    const upd = { displayName: name, avatarEmoji: emoji };
-    await updateDoc(doc(db, "users", auth.currentUser.uid), upd);
-    currentUsername = name;
-    currentUserEmoji = emoji;
-    window._currentUsername = name;
-    window._currentUserEmoji = emoji;
-    window.userEmojis[name] = emoji;
-    window.setCurrentUser(name, emoji);
-    closeModal('m-rename');
-    toast('Perfil actualizado!');
-  } catch(e) { toast('Erro ao guardar perfil: ' + e.message); }
-};
-window.saveDisplayName = window.saveProfile;
 
 // ─── ONLINE COUNT ────────────────────────────────────────
 async function updateOnlineCount() {
@@ -3564,83 +2562,44 @@ async function updateOnlineCount() {
 // ─── TEAM MANAGEMENT ─────────────────────────────────────
 async function loadTeam(){
   const snap = await getDocs(collection(db, "users"));
-  const pending = [], active = [];
+  const html = [];
   snap.forEach(d => {
-    const u = d.data(); u._uid = d.id;
-    if(u.role === 'guest' && u.status !== 'banned' && u.status !== 'rejected') pending.push(u);
-    else if(u.role !== 'guest' || u.status === 'banned') active.push(u);
-  });
-
-  const row = (u, isPending) => {
-    const name = u.displayName || (u.email ? u.email.split('@')[0] : 'Anon');
-    const isOnline = u.last_online && (new Date() - new Date(u.last_online)) < 300000;
-    const onlineDot = isOnline ? ' <span style="color:#10b981;font-size:0.7rem;">●</span>' : '';
-    const lastSeen = u.last_online ? new Date(u.last_online).toLocaleString('pt-PT') : '—';
-    if(isPending) return `<tr>
-      <td>${name}${onlineDot} <span style="color:var(--fg3);font-size:0.72rem;">${u.email||''}</span></td>
-      <td><span style="color:var(--accent);font-size:0.72rem;">Pendente</span></td>
-      <td>${lastSeen}</td>
-      <td style="display:flex;gap:0.3rem;flex-wrap:wrap;">
-        <button class="btn btn-sm btn-accent" onclick="window.approveUser('${u._uid}')">✓ Aprovar</button>
-        <button class="btn btn-sm" style="border-color:var(--fg3);color:var(--fg3);" onclick="window.rejectUser('${u._uid}')">✕ Recusar</button>
-        <button class="btn btn-sm btn-danger" onclick="window.toggleBan('${u._uid}','active')">⛔ Banir</button>
-      </td>
-    </tr>`;
-    return `<tr>
-      <td>${name}${onlineDot} <span style="color:var(--fg3);font-size:0.72rem;">${u.email||''}</span></td>
+    const u = d.data();
+    const id = d.id;
+    const isOnline = (new Date() - new Date(u.last_online)) < 300000;
+    const onlineBadge = isOnline ? `<span style="color:#10b981;font-size:0.7rem;margin-left:5px;">● Online</span>` : '';
+    const dStr = new Date(u.last_online).toLocaleString('pt-PT');
+    const uName = u.email ? u.email.split('@')[0] : 'Anon';
+    html.push(`<tr>
+      <td>${uName} <span style="color:var(--fg3);font-size:0.75rem;">(${u.email || ''})</span>${onlineBadge}</td>
       <td>
-        <select class="inp" style="padding:0.2rem;font-size:0.75rem;" onchange="window.changeRole('${u._uid}', this.value)">
-          <option value="dev" ${u.role==='dev'?'selected':''}>Desenvolvedor</option>
-          <option value="loremaker" ${u.role==='loremaker'?'selected':''}>Lore Maker</option>
-          <option value="builder" ${u.role==='builder'?'selected':''}>Builder</option>
+        <select class="inp" style="padding:0.2rem;font-size:0.75rem;" onchange="window.changeRole('${id}', this.value)">
+          <option value="guest" ${u.role==='guest'?'selected':''}>Visitante</option>
+          <option value="dev" ${u.role==='dev'?'selected':''}>Dev</option>
           <option value="owner" ${u.role==='owner'?'selected':''}>Dono</option>
         </select>
       </td>
-      <td>${lastSeen}</td>
-      <td style="display:flex;gap:0.3rem;flex-wrap:wrap;">
-        <button class="btn btn-sm" style="border-color:#f97316;color:#f97316;" onclick="window.kickUser('${u._uid}')" title="Remove o acesso mas pode pedir novamente">↩ Kick</button>
-        <button class="btn btn-sm ${u.status==='banned'?'btn-accent':'btn-danger'}" onclick="window.toggleBan('${u._uid}','${u.status||'active'}')">
-          ${u.status==='banned'?'✓ Desbanir':'⛔ Banir'}
+      <td>${dStr}</td>
+      <td>
+        <button class="btn btn-sm ${u.status==='banned'?'btn-accent':'btn-danger'}" onclick="window.toggleBan('${id}', '${u.status}')">
+          ${u.status==='banned'?'Desbanir':'Banir'}
         </button>
       </td>
-    </tr>`;
-  };
-
-  const ps = document.getElementById('team-pending-section');
-  const pb = document.getElementById('team-pending');
-  if(pending.length){ ps.style.display='block'; pb.innerHTML=pending.map(u=>row(u,true)).join(''); }
-  else { ps.style.display='none'; pb.innerHTML=''; }
-  document.getElementById('team-list').innerHTML = active.map(u=>row(u,false)).join('') || '<tr><td colspan="4" style="color:var(--fg3);font-size:0.8rem;padding:0.5rem 0;">Sem membros ainda.</td></tr>';
+    </tr>`);
+  });
+  document.getElementById('team-list').innerHTML = html.join('');
 }
 
-window.approveUser = async (uid) => {
-  await updateDoc(doc(db, "users", uid), { role: 'dev' });
-  toast("Utilizador aprovado como Desenvolvedor.");
-  loadTeam();
-};
 window.changeRole = async (uid, newRole) => {
-  if(!['dev','owner','loremaker','builder'].includes(newRole)) return;
   await updateDoc(doc(db, "users", uid), { role: newRole });
-  toast("Cargo actualizado.");
+  toast("Função actualizada.");
   loadTeam();
 };
 
-window.rejectUser = async (uid) => {
-  if(!confirm('Recusar este pedido? O utilizador volta ao estado de espera mas pode tentar novamente.')) return;
-  await updateDoc(doc(db, "users", uid), { status: 'rejected' });
-  toast("Pedido recusado.");
-  loadTeam();
-};
-window.kickUser = async (uid) => {
-  if(!confirm('Fazer kick? O utilizador perde o acesso mas pode pedir novamente.')) return;
-  await updateDoc(doc(db, "users", uid), { role: 'guest', status: 'active' });
-  toast("Utilizador removido da equipa.");
-  loadTeam();
-};
 window.toggleBan = async (uid, currStatus) => {
   const ns = currStatus === 'banned' ? 'active' : 'banned';
   await updateDoc(doc(db, "users", uid), { status: ns });
-  toast(ns === 'banned' ? "Utilizador banido." : "Ban levantado.");
+  toast("Estado actualizado.");
   loadTeam();
 };
 </script>
