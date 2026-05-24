@@ -101,6 +101,15 @@ a{color:var(--accent);text-decoration:none;}
 .b-todo{background:rgba(161,161,170,0.08);color:var(--fg3);border:1px solid rgba(161,161,170,0.2);}
 .b-blocked{background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd);}
 .b-phase{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-bd);font-size:0.6rem;}
+.imp-dot{display:inline-block;width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-right:1px;}
+.imp-dot.high{background:var(--red);}
+.imp-dot.medium{background:var(--accent);}
+.imp-dot.low{background:var(--green);}
+.imp-sel{font-size:0.72rem;padding:0.18rem 0.4rem;border-radius:4px;border:1px solid var(--border2);background:var(--bg3);color:var(--fg);cursor:pointer;font-family:var(--font);}
+.imp-sel:focus{outline:none;border-color:var(--accent);}
+.imp-high{color:var(--red);}
+.imp-medium{color:var(--accent);}
+.imp-low{color:var(--green);}
 
 /* FORM */
 .field{margin-bottom:0.75rem;}
@@ -1115,7 +1124,10 @@ body.dev-previewing .l-nav{top:38px;}
     <div class="field"><div class="field-l">Fase</div><select class="sel" id="ms-phase"><option value="1">Fase 1</option><option value="2">Fase 2</option><option value="3">Fase 3</option></select></div>
     <div class="field"><div class="field-l">Estado</div><select class="sel" id="ms-st"><option value="todo">A Fazer</option><option value="wip">Em Dev</option><option value="done">Completo</option></select></div>
   </div>
-  <div class="field"><div class="field-l">Prazo</div><input class="inp" type="date" id="ms-deadline"></div>
+  <div class="g2">
+    <div class="field"><div class="field-l">Prazo</div><input class="inp" type="date" id="ms-deadline"></div>
+    <div class="field"><div class="field-l">Importância</div><select class="sel" id="ms-imp"><option value="high">🔴 Alta — Crítico</option><option value="medium" selected>🟡 Média — Importante</option><option value="low">🟢 Baixa — Nice-to-have</option></select></div>
+  </div>
   <div class="field"><div class="field-l">Descrição</div><textarea class="txta" id="ms-desc" placeholder="Como vai funcionar"></textarea></div>
   <div class="field"><div class="field-l">Integração</div><textarea class="txta" id="ms-int" placeholder="Como liga ao que já existe"></textarea></div>
   <div class="modal-foot"><button class="btn" onclick="closeModal('m-sys')">Cancelar</button><button class="btn btn-accent" onclick="addSys()">Adicionar</button></div>
@@ -1129,7 +1141,10 @@ body.dev-previewing .l-nav{top:38px;}
     <div class="field"><div class="field-l">Categoria</div><select class="sel" id="ma-cat"><option>Arma</option><option>Armadura</option><option>NPC / Personagem</option><option>Ambiente</option><option>Prop</option><option>UI</option><option>Outro</option></select></div>
     <div class="field"><div class="field-l">Prazo</div><input class="inp" type="date" id="ma-dl"></div>
   </div>
-  <div class="field"><div class="field-l">Prioridade (1 = urgente)</div><input class="inp" type="number" id="ma-pri" value="1" min="1"></div>
+  <div class="g2">
+    <div class="field"><div class="field-l">Prioridade (1 = urgente)</div><input class="inp" type="number" id="ma-pri" value="1" min="1"></div>
+    <div class="field"><div class="field-l">Importância</div><select class="sel" id="ma-imp"><option value="high">🔴 Alta — Crítico</option><option value="medium" selected>🟡 Média — Importante</option><option value="low">🟢 Baixa — Nice-to-have</option></select></div>
+  </div>
   <div class="modal-foot"><button class="btn" onclick="closeModal('m-asset')">Cancelar</button><button class="btn btn-accent" onclick="addAsset()">Adicionar</button></div>
 </div></div>
 
@@ -1159,7 +1174,10 @@ body.dev-previewing .l-nav{top:38px;}
 <div class="modal-bg" id="m-lore"><div class="modal">
   <div class="modal-t">📜 Nova Ideia de Lore</div>
   <div class="field"><div class="field-l">Título *</div><input class="inp" id="ml-name" placeholder="Ex: A Ordem dos Corvos"></div>
-  <div class="field"><div class="field-l">Tags <span style="font-weight:400;color:var(--fg3);">(separadas por vírgula)</span></div><input class="inp" id="ml-tags" placeholder="Ex: magia, facção, norte, segredo"></div>
+  <div class="g2">
+    <div class="field"><div class="field-l">Tags <span style="font-weight:400;color:var(--fg3);">(separadas por vírgula)</span></div><input class="inp" id="ml-tags" placeholder="Ex: magia, facção, norte, segredo"></div>
+    <div class="field"><div class="field-l">Importância</div><select class="sel" id="ml-imp"><option value="high">🔴 Alta — Crítico</option><option value="medium">🟡 Média — Importante</option><option value="low" selected>🟢 Baixa — Nice-to-have</option></select></div>
+  </div>
   <div class="field"><div class="field-l">Texto / Ideia</div><textarea class="inp" id="ml-text" rows="5" placeholder="Escreve o que tiveres — pode ser um parágrafo, um nome, uma citação, qualquer coisa. A IA ajuda a desenvolver depois."></textarea></div>
   <div class="modal-foot">
     <button class="btn" onclick="closeModal('m-lore')">Cancelar</button>
@@ -1182,6 +1200,7 @@ body.dev-previewing .l-nav{top:38px;}
     </div>
     <div class="field"><div class="field-l">Prazo</div><input class="inp" type="date" id="mb-dl"></div>
   </div>
+  <div class="field"><div class="field-l">Importância</div><select class="sel" id="mb-imp"><option value="high">🔴 Alta — Crítico</option><option value="medium" selected>🟡 Média — Importante</option><option value="low">🟢 Baixa — Nice-to-have</option></select></div>
   <div class="modal-foot">
     <button class="btn" onclick="closeModal('m-build')">Cancelar</button>
     <button class="btn btn-accent" onclick="addBuild()">Criar Zona</button>
@@ -1411,14 +1430,21 @@ function renderDash(){
   const done=D.systems.filter(s=>s.status==='done').length;
   const wip=D.systems.filter(s=>s.status==='wip').length;
   const todo=D.systems.filter(s=>s.status==='todo'||s.status==='blocked').length;
-  const pct=Math.round(done/D.systems.length*100);
+  const pct=calcWeightedProgress();
+  const bk=calcWeightedBreakdown();
   document.getElementById('dash-stats').innerHTML=`
-    <div class="stat"><div class="stat-n c-green">${done}</div><div class="stat-l">Completos</div></div>
+    <div class="stat"><div class="stat-n c-green">${done}</div><div class="stat-l">Sistemas Prontos</div></div>
     <div class="stat"><div class="stat-n c-accent">${wip}</div><div class="stat-l">Em Dev</div></div>
     <div class="stat"><div class="stat-n c-fg3">${todo}</div><div class="stat-l">Por Fazer</div></div>
-    <div class="stat"><div class="stat-n" style="color:var(--fg);">${pct}%</div><div class="stat-l">Progresso</div></div>`;
-  // Barra de progresso com animação ao entrar
-  document.getElementById('dash-progress').innerHTML=`<div style="height:6px;background:var(--bg);border-radius:3px;overflow:hidden;"><div class="prog-bar-inner" id="prog-bar"></div></div>`;
+    <div class="stat"><div class="stat-n" style="color:var(--fg);">${pct}%</div><div class="stat-l">Progresso Geral ⚖</div></div>`;
+  // Barra de progresso ponderada
+  document.getElementById('dash-progress').innerHTML=`
+    <div style="height:6px;background:var(--bg);border-radius:3px;overflow:hidden;margin-bottom:0.5rem;"><div class="prog-bar-inner" id="prog-bar"></div></div>
+    <div style="display:flex;gap:0.75rem;font-size:0.68rem;color:var(--fg3);">
+      <span title="Alta prioridade">🔴 ${Math.round(bk.high.totalW?bk.high.doneW/bk.high.totalW*100:0)}% <span style="color:var(--fg3);font-size:0.6rem;">(${bk.high.total} itens)</span></span>
+      <span title="Média prioridade">🟡 ${Math.round(bk.medium.totalW?bk.medium.doneW/bk.medium.totalW*100:0)}% <span style="color:var(--fg3);font-size:0.6rem;">(${bk.medium.total} itens)</span></span>
+      <span title="Baixa prioridade">🟢 ${Math.round(bk.low.totalW?bk.low.doneW/bk.low.totalW*100:0)}% <span style="color:var(--fg3);font-size:0.6rem;">(${bk.low.total} itens)</span></span>
+    </div>`;
   requestAnimationFrame(()=>setTimeout(()=>{const b=document.getElementById('prog-bar');if(b)b.style.width=pct+'%';},50));
   const sl={done:'Feito',wip:'Em Dev',todo:'A Fazer'};
   document.getElementById('dash-summary').innerHTML=
@@ -1497,6 +1523,7 @@ function renderSys(){
       <div class="sys-h">
         <span style="color:var(--fg3);font-size:0.75rem;cursor:grab;flex-shrink:0;" title="Arrastar para reordenar">⠿</span>
         <span class="badge b-phase">F${s.phase}</span>
+        <span class="imp-dot ${s.importance||'medium'}" title="${{high:'Alta — Crítico',medium:'Média — Importante',low:'Baixa — Nice-to-have'}[s.importance||'medium']}"></span>
         <span class="sys-name">${s.name}</span>
         ${tasks.length?`<span style="font-size:0.65rem;color:var(--fg3);flex-shrink:0;">☑ ${td}/${tasks.length}</span>`:''}
         ${deadlineSpan(s.deadline)}
@@ -1510,6 +1537,7 @@ function renderSys(){
           <div class="field"><div class="field-l">Prazo</div><input class="inp" type="date" id="sdl${s.id}" value="${toISODate(s.deadline)}"></div>
           <div class="field"><div class="field-l">Fase</div><select class="sel" id="sp${s.id}"><option value="1"${s.phase===1?' selected':''}>Fase 1</option><option value="2"${s.phase===2?' selected':''}>Fase 2</option><option value="3"${s.phase===3?' selected':''}>Fase 3</option></select></div>
         </div>
+        <div class="field"><div class="field-l">Importância no progresso geral</div><select class="imp-sel" id="simp${s.id}" style="width:100%;" onchange="D.systems.find(x=>x.id===${s.id}).importance=this.value;save();renderDash();"><option value="high"${(s.importance||'medium')==='high'?' selected':''}>🔴 Alta — Crítico (peso 3)</option><option value="medium"${(s.importance||'medium')==='medium'?' selected':''}>🟡 Média — Importante (peso 2)</option><option value="low"${(s.importance||'medium')==='low'?' selected':''}>🟢 Baixa — Nice-to-have (peso 1)</option></select></div>
         ${tasksHtml}
         ${commentsHtml}
         ${histHtml}
@@ -1549,8 +1577,8 @@ function deleteTask(sysId,taskId){
 function togSys(id){document.getElementById('s'+id).classList.toggle('open');}
 function chSys(id,st){const s=D.systems.find(x=>x.id===id);s.status=st;renderSys();save();const ll={done:'Completo',wip:'Em Dev',todo:'A Fazer'};if(window.logChange)window.logChange(`Marcou "${s.name}" como ${ll[st]||st}`,id);}
 function delSys(id){if(!confirm('Remover?'))return;const s=D.systems.find(x=>x.id===id);D.systems=D.systems.filter(x=>x.id!==id);renderSys();save();if(window.logChange&&s)window.logChange(`Removeu o sistema "${s.name}"`);}
-function saveSys(id){const s=D.systems.find(x=>x.id===id);s.desc=document.getElementById('sd'+id).value;s.integration=document.getElementById('si'+id).value;s.deadline=document.getElementById('sdl'+id).value;s.phase=parseInt(document.getElementById('sp'+id).value);save();if(window.logChange)window.logChange(`Editou "${s.name}"`,id);toast('Sistema guardado.');}
-function addSys(){const n=document.getElementById('ms-name').value.trim();if(!n)return;const nid=++D.nid;D.systems.push({id:nid,name:n,phase:parseInt(document.getElementById('ms-phase').value),status:document.getElementById('ms-st').value,deadline:document.getElementById('ms-deadline').value,desc:document.getElementById('ms-desc').value,integration:document.getElementById('ms-int').value,tasks:[]});closeModal('m-sys');['ms-name','ms-desc','ms-int','ms-deadline'].forEach(x=>document.getElementById(x).value='');nav('sys');toast('Sistema adicionado.');save();if(window.logChange)window.logChange(`Adicionou o sistema "${n}"`,nid);}
+function saveSys(id){const s=D.systems.find(x=>x.id===id);s.desc=document.getElementById('sd'+id).value;s.integration=document.getElementById('si'+id).value;s.deadline=document.getElementById('sdl'+id).value;s.phase=parseInt(document.getElementById('sp'+id).value);s.importance=document.getElementById('simp'+id).value||s.importance||'medium';save();renderDash();if(window.logChange)window.logChange(`Editou "${s.name}"`,id);toast('Sistema guardado.');}
+function addSys(){const n=document.getElementById('ms-name').value.trim();if(!n)return;const nid=++D.nid;D.systems.push({id:nid,name:n,phase:parseInt(document.getElementById('ms-phase').value),status:document.getElementById('ms-st').value,deadline:document.getElementById('ms-deadline').value,importance:document.getElementById('ms-imp').value||'medium',desc:document.getElementById('ms-desc').value,integration:document.getElementById('ms-int').value,tasks:[]});closeModal('m-sys');['ms-name','ms-desc','ms-int','ms-deadline'].forEach(x=>document.getElementById(x).value='');document.getElementById('ms-imp').value='medium';nav('sys');toast('Sistema adicionado.');save();if(window.logChange)window.logChange(`Adicionou o sistema "${n}"`,nid);}
 
 // ─── RENDER: MODELER ─────────────────────────────────────
 function renderModel(){
@@ -1566,11 +1594,12 @@ function renderModel(){
   const sorted=[...D.assets].sort((a,b)=>a.priority-b.priority);
   document.getElementById('model-table').innerHTML=sorted.map(a=>`<tr>
     <td style="font-weight:700;color:var(--accent);">#${a.priority}</td>
-    <td style="font-weight:600;color:var(--fg);">${a.name}</td>
+    <td style="font-weight:600;color:var(--fg);"><span class="imp-dot ${a.importance||'medium'}" title="Importância"></span>${a.name}</td>
     <td>${a.cat}</td>
     <td>${deadlineInput(a.id,a.deadline)}</td>
     <td><span class="badge ${sb[a.status]}">${sl[a.status]}</span></td>
-    <td style="white-space:nowrap;">
+    <td style="white-space:nowrap;display:flex;align-items:center;gap:0.3rem;flex-wrap:wrap;">
+      <select class="imp-sel" title="Importância" onchange="D.assets.find(x=>x.id===${a.id}).importance=this.value;save();renderDash();"><option value="high"${(a.importance||'medium')==='high'?' selected':''}>🔴</option><option value="medium"${(a.importance||'medium')==='medium'?' selected':''}>🟡</option><option value="low"${(a.importance||'medium')==='low'?' selected':''}>🟢</option></select>
       <button class="btn btn-sm btn-icon" style="border-color:var(--green);color:var(--green);" onclick="chAsset(${a.id},'done')">✓</button>
       <button class="btn btn-sm btn-icon" style="border-color:var(--accent);color:var(--accent);" onclick="chAsset(${a.id},'wip')">⚙</button>
       <button class="btn btn-sm btn-icon btn-danger" onclick="delAsset(${a.id})">✕</button>
@@ -1579,7 +1608,7 @@ function renderModel(){
 }
 function chAsset(id,st){D.assets.find(x=>x.id===id).status=st;renderModel();save();}
 function delAsset(id){D.assets=D.assets.filter(x=>x.id!==id);renderModel();save();}
-function addAsset(){const n=document.getElementById('ma-name').value.trim();if(!n)return;D.assets.push({id:++D.nid,name:n,cat:document.getElementById('ma-cat').value,deadline:document.getElementById('ma-dl').value,priority:parseInt(document.getElementById('ma-pri').value)||99,status:'todo'});closeModal('m-asset');document.getElementById('ma-name').value='';renderModel();toast('Asset adicionado.');save();}
+function addAsset(){const n=document.getElementById('ma-name').value.trim();if(!n)return;D.assets.push({id:++D.nid,name:n,cat:document.getElementById('ma-cat').value,deadline:document.getElementById('ma-dl').value,priority:parseInt(document.getElementById('ma-pri').value)||99,importance:document.getElementById('ma-imp').value||'medium',status:'todo'});closeModal('m-asset');document.getElementById('ma-name').value='';renderModel();toast('Asset adicionado.');save();}
 
 // ─── RENDER: LORE ────────────────────────────────────────
 let loreStatusFilter='';
@@ -1609,6 +1638,7 @@ function renderLore(){
       <div class="sys-hd" onclick="togLore(${l.id})">
         <div style="display:flex;flex-direction:column;gap:0.25rem;flex:1;min-width:0;">
           <div style="display:flex;align-items:center;gap:0.5rem;">
+            <span class="imp-dot ${l.importance||'low'}" title="${{high:'Alta — Crítico',medium:'Média — Importante',low:'Baixa — Nice-to-have'}[l.importance||'low']}"></span>
             <span class="sys-name">${l.name}</span>
             ${statusBadge[l.status]||statusBadge.draft}
           </div>
@@ -1628,7 +1658,10 @@ function renderLore(){
             </select>
           </div>
         </div>
-        <div class="field"><div class="field-l">Tags <span style="font-weight:400;color:var(--fg3);">(separadas por vírgula)</span></div><input class="inp" value="${(l.tags||'').replace(/"/g,'&quot;')}" onchange="D.lore.find(x=>x.id===${l.id}).tags=this.value;" onblur="save();renderLore();" placeholder="Ex: magia, facção, norte"></div>
+        <div class="g2">
+          <div class="field"><div class="field-l">Tags <span style="font-weight:400;color:var(--fg3);">(separadas por vírgula)</span></div><input class="inp" value="${(l.tags||'').replace(/"/g,'&quot;')}" onchange="D.lore.find(x=>x.id===${l.id}).tags=this.value;" onblur="save();renderLore();" placeholder="Ex: magia, facção, norte"></div>
+          <div class="field"><div class="field-l">Importância</div><select class="imp-sel" style="width:100%;" onchange="D.lore.find(x=>x.id===${l.id}).importance=this.value;save();renderDash();"><option value="high"${(l.importance||'low')==='high'?' selected':''}>🔴 Alta</option><option value="medium"${(l.importance||'low')==='medium'?' selected':''}>🟡 Média</option><option value="low"${(l.importance||'low')==='low'?' selected':''}>🟢 Baixa</option></select></div>
+        </div>
         <div class="field"><div class="field-l">Texto / Ideia</div><textarea class="inp" rows="7" style="resize:vertical;font-family:var(--font);line-height:1.6;" onchange="D.lore.find(x=>x.id===${l.id}).text=this.value;save();" placeholder="Escreve livremente…">${(l.text||'').replace(/</g,'&lt;')}</textarea></div>
         <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.4rem;align-items:center;">
           <button class="btn btn-sm" style="background:rgba(168,85,247,0.12);color:#a855f7;border-color:#a855f7;" onclick="loreAIIdea(this,${l.id})">💡 Desenvolver com IA</button>
@@ -1645,9 +1678,9 @@ function togLore(id){document.getElementById('lo'+id).classList.toggle('open');}
 function delLore(id){if(!confirm('Remover esta ideia de lore?'))return;const l=D.lore.find(x=>x.id===id);D.lore=D.lore.filter(x=>x.id!==id);renderLore();save();if(window.logChange&&l)window.logChange(`Removeu lore "${l.name}"`);}
 function addLore(){
   const name=document.getElementById('ml-name').value.trim();if(!name)return;
-  const entry={id:++D.nid,name,tags:document.getElementById('ml-tags').value.trim(),status:'draft',text:document.getElementById('ml-text').value};
+  const entry={id:++D.nid,name,tags:document.getElementById('ml-tags').value.trim(),importance:document.getElementById('ml-imp').value||'low',status:'draft',text:document.getElementById('ml-text').value};
   D.lore.push(entry);closeModal('m-lore');
-  ['ml-name','ml-tags','ml-text'].forEach(x=>document.getElementById(x).value='');
+  ['ml-name','ml-tags','ml-text'].forEach(x=>document.getElementById(x).value='');document.getElementById('ml-imp').value='low';
   renderLore();save();toast('Ideia guardada!');
   if(window.logChange)window.logChange(`Adicionou lore "${name}"`);
 }
@@ -1687,6 +1720,7 @@ function renderBuild(){
     return `<div class="sys" id="bd${b.id}">
       <div class="sys-hd" onclick="togBuild(${b.id})">
         <div style="display:flex;align-items:center;gap:0.5rem;flex:1;min-width:0;">
+          <span class="imp-dot ${b.importance||'medium'}" title="${{high:'Alta — Crítico',medium:'Média — Importante',low:'Baixa — Nice-to-have'}[b.importance||'medium']}"></span>
           <span class="sys-name">🏗 ${b.name}</span>
           ${b.zone?`<span style="font-size:0.65rem;color:var(--fg3);">[${b.zone}]</span>`:''}
           ${dlSafe}
@@ -1713,6 +1747,7 @@ function renderBuild(){
           </div>
           <div class="field"><div class="field-l">Prazo</div><input class="inp" type="date" value="${toISODate(b.deadline||'')}" onchange="D.builds.find(x=>x.id===${b.id}).deadline=this.value;save();renderBuild();"></div>
         </div>
+        <div class="field"><div class="field-l">Importância</div><select class="imp-sel" style="width:100%;" onchange="D.builds.find(x=>x.id===${b.id}).importance=this.value;save();renderDash();"><option value="high"${(b.importance||'medium')==='high'?' selected':''}>🔴 Alta — Crítico (peso 3)</option><option value="medium"${(b.importance||'medium')==='medium'?' selected':''}>🟡 Média — Importante (peso 2)</option><option value="low"${(b.importance||'medium')==='low'?' selected':''}>🟢 Baixa — Nice-to-have (peso 1)</option></select></div>
         <div class="field"><div class="field-l">Notas</div><textarea class="inp" rows="3" style="resize:vertical;" onchange="D.builds.find(x=>x.id===${b.id}).notes=this.value;save();" placeholder="Notas, referências, descrição da zona…">${(b.notes||'').replace(/</g,'&lt;')}</textarea></div>
         <div class="field-l" style="margin-bottom:0.3rem;">Subtarefas <span style="font-weight:400;color:var(--fg3);">(${tasksDone}/${tasks.length})</span></div>
         <div id="btasks-${b.id}">${renderBuildTasks(b)}</div>
@@ -1743,8 +1778,8 @@ function togBuild(id){document.getElementById('bd'+id).classList.toggle('open');
 function delBuild(id){if(!confirm('Remover esta zona?'))return;const b=D.builds.find(x=>x.id===id);D.builds=D.builds.filter(x=>x.id!==id);renderBuild();save();if(window.logChange&&b)window.logChange(`Removeu build "${b.name}"`);}
 function addBuild(){
   const name=document.getElementById('mb-name').value.trim();if(!name)return;
-  D.builds.push({id:++D.nid,name,zone:document.getElementById('mb-zone').value.trim(),status:document.getElementById('mb-st').value,deadline:document.getElementById('mb-dl').value,notes:'',subtasks:[]});
-  closeModal('m-build');['mb-name','mb-zone','mb-dl'].forEach(x=>document.getElementById(x).value='');
+  D.builds.push({id:++D.nid,name,zone:document.getElementById('mb-zone').value.trim(),status:document.getElementById('mb-st').value,deadline:document.getElementById('mb-dl').value,importance:document.getElementById('mb-imp').value||'medium',notes:'',subtasks:[]});
+  closeModal('m-build');['mb-name','mb-zone','mb-dl'].forEach(x=>document.getElementById(x).value='');document.getElementById('mb-imp').value='medium';
   renderBuild();save();toast('Zona adicionada!');
   if(window.logChange)window.logChange(`Adicionou build "${name}"`);
 }
@@ -2658,6 +2693,35 @@ function humanizeDeadline(dl){
   return`Em ${Math.round(days/30)} meses`;
 }
 
+function calcWeightedProgress(){
+  const W={high:3,medium:2,low:1};
+  const completion={
+    system:{done:1,wip:0.5,todo:0,blocked:0},
+    asset:{done:1,wip:0.5,todo:0},
+    build:{done:1,wip:0.5,todo:0},
+    lore:{developed:1,draft:0.2,archived:0}
+  };
+  let totalW=0,doneW=0;
+  D.systems.forEach(s=>{const w=W[s.importance||'medium'];totalW+=w;doneW+=(completion.system[s.status]||0)*w;});
+  D.assets.forEach(a=>{const w=W[a.importance||'medium'];totalW+=w;doneW+=(completion.asset[a.status]||0)*w;});
+  (D.builds||[]).forEach(b=>{const w=W[b.importance||'medium'];totalW+=w;doneW+=(completion.build[b.status]||0)*w;});
+  (D.lore||[]).filter(l=>l.status!=='archived').forEach(l=>{const w=W[l.importance||'low'];totalW+=w;doneW+=(completion.lore[l.status]||0)*w;});
+  return totalW?Math.round(doneW/totalW*100):0;
+}
+
+function calcWeightedBreakdown(){
+  const W={high:3,medium:2,low:1};
+  const breakdown={high:{total:0,doneW:0,totalW:0},medium:{total:0,doneW:0,totalW:0},low:{total:0,doneW:0,totalW:0}};
+  const all=[
+    ...D.systems.map(s=>({importance:s.importance||'medium',done:s.status==='done'})),
+    ...D.assets.map(a=>({importance:a.importance||'medium',done:a.status==='done'})),
+    ...(D.builds||[]).map(b=>({importance:b.importance||'medium',done:b.status==='done'})),
+    ...(D.lore||[]).filter(l=>l.status!=='archived').map(l=>({importance:l.importance||'low',done:l.status==='developed'})),
+  ];
+  all.forEach(x=>{const k=x.importance;breakdown[k].total++;breakdown[k].totalW+=W[k];if(x.done)breakdown[k].doneW+=W[k];});
+  return breakdown;
+}
+
 function getLaunchDate(milestone){
   // Try to parse the milestone date; fallback to 15 Jun 2026
   if(!milestone)return new Date(2026,5,15);
@@ -2674,7 +2738,7 @@ function renderLanding(){
   const done=D.systems.filter(s=>s.status==='done').length;
   const wip=D.systems.filter(s=>s.status==='wip').length;
   const total=D.systems.length;
-  const pct=total?Math.round(done/total*100):0;
+  const pct=calcWeightedProgress();
 
   // Hero eyebrow — dynamic month/year
   const _months=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
