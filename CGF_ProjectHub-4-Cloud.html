@@ -651,7 +651,7 @@ body.dev-previewing .l-nav{top:38px;}
     <div class="hero-flame-r"></div>
 
     <div class="hero-inner">
-      <div class="hero-eyebrow fadeUp">Estado da Coroa · Mai 2026</div>
+      <div class="hero-eyebrow fadeUp" id="hero-eyebrow">Estado da Coroa · —</div>
       <h1 class="hero-title fadeUp">Crônicas de Gelo <span class="amp">&amp;</span> Fogo</h1>
       <p class="hero-tagline fadeUp">Onde a forja não pára, a sept se ergue, e o reino se constrói pedra a pedra. Acompanha aqui cada passo desta saga — entre o cobre, o aço e a fé dos Sete.</p>
 
@@ -2658,12 +2658,29 @@ function humanizeDeadline(dl){
   return`Em ${Math.round(days/30)} meses`;
 }
 
+function getLaunchDate(milestone){
+  // Try to parse the milestone date; fallback to 15 Jun 2026
+  if(!milestone)return new Date(2026,5,15);
+  const d=parseDeadline(milestone.date);
+  if(d&&!isNaN(d))return d;
+  // Try ISO date format too
+  const iso=new Date(milestone.date);
+  if(!isNaN(iso))return iso;
+  return new Date(2026,5,15);
+}
+
 function renderLanding(){
   if(!document.querySelector('.landing'))return;
   const done=D.systems.filter(s=>s.status==='done').length;
   const wip=D.systems.filter(s=>s.status==='wip').length;
   const total=D.systems.length;
   const pct=total?Math.round(done/total*100):0;
+
+  // Hero eyebrow — dynamic month/year
+  const _months=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const _now=new Date();
+  const eyebrow=document.getElementById('hero-eyebrow');
+  if(eyebrow)eyebrow.textContent=`Estado da Coroa · ${_months[_now.getMonth()]} ${_now.getFullYear()}`;
 
   // Hero
   document.getElementById('hero-pct').textContent=pct+'%';
@@ -2709,8 +2726,12 @@ function renderLanding(){
   }).join('');
   setTimeout(()=>{document.querySelectorAll('.l-phase-bar-fill').forEach(b=>b.style.width=b.dataset.w+'%');},400);
 
-  // Countdown
-  const launch=new Date(2026,5,15);
+  // Countdown — reads launch date from timeline milestone titled "lançamento"
+  const launchMilestone=D.timeline.find(t=>/lan[çc]amento/i.test(t.title));
+  const launch=getLaunchDate(launchMilestone);
+  const launchLabel=launchMilestone?`${escHTML(launchMilestone.title)} · ${escHTML(launchMilestone.date)}`:'Lançamento Exclusivo · 15 Junho 2026';
+  const cdTitleEl=document.querySelector('.l-countdown-title');
+  if(cdTitleEl)cdTitleEl.textContent=launchLabel;
   const now=new Date();
   let diff=Math.max(0,launch-now);
   const days=Math.floor(diff/86400000);
@@ -2840,7 +2861,8 @@ setInterval(()=>{
   if(document.body.classList.contains('view-public')){
     const el=document.getElementById('lp-countdown');
     if(!el)return;
-    const launch=new Date(2026,5,15);
+    const launchM=D.timeline.find(t=>/lan[çc]amento/i.test(t.title));
+    const launch=getLaunchDate(launchM);
     const now=new Date();
     let diff=Math.max(0,launch-now);
     const days=Math.floor(diff/86400000);
