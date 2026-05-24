@@ -1567,6 +1567,7 @@ function addTask(sysId){
   if(!s.tasks)s.tasks=[];
   s.tasks.push({id:++D.nid,text,done:false});
   inp.value='';renderSys();save();
+  if(window.logChange)window.logChange(`Adicionou subtarefa em "${s.name}": ${text}`,sysId);
 }
 function toggleTask(sysId,taskId){
   const s=D.systems.find(x=>x.id===sysId);
@@ -1614,9 +1615,10 @@ function renderModel(){
     </td>
   </tr>`).join('');
 }
-function chAsset(id,st){D.assets.find(x=>x.id===id).status=st;renderModel();save();}
-function delAsset(id){D.assets=D.assets.filter(x=>x.id!==id);renderModel();save();}
-function addAsset(){const n=document.getElementById('ma-name').value.trim();if(!n)return;D.assets.push({id:++D.nid,name:n,cat:document.getElementById('ma-cat').value,phase:parseInt(document.getElementById('ma-phase').value)||1,deadline:document.getElementById('ma-dl').value,priority:parseInt(document.getElementById('ma-pri').value)||99,importance:document.getElementById('ma-imp').value||'medium',status:'todo'});closeModal('m-asset');document.getElementById('ma-name').value='';renderModel();toast('Asset adicionado.');save();}
+function chAsset(id,st){const a=D.assets.find(x=>x.id===id);a.status=st;renderModel();save();const ll={done:'Entregue',wip:'Em Produção',todo:'A Fazer'};if(window.logChange)window.logChange(`Marcou asset "${a.name}" como ${ll[st]||st}`);}
+function delAsset(id){const a=D.assets.find(x=>x.id===id);D.assets=D.assets.filter(x=>x.id!==id);renderModel();save();if(window.logChange&&a)window.logChange(`Removeu asset "${a.name}"`);}
+function addAssetLog(n){if(window.logChange)window.logChange(`Adicionou asset "${n}"`);}
+function addAsset(){const n=document.getElementById('ma-name').value.trim();if(!n)return;D.assets.push({id:++D.nid,name:n,cat:document.getElementById('ma-cat').value,phase:parseInt(document.getElementById('ma-phase').value)||1,deadline:document.getElementById('ma-dl').value,priority:parseInt(document.getElementById('ma-pri').value)||99,importance:document.getElementById('ma-imp').value||'medium',status:'todo'});closeModal('m-asset');document.getElementById('ma-name').value='';renderModel();toast('Asset adicionado.');save();addAssetLog(n);}
 
 // ─── RENDER: LORE ────────────────────────────────────────
 let loreStatusFilter='';
@@ -1660,7 +1662,7 @@ function renderLore(){
         <div class="g2">
           <div class="field"><div class="field-l">Título</div><input class="inp" value="${l.name.replace(/"/g,'&quot;')}" onchange="D.lore.find(x=>x.id===${l.id}).name=this.value;" onblur="save();renderLore();" placeholder="Nome da ideia"></div>
           <div class="field"><div class="field-l">Estado</div>
-            <select class="inp" onchange="D.lore.find(x=>x.id===${l.id}).status=this.value;save();renderLore();">
+            <select class="inp" onchange="chLoreStatus(${l.id},this.value)">
               <option value="draft"${(l.status||'draft')==='draft'?' selected':''}>📝 Rascunho</option>
               <option value="developed"${l.status==='developed'?' selected':''}>✦ Desenvolvida</option>
               <option value="archived"${l.status==='archived'?' selected':''}>🗃 Arquivada</option>
@@ -1685,6 +1687,8 @@ function renderLore(){
   }).join('');
 }
 function togLore(id){document.getElementById('lo'+id).classList.toggle('open');}
+function chLoreStatus(id,val){const l=D.lore.find(x=>x.id===id);if(!l)return;l.status=val;save();renderLore();const ll={developed:'Desenvolvida',draft:'Rascunho',archived:'Arquivada'};if(window.logChange)window.logChange(`Marcou lore "${l.name}" como ${ll[val]||val}`);}
+function chBuildStatus(id,val){const b=D.builds.find(x=>x.id===id);if(!b)return;b.status=val;save();renderBuild();const ll={done:'Concluída',wip:'Em Obra',todo:'A Iniciar'};if(window.logChange)window.logChange(`Marcou build "${b.name}" como ${ll[val]||val}`);}
 function delLore(id){if(!confirm('Remover esta ideia de lore?'))return;const l=D.lore.find(x=>x.id===id);D.lore=D.lore.filter(x=>x.id!==id);renderLore();save();if(window.logChange&&l)window.logChange(`Removeu lore "${l.name}"`);}
 function addLore(){
   const name=document.getElementById('ml-name').value.trim();if(!name)return;
@@ -1750,7 +1754,7 @@ function renderBuild(){
         </div>
         <div class="g2">
           <div class="field"><div class="field-l">Estado</div>
-            <select class="inp" onchange="D.builds.find(x=>x.id===${b.id}).status=this.value;save();renderBuild();">
+            <select class="inp" onchange="chBuildStatus(${b.id},this.value)">
               <option value="todo"${b.status==='todo'?' selected':''}>Por Fazer</option>
               <option value="wip"${b.status==='wip'?' selected':''}>Em Construção</option>
               <option value="done"${b.status==='done'?' selected':''}>Concluído</option>
@@ -1803,6 +1807,7 @@ function addBuildTask(bid){
   if(!b.subtasks)b.subtasks=[];
   b.subtasks.push({id:++D.nid,text:txt,done:false});
   inp.value='';save();
+  if(window.logChange)window.logChange(`Adicionou subtarefa em build "${b.name}": ${txt}`);
   document.getElementById('btasks-'+bid).innerHTML=renderBuildTasks(b);
   document.getElementById('build-stats').textContent=`${D.builds.length} zonas · ${D.builds.filter(x=>x.status==='done').length} concluídas`;
 }
@@ -1869,13 +1874,15 @@ function saveTLEdit(){
   t.title=document.getElementById('te-title').value;
   t.desc=document.getElementById('te-desc').value;
   closeModal('m-tl-edit');renderTL();save();toast('Marco actualizado.');
+  if(window.logChange)window.logChange(`Editou marco "${t.title}" → ${t.date}`);
 }
-function deleteTL(){D.timeline=D.timeline.filter(x=>x.id!==editTLId);closeModal('m-tl-edit');renderTL();save();toast('Marco removido.');}
+function deleteTL(){const t=D.timeline.find(x=>x.id===editTLId);D.timeline=D.timeline.filter(x=>x.id!==editTLId);closeModal('m-tl-edit');renderTL();save();toast('Marco removido.');if(window.logChange&&t)window.logChange(`Removeu marco "${t.title}"`);}
 function addTL(){
   const t=document.getElementById('tl-i-title').value.trim();if(!t)return;
   D.timeline.push({id:++D.nid,date:document.getElementById('tl-i-date').value,status:document.getElementById('tl-i-st').value,title:t,desc:document.getElementById('tl-i-desc').value});
   ['tl-i-date','tl-i-title','tl-i-desc'].forEach(x=>document.getElementById(x).value='');
   renderTL();save();toast('Marco adicionado.');
+  if(window.logChange)window.logChange(`Adicionou marco "${t}"`);
 }
 
 // ─── RENDER: PHASES ──────────────────────────────────────
@@ -1922,8 +1929,9 @@ function renderDec(){
       </div>
     </div>`).join('');
 }
-function addDec(){const t=document.getElementById('dec-i-t').value.trim();if(!t)return;const now=new Date();const m=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];D.decisions.push({id:++D.nid,title:t,reason:document.getElementById('dec-i-r').value,date:`${m[now.getMonth()]} ${now.getFullYear()}`});document.getElementById('dec-i-t').value='';document.getElementById('dec-i-r').value='';renderDec();save();toast('Decisão registada.');}
-function delDec(id){D.decisions=D.decisions.filter(x=>x.id!==id);renderDec();save();}
+function addDec(){const t=document.getElementById('dec-i-t').value.trim();if(!t)return;const now=new Date();const m=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];D.decisions.push({id:++D.nid,title:t,reason:document.getElementById('dec-i-r').value,date:`${m[now.getMonth()]} ${now.getFullYear()}`});document.getElementById('dec-i-t').value='';document.getElementById('dec-i-r').value='';renderDec();save();toast('Decisão registada.');if(window.logChange)window.logChange(`Registou decisão "${t}"`);}
+function delDec(id){const d=D.decisions.find(x=>x.id===id);D.decisions=D.decisions.filter(x=>x.id!==id);renderDec();save();if(window.logChange&&d)window.logChange(`Removeu decisão "${d.title}"`);}
+
 
 // ─── AI ──────────────────────────────────────────────────
 let aiRole='geral';
@@ -2363,10 +2371,35 @@ function renderProgressChart(){
 
 // ─── CHANGELOG ───────────────────────────────────────────
 window.changelogItems=[];
+let clShowAll=false;
+function clActionIcon(action){
+  if(/adicionou|criou/i.test(action))return{icon:'＋',col:'var(--green)'};
+  if(/removeu|apagou/i.test(action))return{icon:'✕',col:'var(--red)'};
+  if(/marcou|completou/i.test(action))return{icon:'✓',col:'var(--accent)'};
+  if(/editou|actualizou|guardou/i.test(action))return{icon:'✎',col:'var(--blue)'};
+  if(/reordenou/i.test(action))return{icon:'⇅',col:'var(--fg3)'};
+  if(/registou|decisão/i.test(action))return{icon:'◈',col:'var(--purple)'};
+  if(/estado|marco|fase/i.test(action))return{icon:'◆',col:'var(--accent)'};
+  return{icon:'·',col:'var(--fg3)'};
+}
 function renderChangelog(){
   const el=document.getElementById('dash-changelog');if(!el)return;
   const items=window.changelogItems||[];
-  el.innerHTML=items.length?items.slice(0,15).map(c=>`<div class="cl-item">${userAvatar(c.user||'?')}<span class="cl-who" style="color:${userColor(c.user||'?')};">${c.user||'?'}</span><span class="cl-what">${c.action}</span><span class="cl-when">${formatRelTime(c.date)}</span></div>`).join(''):`<div style="color:var(--fg3);font-size:0.78rem;">Sem alterações registadas.</div>`;
+  if(!items.length){el.innerHTML=`<div style="color:var(--fg3);font-size:0.78rem;">Sem alterações registadas.</div>`;return;}
+  const show=clShowAll?items:items.slice(0,12);
+  el.innerHTML=show.map(c=>{
+    const{icon,col}=clActionIcon(c.action||'');
+    return`<div class="cl-item">
+      <span style="width:16px;height:16px;border-radius:50%;background:${col}22;color:${col};display:inline-flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;flex-shrink:0;">${icon}</span>
+      ${userAvatar(c.user||'?')}
+      <span class="cl-who" style="color:${userColor(c.user||'?')};">${c.user||'?'}</span>
+      <span class="cl-what">${c.action}</span>
+      <span class="cl-when">${formatRelTime(c.date)}</span>
+    </div>`;
+  }).join('');
+  if(items.length>12){
+    el.innerHTML+=`<div style="text-align:center;margin-top:0.5rem;"><button class="btn btn-sm btn-ghost" style="font-size:0.7rem;" onclick="clShowAll=!clShowAll;renderChangelog();">${clShowAll?'▲ Mostrar menos':'▼ Ver todos ('+items.length+')'}</button></div>`;
+  }
 }
 
 // ─── PDF EXPORT ──────────────────────────────────────────
@@ -3342,7 +3375,7 @@ onAuthStateChanged(auth, async (user) => {
 
   // Changelog real-time listener
   if(changelogSub){changelogSub();changelogSub=null;}
-  changelogSub = onSnapshot(query(collection(db, "changelog"), orderBy("date","desc"), limit(20)), (snap) => {
+  changelogSub = onSnapshot(query(collection(db, "changelog"), orderBy("date","desc"), limit(50)), (snap) => {
     window.changelogItems = [];
     snap.forEach(d => window.changelogItems.push(d.data()));
     renderChangelog();
