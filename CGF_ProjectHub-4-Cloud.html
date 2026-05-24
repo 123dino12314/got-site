@@ -429,7 +429,7 @@ body.view-public.show-login .landing-section{filter:blur(2px) brightness(0.4);po
 .section-sub{font-family:var(--body-serif);font-style:italic;font-size:1.05rem;color:#9c8d70;max-width:580px;margin:0 auto;line-height:1.55;}
 
 /* OVERVIEW STATS */
-.l-overview{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(201,169,97,0.15);border:1px solid rgba(201,169,97,0.2);}
+.l-overview{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:rgba(201,169,97,0.15);border:1px solid rgba(201,169,97,0.2);}
 .l-ov-cell{background:linear-gradient(180deg,#15110c 0%,#0e0b08 100%);padding:2rem 1.3rem;text-align:center;position:relative;transition:background 0.25s;}
 .l-ov-cell:hover{background:linear-gradient(180deg,#1a150f 0%,#13100b 100%);}
 .l-ov-icon{font-size:1.3rem;color:var(--gold);margin-bottom:0.65rem;font-family:var(--serif);}
@@ -1791,6 +1791,7 @@ function renderTL(){
     let editBtn='';
     if(t._type==='milestone') editBtn=`<button class="btn btn-sm btn-ghost" style="font-size:0.6rem;padding:0.1rem 0.3rem;" onclick="editTL(${t._id})">✎</button>`;
     else if(t._type==='system') editBtn=`<button class="btn btn-sm btn-ghost" style="font-size:0.6rem;padding:0.1rem 0.3rem;" onclick="navFilterSys(${t._phase});nav('sys');" title="Ver sistema">↗</button>`;
+    else if(t._type==='build') editBtn=`<button class="btn btn-sm btn-ghost" style="font-size:0.6rem;padding:0.1rem 0.3rem;" onclick="nav('build');" title="Ver construção">↗</button>`;
     else editBtn=`<button class="btn btn-sm btn-ghost" style="font-size:0.6rem;padding:0.1rem 0.3rem;" onclick="nav('model');" title="Ver assets">↗</button>`;
     return`<div class="tl-item">
       <div class="tl-dot ${t.status}"></div>
@@ -2676,10 +2677,16 @@ function renderLanding(){
   const doneAssets=D.assets.filter(a=>a.status==='done').length;
   const milestones=D.timeline.length;
   const completedMilestones=D.timeline.filter(t=>t.status==='done').length;
+  const totalBuilds=(D.builds||[]).length;
+  const doneBuilds=(D.builds||[]).filter(b=>b.status==='done').length;
+  const totalLore=(D.lore||[]).length;
+  const developedLore=(D.lore||[]).filter(l=>l.status==='developed').length;
   document.getElementById('lp-overview').innerHTML=`
     <div class="l-ov-cell"><div class="l-ov-icon">⚔</div><div class="l-ov-num">${total}</div><div class="l-ov-label">Sistemas</div></div>
     <div class="l-ov-cell"><div class="l-ov-icon">✦</div><div class="l-ov-num">${done}</div><div class="l-ov-label">Forjados</div></div>
-    <div class="l-ov-cell"><div class="l-ov-icon">◆</div><div class="l-ov-num">${wip}</div><div class="l-ov-label">Em Forja</div></div>
+    <div class="l-ov-cell"><div class="l-ov-icon">🏗</div><div class="l-ov-num">${doneBuilds}/${totalBuilds}</div><div class="l-ov-label">Construções</div></div>
+    <div class="l-ov-cell"><div class="l-ov-icon">◻</div><div class="l-ov-num">${doneAssets}/${totalAssets}</div><div class="l-ov-label">Modelação</div></div>
+    <div class="l-ov-cell"><div class="l-ov-icon">📜</div><div class="l-ov-num">${developedLore}/${totalLore}</div><div class="l-ov-label">Crónicas</div></div>
     <div class="l-ov-cell"><div class="l-ov-icon">❖</div><div class="l-ov-num">${completedMilestones}/${milestones}</div><div class="l-ov-label">Marcos</div></div>
   `;
 
@@ -2793,7 +2800,7 @@ function renderLanding(){
     }else{
       loreEl.innerHTML=developed.map(l=>{
         const excerpt=(l.text||'').slice(0,180)+(l.text&&l.text.length>180?'…':'');
-        const tags=(l.tags||[]).map(t=>`<span class="l-lore-tag">${escHTML(t)}</span>`).join('');
+        const tags=(l.tags||'').split(',').map(t=>t.trim()).filter(Boolean).map(t=>`<span class="l-lore-tag">${escHTML(t)}</span>`).join('');
         return`<div class="l-lore-card">
           <div class="l-lore-card-title">${escHTML(l.name)}</div>
           ${excerpt?`<div class="l-lore-card-text">${escHTML(excerpt)}</div>`:''}
