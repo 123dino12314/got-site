@@ -324,7 +324,7 @@ gui.Enabled          = false
 gui.Parent           = player.PlayerGui
 
 -- Overlay de fundo — preto simples, sem gradiente
-mkFrame(gui, UDim2.fromScale(1,1), UDim2.fromScale(0,0), Color3.fromRGB(0,0,0), 0.45)
+mkFrame(gui, UDim2.fromScale(1,1), UDim2.fromScale(0,0), Color3.fromRGB(0,0,0), 0.72)
 
 -- Barra de título — preta, linha dourada em baixo, bordas retas
 local topBar = mkFrame(gui, UDim2.new(1,0,0,58), UDim2.fromScale(0,0),
@@ -343,11 +343,11 @@ local RIGHT_W = 245
 local rightPanel = mkFrame(gui,
 	UDim2.new(0, RIGHT_W, 1, -138),
 	UDim2.new(1, -(RIGHT_W + 12), 0, 66),
-	Color3.fromRGB(0, 0, 0), 0.25)
+	Color3.fromRGB(0, 0, 0), 0.48)
 addStroke(rightPanel, C.stroke, 1)
 
 local CAT_LABELS = {"Rosto", "Cabelo", "Barba", "Roupa", "Acess."}
-local CAT_ICONS  = {"◈", "♛", "☽", "✦", "⚙"}
+local CAT_ICONS  = {"◈", "◈", "◈", "◈", "◈"}
 local HAS_NONE   = {false, true, true, false, true}
 local MAX_IDX    = {0, HAIR_CT, BEARD_CT, #CLOTH_LIST, ACCS_CT}
 
@@ -565,7 +565,7 @@ end
 local cpanel = mkFrame(gui,
 	UDim2.new(0, 215, 0, 318),
 	UDim2.new(0, 12, 0.5, -155),
-	Color3.fromRGB(0, 0, 0), 0.25)
+	Color3.fromRGB(0, 0, 0), 0.48)
 addStroke(cpanel, C.stroke, 1)
 mkFrame(cpanel, UDim2.new(1,0,0,1), UDim2.fromScale(0,0), C.gold)
 
