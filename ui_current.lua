@@ -68,7 +68,7 @@ local S = {
 	hairIdx      = 1,
 	beardIdx     = 0,
 	clothIdx     = 1,
-	accIdx       = 0,
+	accSlots     = {},
 	hairH  = 30/360, hairS = 0.65, hairV = 0.38,
 	beardH = 30/360, beardS = 0.65, beardV = 0.38,
 }
@@ -182,10 +182,11 @@ end
 
 local function previewAccessory()
 	removeFromMan("_cA")
-	if S.accIdx <= 0 then return end
-	if not (Assets:FindFirstChild("Accessories")) then return end
-	local src = Assets.Accessories:FindFirstChild(tostring(S.accIdx))
-	if src then task.spawn(addAccessory, src, "_cA", Color3.new(1,1,1)) end
+	if not Assets:FindFirstChild("Accessories") then return end
+	for idx in pairs(S.accSlots) do
+		local src = Assets.Accessories:FindFirstChild(tostring(idx))
+		if src then task.spawn(addAccessory, src, "_cA", Color3.new(1,1,1)) end
+	end
 end
 
 local function previewCloth()
@@ -415,10 +416,10 @@ local itemButtons = {}
 
 -- ─── Helpers de índice ────────────────────────────────────────────
 local function curIdx()
-	if S.cat==2 then return S.hairIdx elseif S.cat==3 then return S.beardIdx elseif S.cat==4 then return S.clothIdx elseif S.cat==5 then return S.accIdx else return 0 end
+	if S.cat==2 then return S.hairIdx elseif S.cat==3 then return S.beardIdx elseif S.cat==4 then return S.clothIdx else return 0 end
 end
 local function setIdx(v)
-	if S.cat==2 then S.hairIdx=v elseif S.cat==3 then S.beardIdx=v elseif S.cat==4 then S.clothIdx=v elseif S.cat==5 then S.accIdx=v end
+	if S.cat==2 then S.hairIdx=v elseif S.cat==3 then S.beardIdx=v elseif S.cat==4 then S.clothIdx=v end
 end
 
 -- ─── Highlight da linha seleccionada ────────────────────────────
@@ -494,6 +495,31 @@ local function buildItemList()
 	for _, b in ipairs(itemButtons) do b:Destroy() end
 	itemButtons = {}
 
+	if S.cat == 5 then
+		local noneSelected = next(S.accSlots) == nil
+		local noneBtn = mkListBtn("— Nenhum", noneSelected, 0)
+		noneBtn:SetAttribute("itemIdx", 0)
+		noneBtn.MouseButton1Click:Connect(function()
+			S.accSlots = {}
+			buildItemList()
+			previewAccessory()
+		end)
+		table.insert(itemButtons, noneBtn)
+		for i = 1, ACCS_CT do
+			local sel = S.accSlots[i] == true
+			local btn = mkListBtn("Acessório "..i, sel, i)
+			btn:SetAttribute("itemIdx", i)
+			local ci = i
+			btn.MouseButton1Click:Connect(function()
+				if S.accSlots[ci] then S.accSlots[ci] = nil else S.accSlots[ci] = true end
+				buildItemList()
+				previewAccessory()
+			end)
+			table.insert(itemButtons, btn)
+		end
+		return
+	end
+
 	if S.cat == 1 then
 		local SECTIONS = {
 			{label="Olhos",    field="faceEyesIdx", ct=FACE_EYES_CT, noNone=true},
@@ -539,8 +565,7 @@ local function buildItemList()
 		btn.MouseButton1Click:Connect(function()
 			setIdx(0); highlightSelected()
 			if     S.cat == 2 then previewHair()
-			elseif S.cat == 3 then previewBeard()
-			elseif S.cat == 5 then previewAccessory() end
+			elseif S.cat == 3 then previewBeard() end
 		end)
 		table.insert(itemButtons, btn)
 	end
@@ -554,7 +579,6 @@ local function buildItemList()
 			setIdx(capturedI); highlightSelected()
 			if     S.cat == 2 then previewHair()
 			elseif S.cat == 3 then previewBeard()
-			elseif S.cat == 5 then previewAccessory()
 			else                    previewCloth() end
 		end)
 		table.insert(itemButtons, btn)
@@ -886,7 +910,7 @@ local function openUI()
 
 	S.cat=1
 	S.faceEyesIdx=1; S.faceMrkIdx=0; S.faceMrk2Idx=0
-	S.hairIdx=1; S.beardIdx=0; S.clothIdx=1; S.accIdx=0
+	S.hairIdx=1; S.beardIdx=0; S.clothIdx=1; S.accSlots={}
 	S.hairH=30/360; S.hairS=0.65; S.hairV=0.38
 	S.beardH=30/360; S.beardS=0.65; S.beardV=0.38
 
@@ -939,8 +963,8 @@ confirmBtn.MouseButton1Click:Connect(function()
 		hairColor      = hairCol(),
 		beardIndex     = S.beardIdx,
 		beardColor     = beardCol(),
-		clothingName   = CLOTH_LIST[S.clothIdx] or "Rags",
-		accessoryIndex = S.accIdx,
+		clothingName      = CLOTH_LIST[S.clothIdx] or "Rags",
+		accessoryIndices  = (function() local t={} for idx in pairs(S.accSlots) do table.insert(t,idx) end return t end)(),
 	})
 
 	closeUI()

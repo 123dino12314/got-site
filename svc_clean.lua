@@ -74,7 +74,7 @@ end
   correctamente para todos os clientes em todos os casos. A abordagem
   correcta é aplicar a cor no Handle.Decal antes de AddAccessory.
 ]]
-local function applyLook(char, eyesIdx, mrkIdx, mrk2Idx, hairIdx, hairCol, beardIdx, beardCol, clothName, accIdx)
+local function applyLook(char, eyesIdx, mrkIdx, mrk2Idx, hairIdx, hairCol, beardIdx, beardCol, clothName, accIndices)
 	stripLook(char)
 	local hum = char:FindFirstChildWhichIsA("Humanoid")
 	if not hum then return end
@@ -142,12 +142,14 @@ local function applyLook(char, eyesIdx, mrkIdx, mrk2Idx, hairIdx, hairCol, beard
 		end
 	end
 
-	-- Acessório
-	if accIdx and accIdx > 0 then
+	-- Acessórios (multi-seleção)
+	if accIndices and type(accIndices) == "table" then
 		local accFolder = Assets:FindFirstChild("Accessories")
 		if accFolder then
-			local src = accFolder:FindFirstChild(tostring(accIdx))
-			if src then hum:AddAccessory(src:Clone()) end
+			for _, idx in ipairs(accIndices) do
+				local src = accFolder:FindFirstChild(tostring(idx))
+				if src then hum:AddAccessory(src:Clone()) end
+			end
 		end
 	end
 end
@@ -166,11 +168,19 @@ local function loadSavedLook(player, char)
 	local function c(name) local v = pv:FindFirstChild(name); return v and v.Value or Color3.fromRGB(80,50,20) end
 	local clothVal  = pv:FindFirstChild("clothing")
 	local clothName = (clothVal and clothVal.Value ~= "" and clothVal.Value ~= "None") and clothVal.Value or "Rags"
+	local function parseAcc(str)
+		local t = {}
+		for part in (str or ""):gmatch("[^,]+") do
+			local num = tonumber(part); if num then table.insert(t, num) end
+		end
+		return t
+	end
+	local accVal = pv:FindFirstChild("AccessoryIndices")
 	applyLook(char,
 		n("EyesIndex"), n("MarkingsIndex"), n("Markings2Index"),
 		n("HairIndex"),  c("HairColor"),
 		n("BeardIndex"), c("BeardColor"),
-		clothName, n("AccessoryIndex"))
+		clothName, parseAcc(accVal and accVal.Value or ""))
 end
 
 -- ─── Freeze / unfreeze ───────────────────────────────────────────
@@ -209,25 +219,31 @@ ApplyCust.OnServerEvent:Connect(function(player, data)
 	local bIdx  = math.clamp(math.floor(tonumber(data.beardIndex)     or 0), 0, 100)
 	local bCol  = typeof(data.beardColor) == "Color3" and data.beardColor or Color3.fromRGB(80,50,20)
 	local cName = typeof(data.clothingName) == "string" and data.clothingName or "Rags"
-	local aIdx  = math.clamp(math.floor(tonumber(data.accessoryIndex) or 0), 0, 100)
+	local accIndices = {}
+	if typeof(data.accessoryIndices) == "table" then
+		for _, v in ipairs(data.accessoryIndices) do
+			local n = math.clamp(math.floor(tonumber(v) or 0), 1, 100)
+			if n > 0 then table.insert(accIndices, n) end
+		end
+	end
 
-	applyLook(char, eIdx, mIdx, m2Idx, hIdx, hCol, bIdx, bCol, cName, aIdx)
+	applyLook(char, eIdx, mIdx, m2Idx, hIdx, hCol, bIdx, bCol, cName, accIndices)
 
 	local pv = getPlayerValues(player)
 	if pv then
 		local function setV(name, val)
 			local v = pv:FindFirstChild(name); if v then v.Value = val end
 		end
-		setV("EyesIndex",      eIdx)
-		setV("MarkingsIndex",  mIdx)
-		setV("Markings2Index", m2Idx)
-		setV("HairIndex",      hIdx)
-		setV("HairColor",      hCol)
-		setV("BeardIndex",     bIdx)
-		setV("BeardColor",     bCol)
-		setV("clothing",       cName)
-		setV("AccessoryIndex", aIdx)
-		setV("IsFirstTime",    false)
+		setV("EyesIndex",       eIdx)
+		setV("MarkingsIndex",   mIdx)
+		setV("Markings2Index",  m2Idx)
+		setV("HairIndex",       hIdx)
+		setV("HairColor",       hCol)
+		setV("BeardIndex",      bIdx)
+		setV("BeardColor",      bCol)
+		setV("clothing",        cName)
+		setV("AccessoryIndices", table.concat(accIndices, ","))
+		setV("IsFirstTime",     false)
 	end
 
 	RS.Save:Fire(player)
