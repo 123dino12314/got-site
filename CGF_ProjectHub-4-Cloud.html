@@ -1007,8 +1007,15 @@ body.dev-previewing .l-nav{top:38px;}
 <div class="pg-title">Modelador</div>
 <div class="pg-sub">Assets 3D — prioridade, prazos e entregas</div>
 <div class="g3" id="model-stats"></div>
-<div style="margin-bottom:0.75rem;text-align:right;"><button class="btn btn-accent" onclick="openModal('m-asset')">+ Asset</button></div>
-<div class="table-wrap"><table><thead><tr><th>#</th><th>Asset</th><th>Categoria</th><th>Fase</th><th>Prazo</th><th>Estado</th><th>Ações</th></tr></thead><tbody id="model-table"></tbody></table></div>
+<div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:0.75rem;flex-wrap:wrap;justify-content:space-between;">
+  <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+    <button class="btn btn-sm btn-accent" id="mf-all" onclick="setModelFilter('')">Todos</button>
+    <button class="btn btn-sm" id="mf-dean" onclick="setModelFilter('Dean')">Dean</button>
+    <button class="btn btn-sm" id="mf-naoto" onclick="setModelFilter('Naoto')">Naoto</button>
+  </div>
+  <button class="btn btn-accent" onclick="openModal('m-asset')">+ Asset</button>
+</div>
+<div class="table-wrap"><table><thead><tr><th>#</th><th>Asset</th><th>Categoria</th><th>Modelador</th><th>Fase</th><th>Prazo</th><th>Estado</th><th>Ações</th></tr></thead><tbody id="model-table"></tbody></table></div>
 </div>
 
 <!-- LORE -->
@@ -1142,7 +1149,7 @@ body.dev-previewing .l-nav{top:38px;}
   <div class="modal-t">Adicionar Asset</div>
   <div class="field"><div class="field-l">Nome</div><input class="inp" id="ma-name" placeholder="ex: Espada de Aço Tier 2"></div>
   <div class="g2">
-    <div class="field"><div class="field-l">Categoria</div><select class="sel" id="ma-cat"><option>Arma</option><option>Armadura</option><option>NPC / Personagem</option><option>Ambiente</option><option>Prop</option><option>UI</option><option>Outro</option></select></div>
+    <div class="field"><div class="field-l">Categoria</div><select class="sel" id="ma-cat"><option>Arma</option><option>Armadura</option><option>NPC / Personagem</option><option>Ambiente</option><option>Prop</option><option>Construção</option><option>UI</option><option>Outro</option></select></div>
     <div class="field"><div class="field-l">Fase</div><select class="sel" id="ma-phase"><option value="1">Fase 1</option><option value="2">Fase 2</option><option value="3">Fase 3</option></select></div>
   </div>
   <div class="g2">
@@ -1151,6 +1158,7 @@ body.dev-previewing .l-nav{top:38px;}
   </div>
   <div class="g2">
     <div class="field"><div class="field-l">Importância</div><select class="sel" id="ma-imp"><option value="high">🔴 Alta — Crítico</option><option value="medium" selected>🟡 Média — Importante</option><option value="low">🟢 Baixa — Nice-to-have</option></select></div>
+    <div class="field"><div class="field-l">Modelador</div><select class="sel" id="ma-modeler"><option value="">— Não atribuído —</option><option value="Dean">Dean</option><option value="Naoto">Naoto</option></select></div>
   </div>
   <div class="modal-foot"><button class="btn" onclick="closeModal('m-asset')">Cancelar</button><button class="btn btn-accent" onclick="addAsset()">Adicionar</button></div>
 </div></div>
@@ -1402,6 +1410,32 @@ let D={
     {id:7,name:'Machado de Batalha',cat:'Arma',deadline:'10 Jun',priority:6,status:'todo'},
     {id:8,name:'Arco + Flechas',cat:'Arma',deadline:'12 Jun',priority:7,status:'todo'},
     {id:9,name:'Dado (prop taverna)',cat:'Prop',deadline:'5 Jun',priority:1,status:'todo'},
+    {id:10,name:'Mesa de madeira rústica',cat:'Prop',phase:1,deadline:'',priority:10,importance:'medium',status:'todo',modeler:'Dean'},
+    {id:11,name:'Cadeira de madeira simples',cat:'Prop',phase:1,deadline:'',priority:11,importance:'medium',status:'todo',modeler:'Dean'},
+    {id:12,name:'Balcão de taberna',cat:'Prop',phase:1,deadline:'',priority:12,importance:'medium',status:'todo',modeler:'Dean'},
+    {id:13,name:'Barril de madeira',cat:'Prop',phase:1,deadline:'',priority:13,importance:'medium',status:'todo',modeler:'Dean'},
+    {id:14,name:'Tocha de parede',cat:'Prop',phase:1,deadline:'',priority:14,importance:'medium',status:'todo',modeler:'Dean'},
+    {id:15,name:'Lareira de pedra',cat:'Prop',phase:1,deadline:'',priority:15,importance:'medium',status:'todo',modeler:'Dean'},
+    {id:16,name:'Escadas interiores de madeira',cat:'Prop',phase:1,deadline:'',priority:16,importance:'medium',status:'todo',modeler:'Dean'},
+    {id:17,name:'Cama simples de madeira',cat:'Prop',phase:1,deadline:'',priority:17,importance:'medium',status:'todo',modeler:'Dean'},
+    {id:18,name:'Prateleira de parede',cat:'Prop',phase:1,deadline:'',priority:18,importance:'medium',status:'todo',modeler:'Dean'},
+    {id:19,name:'Poço de pedra',cat:'Prop',phase:1,deadline:'',priority:19,importance:'medium',status:'todo',modeler:'Dean'},
+    {id:20,name:'Cerca de madeira velha',cat:'Prop',phase:1,deadline:'',priority:20,importance:'medium',status:'todo',modeler:'Dean'},
+    {id:21,name:'Banco exterior de madeira',cat:'Prop',phase:1,deadline:'',priority:21,importance:'medium',status:'todo',modeler:'Dean'},
+    {id:22,name:'Placa de madeira desgastada',cat:'Prop',phase:1,deadline:'',priority:22,importance:'medium',status:'todo',modeler:'Dean'},
+    {id:23,name:'Cruz de madeira simples',cat:'Prop',phase:1,deadline:'',priority:23,importance:'medium',status:'todo',modeler:'Dean'},
+    {id:24,name:'Pedra de sepultura simples',cat:'Prop',phase:1,deadline:'',priority:24,importance:'medium',status:'todo',modeler:'Dean'},
+    {id:25,name:'Fogueira exterior',cat:'Prop',phase:1,deadline:'',priority:25,importance:'medium',status:'todo',modeler:'Dean'},
+    {id:26,name:'Tronco cortado como assento',cat:'Prop',phase:1,deadline:'',priority:26,importance:'medium',status:'todo',modeler:'Dean'},
+    {id:27,name:'Rack de carne para caçador',cat:'Prop',phase:1,deadline:'',priority:27,importance:'medium',status:'todo',modeler:'Dean'},
+    {id:28,name:'Placa de estrada de madeira',cat:'Prop',phase:1,deadline:'',priority:28,importance:'medium',status:'todo',modeler:'Dean'},
+    {id:29,name:'Altar de pedra antigo',cat:'Prop',phase:1,deadline:'',priority:29,importance:'medium',status:'todo',modeler:'Dean'},
+    {id:30,name:'Baú de madeira velho',cat:'Prop',phase:1,deadline:'',priority:30,importance:'medium',status:'todo',modeler:'Dean'},
+    {id:31,name:'Casas da aldeia Cinzas (8 a 12 casas simples)',cat:'Construção',phase:1,deadline:'',priority:40,importance:'high',status:'todo',modeler:'Naoto'},
+    {id:32,name:'Torre das ruínas parcialmente destruída',cat:'Construção',phase:1,deadline:'',priority:41,importance:'high',status:'todo',modeler:'Naoto'},
+    {id:33,name:'Celeiro da aldeia',cat:'Construção',phase:1,deadline:'',priority:42,importance:'medium',status:'todo',modeler:'Naoto'},
+    {id:34,name:'Ferreiro abandonado',cat:'Construção',phase:1,deadline:'',priority:43,importance:'medium',status:'todo',modeler:'Naoto'},
+    {id:35,name:'Taberna pequena da aldeia',cat:'Construção',phase:1,deadline:'',priority:44,importance:'medium',status:'todo',modeler:'Naoto'},
   ],
   decisions:[
     {id:1,title:'Universo próprio com base GOT',reason:'Mais liberdade criativa. O lore de GOT é a fundação mas o mundo é nosso.',date:'Mai 2026'},
@@ -1603,7 +1637,20 @@ function saveSys(id){const s=D.systems.find(x=>x.id===id);s.desc=document.getEle
 function addSys(){const n=document.getElementById('ms-name').value.trim();if(!n)return;const nid=++D.nid;D.systems.push({id:nid,name:n,phase:parseInt(document.getElementById('ms-phase').value),status:document.getElementById('ms-st').value,deadline:document.getElementById('ms-deadline').value,importance:document.getElementById('ms-imp').value||'medium',desc:document.getElementById('ms-desc').value,integration:document.getElementById('ms-int').value,tasks:[]});closeModal('m-sys');['ms-name','ms-desc','ms-int','ms-deadline'].forEach(x=>document.getElementById(x).value='');document.getElementById('ms-imp').value='medium';nav('sys');toast('Sistema adicionado.');save();if(window.logChange)window.logChange(`Adicionou o sistema "${n}"`,nid);}
 
 // ─── RENDER: MODELER ─────────────────────────────────────
+let modelFilter='';
+function setModelFilter(m){
+  modelFilter=m;
+  ['all','dean','naoto'].forEach(k=>{
+    const el=document.getElementById('mf-'+k);
+    if(el)el.classList.remove('btn-accent');
+  });
+  const key=m===''?'all':m.toLowerCase();
+  const el=document.getElementById('mf-'+key);
+  if(el)el.classList.add('btn-accent');
+  renderModel();
+}
 function renderModel(){
+  const src=modelFilter?D.assets.filter(a=>(a.modeler||'')=== modelFilter):D.assets;
   const d=D.assets.filter(a=>a.status==='done').length;
   const w=D.assets.filter(a=>a.status==='wip').length;
   const t=D.assets.filter(a=>a.status==='todo').length;
@@ -1613,11 +1660,12 @@ function renderModel(){
     <div class="stat"><div class="stat-n c-fg3">${t}</div><div class="stat-l">Por Fazer</div></div>`;
   const sb={done:'b-done',wip:'b-wip',todo:'b-todo'};
   const sl={done:'Entregue',wip:'Em Prod.',todo:'A Fazer'};
-  const sorted=[...D.assets].sort((a,b)=>a.priority-b.priority);
+  const sorted=[...src].sort((a,b)=>a.priority-b.priority);
   document.getElementById('model-table').innerHTML=sorted.map(a=>`<tr>
     <td style="font-weight:700;color:var(--accent);">#${a.priority}</td>
     <td style="font-weight:600;color:var(--fg);"><span class="imp-dot ${a.importance||'medium'}" title="Importância"></span>${a.name}</td>
     <td>${a.cat}</td>
+    <td><select class="imp-sel" title="Modelador" onchange="D.assets.find(x=>x.id===${a.id}).modeler=this.value;save();"><option value=""${!(a.modeler)?' selected':''}>—</option><option value="Dean"${(a.modeler)==='Dean'?' selected':''}>Dean</option><option value="Naoto"${(a.modeler)==='Naoto'?' selected':''}>Naoto</option></select></td>
     <td><select class="imp-sel" title="Fase" onchange="D.assets.find(x=>x.id===${a.id}).phase=parseInt(this.value);save();"><option value="1"${(a.phase||1)===1?' selected':''}>F1</option><option value="2"${(a.phase||1)===2?' selected':''}>F2</option><option value="3"${(a.phase||1)===3?' selected':''}>F3</option></select></td>
     <td>${deadlineInput(a.id,a.deadline)}</td>
     <td><span class="badge ${sb[a.status]}">${sl[a.status]}</span></td>
@@ -1632,7 +1680,7 @@ function renderModel(){
 function chAsset(id,st){const a=D.assets.find(x=>x.id===id);a.status=st;renderModel();save();const ll={done:'Entregue',wip:'Em Produção',todo:'A Fazer'};if(window.logChange)window.logChange(`Marcou asset "${a.name}" como ${ll[st]||st}`);}
 function delAsset(id){const a=D.assets.find(x=>x.id===id);D.assets=D.assets.filter(x=>x.id!==id);renderModel();save();if(window.logChange&&a)window.logChange(`Removeu asset "${a.name}"`);}
 function addAssetLog(n){if(window.logChange)window.logChange(`Adicionou asset "${n}"`);}
-function addAsset(){const n=document.getElementById('ma-name').value.trim();if(!n)return;D.assets.push({id:++D.nid,name:n,cat:document.getElementById('ma-cat').value,phase:parseInt(document.getElementById('ma-phase').value)||1,deadline:document.getElementById('ma-dl').value,priority:parseInt(document.getElementById('ma-pri').value)||99,importance:document.getElementById('ma-imp').value||'medium',status:'todo'});closeModal('m-asset');document.getElementById('ma-name').value='';renderModel();toast('Asset adicionado.');save();addAssetLog(n);}
+function addAsset(){const n=document.getElementById('ma-name').value.trim();if(!n)return;D.assets.push({id:++D.nid,name:n,cat:document.getElementById('ma-cat').value,phase:parseInt(document.getElementById('ma-phase').value)||1,deadline:document.getElementById('ma-dl').value,priority:parseInt(document.getElementById('ma-pri').value)||99,importance:document.getElementById('ma-imp').value||'medium',modeler:document.getElementById('ma-modeler').value||'',status:'todo'});closeModal('m-asset');document.getElementById('ma-name').value='';document.getElementById('ma-modeler').value='';renderModel();toast('Asset adicionado.');save();addAssetLog(n);}
 
 // ─── RENDER: LORE ────────────────────────────────────────
 let loreStatusFilter='';
