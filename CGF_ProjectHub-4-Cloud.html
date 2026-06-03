@@ -3494,6 +3494,44 @@ onAuthStateChanged(auth, async (user) => {
     if(data.role === 'owner') loadTeam();
   });
 
+  // Seed new modeler assets into Firestore if not yet present
+  function seedModelAssets(){
+    const newAssets=[
+      {id:10,name:'Mesa de madeira rústica',cat:'Prop',phase:1,deadline:'',priority:10,importance:'medium',status:'todo',modeler:'Dean'},
+      {id:11,name:'Cadeira de madeira simples',cat:'Prop',phase:1,deadline:'',priority:11,importance:'medium',status:'todo',modeler:'Dean'},
+      {id:12,name:'Balcão de taberna',cat:'Prop',phase:1,deadline:'',priority:12,importance:'medium',status:'todo',modeler:'Dean'},
+      {id:13,name:'Barril de madeira',cat:'Prop',phase:1,deadline:'',priority:13,importance:'medium',status:'todo',modeler:'Dean'},
+      {id:14,name:'Tocha de parede',cat:'Prop',phase:1,deadline:'',priority:14,importance:'medium',status:'todo',modeler:'Dean'},
+      {id:15,name:'Lareira de pedra',cat:'Prop',phase:1,deadline:'',priority:15,importance:'medium',status:'todo',modeler:'Dean'},
+      {id:16,name:'Escadas interiores de madeira',cat:'Prop',phase:1,deadline:'',priority:16,importance:'medium',status:'todo',modeler:'Dean'},
+      {id:17,name:'Cama simples de madeira',cat:'Prop',phase:1,deadline:'',priority:17,importance:'medium',status:'todo',modeler:'Dean'},
+      {id:18,name:'Prateleira de parede',cat:'Prop',phase:1,deadline:'',priority:18,importance:'medium',status:'todo',modeler:'Dean'},
+      {id:19,name:'Poço de pedra',cat:'Prop',phase:1,deadline:'',priority:19,importance:'medium',status:'todo',modeler:'Dean'},
+      {id:20,name:'Cerca de madeira velha',cat:'Prop',phase:1,deadline:'',priority:20,importance:'medium',status:'todo',modeler:'Dean'},
+      {id:21,name:'Banco exterior de madeira',cat:'Prop',phase:1,deadline:'',priority:21,importance:'medium',status:'todo',modeler:'Dean'},
+      {id:22,name:'Placa de madeira desgastada',cat:'Prop',phase:1,deadline:'',priority:22,importance:'medium',status:'todo',modeler:'Dean'},
+      {id:23,name:'Cruz de madeira simples',cat:'Prop',phase:1,deadline:'',priority:23,importance:'medium',status:'todo',modeler:'Dean'},
+      {id:24,name:'Pedra de sepultura simples',cat:'Prop',phase:1,deadline:'',priority:24,importance:'medium',status:'todo',modeler:'Dean'},
+      {id:25,name:'Fogueira exterior',cat:'Prop',phase:1,deadline:'',priority:25,importance:'medium',status:'todo',modeler:'Dean'},
+      {id:26,name:'Tronco cortado como assento',cat:'Prop',phase:1,deadline:'',priority:26,importance:'medium',status:'todo',modeler:'Dean'},
+      {id:27,name:'Rack de carne para caçador',cat:'Prop',phase:1,deadline:'',priority:27,importance:'medium',status:'todo',modeler:'Dean'},
+      {id:28,name:'Placa de estrada de madeira',cat:'Prop',phase:1,deadline:'',priority:28,importance:'medium',status:'todo',modeler:'Dean'},
+      {id:29,name:'Altar de pedra antigo',cat:'Prop',phase:1,deadline:'',priority:29,importance:'medium',status:'todo',modeler:'Dean'},
+      {id:30,name:'Baú de madeira velho',cat:'Prop',phase:1,deadline:'',priority:30,importance:'medium',status:'todo',modeler:'Dean'},
+      {id:31,name:'Casas da aldeia Cinzas (8 a 12 casas simples)',cat:'Construção',phase:1,deadline:'',priority:40,importance:'high',status:'todo',modeler:'Naoto'},
+      {id:32,name:'Torre das ruínas parcialmente destruída',cat:'Construção',phase:1,deadline:'',priority:41,importance:'high',status:'todo',modeler:'Naoto'},
+      {id:33,name:'Celeiro da aldeia',cat:'Construção',phase:1,deadline:'',priority:42,importance:'medium',status:'todo',modeler:'Naoto'},
+      {id:34,name:'Ferreiro abandonado',cat:'Construção',phase:1,deadline:'',priority:43,importance:'medium',status:'todo',modeler:'Naoto'},
+      {id:35,name:'Taberna pequena da aldeia',cat:'Construção',phase:1,deadline:'',priority:44,importance:'medium',status:'todo',modeler:'Naoto'},
+    ];
+    const existingIds=new Set(D.assets.map(a=>a.id));
+    const toAdd=newAssets.filter(a=>!existingIds.has(a.id));
+    if(!toAdd.length) return false;
+    D.assets.push(...toAdd);
+    if(D.nid < 100) D.nid = 100;
+    return true;
+  }
+
   // Listen to remote project data
   dataSub = onSnapshot(doc(db, "projects", "cgf"), (dSnap) => {
     if(dSnap.exists()){
@@ -3513,6 +3551,7 @@ onAuthStateChanged(auth, async (user) => {
       if(!D.decisions) D.decisions=[];
       if(!D.lore) D.lore=[];
       if(!D.builds) D.builds=[];
+      if(seedModelAssets()) window.cloudSave(D);
       renderDash(); updateSidebarCounts();
       renderSys();
       renderModel(); renderTL(); renderDec();
