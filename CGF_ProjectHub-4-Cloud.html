@@ -905,6 +905,7 @@ body.dev-previewing .l-nav{top:38px;}
     <div class="side-label">Produção</div>
     <div class="side-item" data-p="sys"><span class="side-icon">⚙</span>Sistemas</div>
     <div class="side-item" data-p="model"><span class="side-icon">◻</span>Modelador</div>
+    <div class="side-item" data-p="anim"><span class="side-icon">🎬</span>Animador</div>
     <div class="side-item" data-p="lore"><span class="side-icon">📜</span>Lore</div>
     <div class="side-item" data-p="build"><span class="side-icon">🏗</span>Construção</div>
   </div>
@@ -1016,6 +1017,21 @@ body.dev-previewing .l-nav{top:38px;}
   <button class="btn btn-accent" onclick="openModal('m-asset')">+ Asset</button>
 </div>
 <div class="table-wrap"><table><thead><tr><th>#</th><th>Asset</th><th>Categoria</th><th>Modelador</th><th>Fase</th><th>Prazo</th><th>Estado</th><th>Ações</th></tr></thead><tbody id="model-table"></tbody></table></div>
+</div>
+
+<!-- ANIMATOR -->
+<div class="panel" id="p-anim">
+<div class="pg-title">Animador</div>
+<div class="pg-sub">Animações de criaturas e personagens — prioridade, prazos e entregas</div>
+<div class="g3" id="anim-stats"></div>
+<div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:0.75rem;flex-wrap:wrap;justify-content:space-between;">
+  <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+    <button class="btn btn-sm btn-accent" id="af-all" onclick="setAnimFilter('')">Todos</button>
+    <button class="btn btn-sm" id="af-huygetsu" onclick="setAnimFilter('Huygetsu')">Huygetsu</button>
+  </div>
+  <button class="btn btn-accent" onclick="openModal('m-anim')">+ Tarefa</button>
+</div>
+<div class="table-wrap"><table><thead><tr><th>#</th><th>Asset</th><th>Categoria</th><th>Animador</th><th>Fase</th><th>Prazo</th><th>Estado</th><th>Ações</th></tr></thead><tbody id="anim-table"></tbody></table></div>
 </div>
 
 <!-- LORE -->
@@ -1161,6 +1177,27 @@ body.dev-previewing .l-nav{top:38px;}
     <div class="field"><div class="field-l">Modelador</div><select class="sel" id="ma-modeler"><option value="">— Não atribuído —</option><option value="Dean">Dean</option><option value="Naoto">Naoto</option></select></div>
   </div>
   <div class="modal-foot"><button class="btn" onclick="closeModal('m-asset')">Cancelar</button><button class="btn btn-accent" onclick="addAsset()">Adicionar</button></div>
+</div></div>
+
+<!-- MODAL: ADD ANIMATION TASK -->
+<div class="modal-bg" id="m-anim"><div class="modal">
+  <div class="modal-t">Adicionar Tarefa de Animação</div>
+  <div class="field"><div class="field-l">Nome</div><input class="inp" id="man-name" placeholder="ex: Veado — Animações"></div>
+  <div class="g2">
+    <div class="field"><div class="field-l">Categoria</div><select class="sel" id="man-cat"><option>Animações</option><option>Rig</option><option>Rig e Animações</option><option>NPC / Personagem</option><option>Outro</option></select></div>
+    <div class="field"><div class="field-l">Fase</div><select class="sel" id="man-phase"><option value="1">Fase 1</option><option value="2">Fase 2</option><option value="3">Fase 3</option></select></div>
+  </div>
+  <div class="g2">
+    <div class="field"><div class="field-l">Prazo</div><input class="inp" type="date" id="man-dl"></div>
+    <div class="field"><div class="field-l">Prioridade (1 = urgente)</div><input class="inp" type="number" id="man-pri" value="1" min="1"></div>
+  </div>
+  <div class="g2">
+    <div class="field"><div class="field-l">Importância</div><select class="sel" id="man-imp"><option value="high">🔴 Alta — Crítico</option><option value="medium" selected>🟡 Média — Importante</option><option value="low">🟢 Baixa — Nice-to-have</option></select></div>
+    <div class="field"><div class="field-l">Animador</div><select class="sel" id="man-animator"><option value="">— Não atribuído —</option><option value="Huygetsu">Huygetsu</option></select></div>
+  </div>
+  <div class="field"><div class="field-l">Descrição</div><textarea class="txta" id="man-desc" placeholder="Descrição da tarefa"></textarea></div>
+  <div class="field"><div class="field-l">Link do Modelo</div><input class="inp" id="man-link" placeholder="https://sketchfab.com/..."></div>
+  <div class="modal-foot"><button class="btn" onclick="closeModal('m-anim')">Cancelar</button><button class="btn btn-accent" onclick="addAnim()">Adicionar</button></div>
 </div></div>
 
 <!-- MODAL: RENAME -->
@@ -1437,6 +1474,11 @@ let D={
     {id:34,name:'Ferreiro abandonado',cat:'Construção',phase:1,deadline:'2026-06-06',priority:43,importance:'medium',status:'todo',modeler:'Naoto'},
     {id:35,name:'Taberna pequena da aldeia',cat:'Construção',phase:1,deadline:'2026-06-08',priority:44,importance:'medium',status:'todo',modeler:'Naoto'},
   ],
+  animations:[
+    {id:50,name:'Veado — Animações',cat:'Animações',phase:1,deadline:'2026-06-24',priority:1,importance:'medium',status:'todo',animator:'Huygetsu',desc:'Idle, andar, correr (fuga), morte. Modelo já vem rigged com idle base.',link:'https://sketchfab.com/3d-models/deer-psx-low-polyres-rigged-idle-animation-f79d0537dbde4359b04173337059b24f'},
+    {id:51,name:'Lobo — Animações',cat:'Animações',phase:1,deadline:'2026-06-26',priority:2,importance:'medium',status:'todo',animator:'Huygetsu',desc:'Ajustar animações existentes para Roblox (idle, walk, run, bite, death já incluídas no modelo).',link:'https://sketchfab.com/3d-models/game-ready-rigged-wolf-a44e808e2dc446cda3a956b4119bcc41'},
+    {id:52,name:'Javali — Rig e Animações',cat:'Rig e Animações',phase:1,deadline:'2026-06-30',priority:3,importance:'high',status:'todo',animator:'Huygetsu',desc:'Rig completo do zero + idle, andar, ataque (investida), morte.',link:'https://sketchfab.com/3d-models/low-poly-wild-boar-c629c82f34754fd09230b2c9563296ac'},
+  ],
   decisions:[
     {id:1,title:'Universo próprio com base GOT',reason:'Mais liberdade criativa. O lore de GOT é a fundação mas o mundo é nosso.',date:'Mai 2026'},
     {id:2,title:'RP/RPG híbrido — Skyrim + Witcher',reason:'Profissões integram com RPG. Sem classes fixas — identidade emerge do comportamento.',date:'Mai 2026'},
@@ -1459,6 +1501,7 @@ function nav(p){
   document.querySelector(`[data-p="${p}"]`).classList.add('active');
   if(p==='sys')renderSys();
   if(p==='model')renderModel();
+  if(p==='anim')renderAnim();
   if(p==='tl')renderTL();
   if(p==='dec')renderDec();
   if(p==='dash')renderDash();
@@ -1497,10 +1540,10 @@ function renderDash(){
     D.systems.filter(s=>s.status==='wip').map(s=>`<div style="margin-bottom:0.3rem;"><span class="badge b-wip badge-link" onclick="navFilterSys(${s.phase})" title="Ver Fase ${s.phase}">Em Dev</span> <span style="margin-left:0.3rem;">${s.name}${s.deadline?' — '+s.deadline:''}</span></div>`).join('')+
     D.systems.filter(s=>s.status==='todo'&&s.phase===1).map(s=>`<div style="margin-bottom:0.3rem;"><span class="badge b-todo badge-link" onclick="navFilterSys(${s.phase})" title="Ver Fase ${s.phase}">A Fazer</span> <span style="margin-left:0.3rem;">${s.name}</span></div>`).join('');
   const upcomingAll=buildUnifiedTimeline().filter(t=>t.status!=='done'&&t.sortDate!=='9999-12-31');
-  const tColor={milestone:'var(--fg3)',system:'var(--accent)',asset:'var(--blue)'};
+  const tColor={milestone:'var(--fg3)',system:'var(--accent)',asset:'var(--blue)',anim:'#a855f7'};
   document.getElementById('dash-dates').innerHTML=upcomingAll.slice(0,6).map(t=>{
     const od=isOverdue(t.date);
-    const nav_=t._type==='system'?`navFilterSys(${t._phase});nav('sys');`:t._type==='asset'?`nav('model');`:`nav('tl');`;
+    const nav_=t._type==='system'?`navFilterSys(${t._phase});nav('sys');`:t._type==='asset'?`nav('model');`:t._type==='anim'?`nav('anim');`:`nav('tl');`;
     return`<div style="margin-bottom:0.45rem;display:flex;align-items:center;gap:0.4rem;cursor:pointer;" onclick="${nav_}">
       <span class="badge ${t.status==='active'?'b-wip':od?'b-blocked':'b-todo'}" style="flex-shrink:0;">${displayDate(t.date)}</span>
       <span style="font-size:0.72rem;color:${tColor[t._type]};">●</span>
@@ -1651,9 +1694,9 @@ function setModelFilter(m){
 }
 function renderModel(){
   const src=modelFilter?D.assets.filter(a=>(a.modeler||'')=== modelFilter):D.assets;
-  const d=D.assets.filter(a=>a.status==='done').length;
-  const w=D.assets.filter(a=>a.status==='wip').length;
-  const t=D.assets.filter(a=>a.status==='todo').length;
+  const d=src.filter(a=>a.status==='done').length;
+  const w=src.filter(a=>a.status==='wip').length;
+  const t=src.filter(a=>a.status==='todo').length;
   document.getElementById('model-stats').innerHTML=`
     <div class="stat"><div class="stat-n c-green">${d}</div><div class="stat-l">Entregues</div></div>
     <div class="stat"><div class="stat-n c-accent">${w}</div><div class="stat-l">Em Produção</div></div>
@@ -1681,6 +1724,59 @@ function chAsset(id,st){const a=D.assets.find(x=>x.id===id);a.status=st;renderMo
 function delAsset(id){const a=D.assets.find(x=>x.id===id);D.assets=D.assets.filter(x=>x.id!==id);renderModel();save();if(window.logChange&&a)window.logChange(`Removeu asset "${a.name}"`);}
 function addAssetLog(n){if(window.logChange)window.logChange(`Adicionou asset "${n}"`);}
 function addAsset(){const n=document.getElementById('ma-name').value.trim();if(!n)return;D.assets.push({id:++D.nid,name:n,cat:document.getElementById('ma-cat').value,phase:parseInt(document.getElementById('ma-phase').value)||1,deadline:document.getElementById('ma-dl').value,priority:parseInt(document.getElementById('ma-pri').value)||99,importance:document.getElementById('ma-imp').value||'medium',modeler:document.getElementById('ma-modeler').value||'',status:'todo'});closeModal('m-asset');document.getElementById('ma-name').value='';document.getElementById('ma-modeler').value='';renderModel();toast('Asset adicionado.');save();addAssetLog(n);}
+
+// ─── RENDER: ANIMATOR ────────────────────────────────────
+let animFilter='';
+function setAnimFilter(m){
+  animFilter=m;
+  ['all','huygetsu'].forEach(k=>{
+    const el=document.getElementById('af-'+k);
+    if(el)el.classList.remove('btn-accent');
+  });
+  const key=m===''?'all':m.toLowerCase();
+  const el=document.getElementById('af-'+key);
+  if(el)el.classList.add('btn-accent');
+  renderAnim();
+}
+function renderAnim(){
+  if(!D.animations)D.animations=[];
+  const src=animFilter?D.animations.filter(a=>(a.animator||'')===animFilter):D.animations;
+  const d=src.filter(a=>a.status==='done').length;
+  const w=src.filter(a=>a.status==='wip').length;
+  const t=src.filter(a=>a.status==='todo').length;
+  document.getElementById('anim-stats').innerHTML=`
+    <div class="stat"><div class="stat-n c-green">${d}</div><div class="stat-l">Entregues</div></div>
+    <div class="stat"><div class="stat-n c-accent">${w}</div><div class="stat-l">Em Produção</div></div>
+    <div class="stat"><div class="stat-n c-fg3">${t}</div><div class="stat-l">Por Fazer</div></div>`;
+  const sb={done:'b-done',wip:'b-wip',todo:'b-todo'};
+  const sl={done:'Entregue',wip:'Em Prod.',todo:'A Fazer'};
+  const sorted=[...src].sort((a,b)=>a.priority-b.priority);
+  document.getElementById('anim-table').innerHTML=sorted.map(a=>`<tr>
+    <td style="font-weight:700;color:var(--accent);">#${a.priority}</td>
+    <td style="font-weight:600;color:var(--fg);">
+      <span class="imp-dot ${a.importance||'medium'}" title="Importância"></span>${a.link?`<a href="${a.link}" target="_blank" rel="noopener noreferrer">${a.name}</a>`:a.name}
+      ${a.desc?`<div style="font-size:0.7rem;color:var(--fg3);font-weight:400;margin-top:0.15rem;">${a.desc.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`:''}
+    </td>
+    <td>${a.cat}</td>
+    <td><select class="imp-sel" title="Animador" onchange="D.animations.find(x=>x.id===${a.id}).animator=this.value;save();"><option value=""${!(a.animator)?' selected':''}>—</option><option value="Huygetsu"${(a.animator)==='Huygetsu'?' selected':''}>Huygetsu</option></select></td>
+    <td><select class="imp-sel" title="Fase" onchange="D.animations.find(x=>x.id===${a.id}).phase=parseInt(this.value);save();"><option value="1"${(a.phase||1)===1?' selected':''}>F1</option><option value="2"${(a.phase||1)===2?' selected':''}>F2</option><option value="3"${(a.phase||1)===3?' selected':''}>F3</option></select></td>
+    <td>${deadlineInputAnim(a.id,a.deadline)}</td>
+    <td><span class="badge ${sb[a.status]}">${sl[a.status]}</span></td>
+    <td style="white-space:nowrap;display:flex;align-items:center;gap:0.3rem;flex-wrap:wrap;">
+      <select class="imp-sel" title="Importância" onchange="D.animations.find(x=>x.id===${a.id}).importance=this.value;save();"><option value="high"${(a.importance||'medium')==='high'?' selected':''}>🔴</option><option value="medium"${(a.importance||'medium')==='medium'?' selected':''}>🟡</option><option value="low"${(a.importance||'medium')==='low'?' selected':''}>🟢</option></select>
+      <button class="btn btn-sm btn-icon" style="border-color:var(--green);color:var(--green);" onclick="chAnim(${a.id},'done')">✓</button>
+      <button class="btn btn-sm btn-icon" style="border-color:var(--accent);color:var(--accent);" onclick="chAnim(${a.id},'wip')">⚙</button>
+      <button class="btn btn-sm btn-icon btn-danger" onclick="delAnim(${a.id})">✕</button>
+    </td>
+  </tr>`).join('');
+}
+function deadlineInputAnim(id,dl){
+  const od=isOverdue(dl);
+  return `<input type="date" class="inp" style="width:130px;padding:0.2rem 0.4rem;font-size:0.75rem;${od?'border-color:var(--red);color:var(--red);':''}" value="${toISODate(dl)}" onchange="D.animations.find(x=>x.id===${id}).deadline=this.value;save();renderAnim();">`;
+}
+function chAnim(id,st){const a=D.animations.find(x=>x.id===id);a.status=st;renderAnim();save();const ll={done:'Entregue',wip:'Em Produção',todo:'A Fazer'};if(window.logChange)window.logChange(`Marcou tarefa de animação "${a.name}" como ${ll[st]||st}`);}
+function delAnim(id){const a=D.animations.find(x=>x.id===id);D.animations=D.animations.filter(x=>x.id!==id);renderAnim();save();if(window.logChange&&a)window.logChange(`Removeu tarefa de animação "${a.name}"`);}
+function addAnim(){const n=document.getElementById('man-name').value.trim();if(!n)return;D.animations.push({id:++D.nid,name:n,cat:document.getElementById('man-cat').value,phase:parseInt(document.getElementById('man-phase').value)||1,deadline:document.getElementById('man-dl').value,priority:parseInt(document.getElementById('man-pri').value)||99,importance:document.getElementById('man-imp').value||'medium',animator:document.getElementById('man-animator').value||'',desc:document.getElementById('man-desc').value.trim(),link:document.getElementById('man-link').value.trim(),status:'todo'});closeModal('m-anim');document.getElementById('man-name').value='';document.getElementById('man-animator').value='';document.getElementById('man-desc').value='';document.getElementById('man-link').value='';renderAnim();toast('Tarefa adicionada.');save();if(window.logChange)window.logChange(`Adicionou tarefa de animação "${n}"`);}
 
 // ─── RENDER: LORE ────────────────────────────────────────
 let loreStatusFilter='';
@@ -1904,6 +2000,7 @@ function buildUnifiedTimeline(){
   D.timeline.forEach(t=>items.push({_type:'milestone',_id:t.id,date:t.date,sortDate:toISODate(t.date)||'9999-12-31',title:t.title,desc:t.desc||'',status:t.status||''}));
   D.systems.filter(s=>s.deadline).forEach(s=>items.push({_type:'system',_id:s.id,_phase:s.phase,date:s.deadline,sortDate:toISODate(s.deadline)||'9999-12-31',title:s.name,desc:`Sistema · Fase ${s.phase}`,status:stMap[s.status]||''}));
   D.assets.filter(a=>a.deadline).forEach(a=>items.push({_type:'asset',_id:a.id,date:a.deadline,sortDate:toISODate(a.deadline)||'9999-12-31',title:a.name,desc:`Asset · ${a.cat}`,status:a.status==='done'?'done':''}));
+  (D.animations||[]).filter(a=>a.deadline).forEach(a=>items.push({_type:'anim',_id:a.id,date:a.deadline,sortDate:toISODate(a.deadline)||'9999-12-31',title:a.name,desc:`Animação · ${a.cat}`,status:a.status==='done'?'done':''}));
   // Lore entries are a scratchpad — no deadlines, not in the timeline
   (D.builds||[]).filter(b=>b.deadline).forEach(b=>items.push({_type:'build',_id:b.id,date:b.deadline,sortDate:toISODate(b.deadline)||'9999-12-31',title:b.name,desc:`Build${b.zone?' · '+b.zone:''}`,status:b.status==='done'?'done':''}));
   // Subtasks with deadlines (from systems and builds)
@@ -1913,8 +2010,8 @@ function buildUnifiedTimeline(){
 }
 function renderTL(){
   const items=buildUnifiedTimeline();
-  const tLabel={milestone:'Marco',system:'Sistema',asset:'Asset',build:'Build',subtask:'Subtarefa'};
-  const tColor={milestone:'var(--fg3)',system:'var(--accent)',asset:'var(--blue)',build:'#06b6d4',subtask:'#8b5cf6'};
+  const tLabel={milestone:'Marco',system:'Sistema',asset:'Asset',build:'Build',subtask:'Subtarefa',anim:'Animação'};
+  const tColor={milestone:'var(--fg3)',system:'var(--accent)',asset:'var(--blue)',build:'#06b6d4',subtask:'#8b5cf6',anim:'#a855f7'};
   document.getElementById('tl-list').innerHTML=items.length?items.map(t=>{
     const od=t.status!=='done'&&isOverdue(t.date);
     let editBtn='';
@@ -1922,6 +2019,7 @@ function renderTL(){
     else if(t._type==='system') editBtn=`<button class="btn btn-sm btn-ghost" style="font-size:0.6rem;padding:0.1rem 0.3rem;" onclick="navFilterSys(${t._phase});nav('sys');" title="Ver sistema">↗</button>`;
     else if(t._type==='build') editBtn=`<button class="btn btn-sm btn-ghost" style="font-size:0.6rem;padding:0.1rem 0.3rem;" onclick="nav('build');" title="Ver construção">↗</button>`;
     else if(t._type==='subtask') editBtn=`<button class="btn btn-sm btn-ghost" style="font-size:0.6rem;padding:0.1rem 0.3rem;" onclick="nav(${t.desc.includes('build')?`'build'`:`'sys'`});" title="Ver item">↗</button>`;
+    else if(t._type==='anim') editBtn=`<button class="btn btn-sm btn-ghost" style="font-size:0.6rem;padding:0.1rem 0.3rem;" onclick="nav('anim');" title="Ver animações">↗</button>`;
     else editBtn=`<button class="btn btn-sm btn-ghost" style="font-size:0.6rem;padding:0.1rem 0.3rem;" onclick="nav('model');" title="Ver assets">↗</button>`;
     return`<div class="tl-item">
       <div class="tl-dot ${t.status}"></div>
@@ -2599,7 +2697,7 @@ function checkDeadlines(){
   const items=[];
   buildUnifiedTimeline().filter(t=>t.status!=='done'&&t.sortDate!=='9999-12-31').forEach(t=>{
     const d=new Date(t.sortDate+'T23:59:59');
-    const ctx={milestone:'Marco',system:'Sistema',asset:'Asset',build:'Build'}[t._type];
+    const ctx={milestone:'Marco',system:'Sistema',asset:'Asset',build:'Build',anim:'Animação',subtask:'Subtarefa'}[t._type];
     if(d<now)items.push({type:'overdue',name:t.title,dl:displayDate(t.date),ctx});
     else if(d<=soon)items.push({type:'soon',name:t.title,dl:displayDate(t.date),ctx});
   });
@@ -2676,6 +2774,7 @@ function updateSidebarCounts(){
   const counts={
     sys:`${D.systems.filter(s=>s.status==='done').length}/${D.systems.length}`,
     model:`${D.assets.filter(a=>a.status==='done').length}/${D.assets.length}`,
+    anim:`${(D.animations||[]).filter(a=>a.status==='done').length}/${(D.animations||[]).length}`,
     tl:D.timeline.filter(t=>t.status!=='done').length,
     dec:D.decisions.length
   };
@@ -3368,6 +3467,7 @@ publicDataSub = onSnapshot(doc(db, "projects", "cgf"), (dSnap) => {
     if(!D.nid) D.nid=100;
     if(!D.systems) D.systems=[];
     if(!D.assets) D.assets=[];
+    if(!D.animations) D.animations=[];
     if(!D.timeline) D.timeline=[];
     if(!D.decisions) D.decisions=[];
     if(!D.lore) D.lore=[];
@@ -3534,6 +3634,22 @@ onAuthStateChanged(auth, async (user) => {
     return true;
   }
 
+  // Seed initial animator tasks for Huygetsu — runs only once (guarded by _seedAnimV1 flag in Firestore)
+  function seedAnimTasks(){
+    if(D._seedAnimV1) return false;
+    const newAnims=[
+      {id:50,name:'Veado — Animações',cat:'Animações',phase:1,deadline:'2026-06-24',priority:1,importance:'medium',status:'todo',animator:'Huygetsu',desc:'Idle, andar, correr (fuga), morte. Modelo já vem rigged com idle base.',link:'https://sketchfab.com/3d-models/deer-psx-low-polyres-rigged-idle-animation-f79d0537dbde4359b04173337059b24f'},
+      {id:51,name:'Lobo — Animações',cat:'Animações',phase:1,deadline:'2026-06-26',priority:2,importance:'medium',status:'todo',animator:'Huygetsu',desc:'Ajustar animações existentes para Roblox (idle, walk, run, bite, death já incluídas no modelo).',link:'https://sketchfab.com/3d-models/game-ready-rigged-wolf-a44e808e2dc446cda3a956b4119bcc41'},
+      {id:52,name:'Javali — Rig e Animações',cat:'Rig e Animações',phase:1,deadline:'2026-06-30',priority:3,importance:'high',status:'todo',animator:'Huygetsu',desc:'Rig completo do zero + idle, andar, ataque (investida), morte.',link:'https://sketchfab.com/3d-models/low-poly-wild-boar-c629c82f34754fd09230b2c9563296ac'},
+    ];
+    const seedIds=new Set(newAnims.map(a=>a.id));
+    D.animations=(D.animations||[]).filter(a=>!seedIds.has(a.id));
+    D.animations.push(...newAnims);
+    if(D.nid < 100) D.nid = 100;
+    D._seedAnimV1 = true;
+    return true;
+  }
+
   // Listen to remote project data
   dataSub = onSnapshot(doc(db, "projects", "cgf"), (dSnap) => {
     if(dSnap.exists()){
@@ -3549,14 +3665,17 @@ onAuthStateChanged(auth, async (user) => {
       if(!D.nid) D.nid=100;
       if(!D.systems) D.systems=[];
       if(!D.assets) D.assets=[];
+      if(!D.animations) D.animations=[];
       if(!D.timeline) D.timeline=[];
       if(!D.decisions) D.decisions=[];
       if(!D.lore) D.lore=[];
       if(!D.builds) D.builds=[];
-      if(seedModelAssets()) window.cloudSave(D);
+      let seeded=seedModelAssets();
+      if(seedAnimTasks()) seeded=true;
+      if(seeded) window.cloudSave(D);
       renderDash(); updateSidebarCounts();
       renderSys();
-      renderModel(); renderTL(); renderDec();
+      renderModel(); renderAnim(); renderTL(); renderDec();
       checkDeadlines();
       renderLanding();
     } else {
