@@ -1016,7 +1016,7 @@ body.dev-previewing .l-nav{top:38px;}
   </div>
   <button class="btn btn-accent" onclick="openModal('m-asset')">+ Asset</button>
 </div>
-<div class="table-wrap"><table><thead><tr><th>#</th><th>Asset</th><th>Categoria</th><th>Modelador</th><th>Fase</th><th>Prazo</th><th>Estado</th><th>Ações</th></tr></thead><tbody id="model-table"></tbody></table></div>
+<div id="model-list"></div>
 </div>
 
 <!-- ANIMATOR -->
@@ -1176,6 +1176,8 @@ body.dev-previewing .l-nav{top:38px;}
     <div class="field"><div class="field-l">Importância</div><select class="sel" id="ma-imp"><option value="high">🔴 Alta — Crítico</option><option value="medium" selected>🟡 Média — Importante</option><option value="low">🟢 Baixa — Nice-to-have</option></select></div>
     <div class="field"><div class="field-l">Modelador</div><select class="sel" id="ma-modeler"><option value="">— Não atribuído —</option><option value="Dean">Dean</option><option value="Naoto">Naoto</option></select></div>
   </div>
+  <div class="field"><div class="field-l">Descrição</div><textarea class="txta" id="ma-desc" placeholder="Descrição do asset"></textarea></div>
+  <div class="field"><div class="field-l">Link de Referência</div><input class="inp" id="ma-link" placeholder="https://sketchfab.com/..."></div>
   <div class="modal-foot"><button class="btn" onclick="closeModal('m-asset')">Cancelar</button><button class="btn btn-accent" onclick="addAsset()">Adicionar</button></div>
 </div></div>
 
@@ -1692,7 +1694,10 @@ function setModelFilter(m){
   if(el)el.classList.add('btn-accent');
   renderModel();
 }
+function getOpenModel(){return[...document.querySelectorAll('.model-card.open')].map(el=>parseInt(el.id.slice(2))).filter(Boolean);}
+function togModel(id){document.getElementById('mo'+id).classList.toggle('open');}
 function renderModel(){
+  const open=getOpenModel();
   const src=modelFilter?D.assets.filter(a=>(a.modeler||'')=== modelFilter):D.assets;
   const d=src.filter(a=>a.status==='done').length;
   const w=src.filter(a=>a.status==='wip').length;
@@ -1703,27 +1708,59 @@ function renderModel(){
     <div class="stat"><div class="stat-n c-fg3">${t}</div><div class="stat-l">Por Fazer</div></div>`;
   const sb={done:'b-done',wip:'b-wip',todo:'b-todo'};
   const sl={done:'Entregue',wip:'Em Prod.',todo:'A Fazer'};
+  const list=document.getElementById('model-list');
   const sorted=[...src].sort((a,b)=>a.priority-b.priority);
-  document.getElementById('model-table').innerHTML=sorted.map(a=>`<tr>
-    <td style="font-weight:700;color:var(--accent);">#${a.priority}</td>
-    <td style="font-weight:600;color:var(--fg);"><span class="imp-dot ${a.importance||'medium'}" title="Importância"></span>${a.name}</td>
-    <td>${a.cat}</td>
-    <td><select class="imp-sel" title="Modelador" onchange="D.assets.find(x=>x.id===${a.id}).modeler=this.value;save();"><option value=""${!(a.modeler)?' selected':''}>—</option><option value="Dean"${(a.modeler)==='Dean'?' selected':''}>Dean</option><option value="Naoto"${(a.modeler)==='Naoto'?' selected':''}>Naoto</option></select></td>
-    <td><select class="imp-sel" title="Fase" onchange="D.assets.find(x=>x.id===${a.id}).phase=parseInt(this.value);save();"><option value="1"${(a.phase||1)===1?' selected':''}>F1</option><option value="2"${(a.phase||1)===2?' selected':''}>F2</option><option value="3"${(a.phase||1)===3?' selected':''}>F3</option></select></td>
-    <td>${deadlineInput(a.id,a.deadline)}</td>
-    <td><span class="badge ${sb[a.status]}">${sl[a.status]}</span></td>
-    <td style="white-space:nowrap;display:flex;align-items:center;gap:0.3rem;flex-wrap:wrap;">
-      <select class="imp-sel" title="Importância" onchange="D.assets.find(x=>x.id===${a.id}).importance=this.value;save();renderDash();"><option value="high"${(a.importance||'medium')==='high'?' selected':''}>🔴</option><option value="medium"${(a.importance||'medium')==='medium'?' selected':''}>🟡</option><option value="low"${(a.importance||'medium')==='low'?' selected':''}>🟢</option></select>
-      <button class="btn btn-sm btn-icon" style="border-color:var(--green);color:var(--green);" onclick="chAsset(${a.id},'done')">✓</button>
-      <button class="btn btn-sm btn-icon" style="border-color:var(--accent);color:var(--accent);" onclick="chAsset(${a.id},'wip')">⚙</button>
-      <button class="btn btn-sm btn-icon btn-danger" onclick="delAsset(${a.id})">✕</button>
-    </td>
-  </tr>`).join('');
+  if(!sorted.length){list.innerHTML='<div class="empty"><div class="empty-icon">🧱</div>Nenhum asset nesta vista</div>';return;}
+  list.innerHTML=sorted.map(a=>`<div class="sys model-card" id="mo${a.id}" onclick="togModel(${a.id})">
+    <div class="sys-h">
+      <span class="badge b-phase">#${a.priority}</span>
+      <span class="imp-dot ${a.importance||'medium'}" title="Importância"></span>
+      <span class="sys-name">${escHTML(a.name)}</span>
+      ${deadlineSpan(a.deadline)}
+      <span class="badge ${sb[a.status]}">${sl[a.status]}</span>
+      <span class="sys-chev">▼</span>
+    </div>
+    <div class="sys-body" onclick="event.stopPropagation()">
+      <div class="field"><div class="field-l">Descrição</div><textarea class="txta" id="mod${a.id}">${escHTML(a.desc)}</textarea></div>
+      <div class="field"><div class="field-l">Link de Referência</div><input class="inp" id="mol${a.id}" value="${escHTML(a.link)}" placeholder="https://..."></div>
+      ${a.link?`<div style="margin:-0.3rem 0 0.6rem;"><a href="${a.link}" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem;">🔗 Abrir modelo de referência</a></div>`:''}
+      <div class="g2">
+        <div class="field"><div class="field-l">Prazo</div><input class="inp" type="date" id="modl${a.id}" value="${toISODate(a.deadline)}"></div>
+        <div class="field"><div class="field-l">Fase</div><select class="sel" id="mop${a.id}"><option value="1"${(a.phase||1)===1?' selected':''}>Fase 1</option><option value="2"${(a.phase||1)===2?' selected':''}>Fase 2</option><option value="3"${(a.phase||1)===3?' selected':''}>Fase 3</option></select></div>
+      </div>
+      <div class="g2">
+        <div class="field"><div class="field-l">Categoria</div><input class="inp" id="moc${a.id}" value="${escHTML(a.cat)}"></div>
+        <div class="field"><div class="field-l">Modelador</div><select class="sel" id="mom${a.id}"><option value=""${!(a.modeler)?' selected':''}>— Não atribuído —</option><option value="Dean"${(a.modeler)==='Dean'?' selected':''}>Dean</option><option value="Naoto"${(a.modeler)==='Naoto'?' selected':''}>Naoto</option></select></div>
+      </div>
+      <div class="field"><div class="field-l">Importância no progresso geral</div><select class="imp-sel" id="moi${a.id}" style="width:100%;"><option value="high"${(a.importance||'medium')==='high'?' selected':''}>🔴 Alta — Crítico</option><option value="medium"${(a.importance||'medium')==='medium'?' selected':''}>🟡 Média — Importante</option><option value="low"${(a.importance||'medium')==='low'?' selected':''}>🟢 Baixa — Nice-to-have</option></select></div>
+      <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.5rem;">
+        <button class="btn btn-sm" style="border-color:var(--green);color:var(--green);" onclick="chAsset(${a.id},'done')">✓ Completo</button>
+        <button class="btn btn-sm" style="border-color:var(--accent);color:var(--accent);" onclick="chAsset(${a.id},'wip')">⚙ Em Produção</button>
+        <button class="btn btn-sm" onclick="chAsset(${a.id},'todo')">○ A Fazer</button>
+        <button class="btn btn-sm btn-accent" onclick="saveAsset(${a.id})">Guardar</button>
+        <button class="btn btn-sm btn-danger" onclick="delAsset(${a.id})">Remover</button>
+      </div>
+    </div>
+  </div>`).join('');
+  open.forEach(id=>{const el=document.getElementById('mo'+id);if(el)el.classList.add('open');});
+}
+function saveAsset(id){
+  const a=D.assets.find(x=>x.id===id);if(!a)return;
+  a.desc=document.getElementById('mod'+id).value;
+  a.link=document.getElementById('mol'+id).value.trim();
+  a.deadline=document.getElementById('modl'+id).value;
+  a.phase=parseInt(document.getElementById('mop'+id).value);
+  a.cat=document.getElementById('moc'+id).value;
+  a.modeler=document.getElementById('mom'+id).value||'';
+  a.importance=document.getElementById('moi'+id).value||a.importance||'medium';
+  save();renderModel();renderDash();
+  if(window.logChange)window.logChange(`Editou asset "${a.name}"`);
+  toast('Asset guardado.');
 }
 function chAsset(id,st){const a=D.assets.find(x=>x.id===id);a.status=st;renderModel();save();const ll={done:'Entregue',wip:'Em Produção',todo:'A Fazer'};if(window.logChange)window.logChange(`Marcou asset "${a.name}" como ${ll[st]||st}`);}
 function delAsset(id){const a=D.assets.find(x=>x.id===id);D.assets=D.assets.filter(x=>x.id!==id);renderModel();save();if(window.logChange&&a)window.logChange(`Removeu asset "${a.name}"`);}
 function addAssetLog(n){if(window.logChange)window.logChange(`Adicionou asset "${n}"`);}
-function addAsset(){const n=document.getElementById('ma-name').value.trim();if(!n)return;D.assets.push({id:++D.nid,name:n,cat:document.getElementById('ma-cat').value,phase:parseInt(document.getElementById('ma-phase').value)||1,deadline:document.getElementById('ma-dl').value,priority:parseInt(document.getElementById('ma-pri').value)||99,importance:document.getElementById('ma-imp').value||'medium',modeler:document.getElementById('ma-modeler').value||'',status:'todo'});closeModal('m-asset');document.getElementById('ma-name').value='';document.getElementById('ma-modeler').value='';renderModel();toast('Asset adicionado.');save();addAssetLog(n);}
+function addAsset(){const n=document.getElementById('ma-name').value.trim();if(!n)return;D.assets.push({id:++D.nid,name:n,cat:document.getElementById('ma-cat').value,phase:parseInt(document.getElementById('ma-phase').value)||1,deadline:document.getElementById('ma-dl').value,priority:parseInt(document.getElementById('ma-pri').value)||99,importance:document.getElementById('ma-imp').value||'medium',modeler:document.getElementById('ma-modeler').value||'',desc:document.getElementById('ma-desc').value.trim(),link:document.getElementById('ma-link').value.trim(),status:'todo'});closeModal('m-asset');document.getElementById('ma-name').value='';document.getElementById('ma-modeler').value='';document.getElementById('ma-desc').value='';document.getElementById('ma-link').value='';renderModel();toast('Asset adicionado.');save();addAssetLog(n);}
 
 // ─── RENDER: ANIMATOR ────────────────────────────────────
 let animFilter='';
@@ -2772,10 +2809,6 @@ function deadlineSpan(dl){
   if(!dl)return '';
   const od=isOverdue(dl);
   return `<span style="font-size:0.7rem;color:${od?'var(--red)':'var(--fg3)'};">⏱ ${dl}${od?' ⚠':''}</span>`;
-}
-function deadlineInput(id,dl){
-  const od=isOverdue(dl);
-  return `<input type="date" class="inp" style="width:130px;padding:0.2rem 0.4rem;font-size:0.75rem;${od?'border-color:var(--red);color:var(--red);':''}" value="${toISODate(dl)}" onchange="D.assets.find(x=>x.id===${id}).deadline=this.value;save();renderModel();">`;
 }
 
 function renderPhaseProgress(){
