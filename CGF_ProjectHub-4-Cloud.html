@@ -63,8 +63,9 @@ a{color:var(--accent);text-decoration:none;}
 .side-item{display:flex;align-items:center;gap:0.6rem;padding:0.5rem 1rem;cursor:pointer;color:var(--fg2);font-size:0.8rem;font-weight:500;transition:all 0.1s;border-left:2px solid transparent;margin:0 0.25rem;border-radius:0 var(--radius-sm) var(--radius-sm) 0;}
 .side-item:hover{color:var(--fg);background:var(--bg3);}
 .side-item.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-bg);}
-.side-icon{font-size:0.85rem;width:18px;text-align:center;opacity:0.7;}
+.side-icon{font-size:0.85rem;width:18px;text-align:center;opacity:0.7;position:relative;}
 .side-item.active .side-icon{opacity:1;}
+.side-alert{position:absolute;top:-4px;right:-6px;background:var(--red);color:#fff;font-size:0.5rem;font-weight:700;min-width:13px;height:13px;border-radius:7px;display:flex;align-items:center;justify-content:center;padding:0 2px;}
 
 /* MAIN */
 .main{margin-left:var(--sidebar);flex:1;padding:1.75rem 2rem;max-width:1100px;}
@@ -898,7 +899,7 @@ body.dev-previewing .l-nav{top:38px;}
   <div class="side-section">
     <div class="side-label">Geral</div>
     <div class="side-item active" data-p="dash"><span class="side-icon">◈</span>Dashboard</div>
-    <div class="side-item" data-p="tl"><span class="side-icon">◷</span>Calendário</div>
+    <div class="side-item" data-p="tl"><span class="side-icon">◷<span class="side-alert" id="side-alert-tl" style="display:none;"></span></span>Calendário</div>
     <div class="side-item" data-p="phases"><span class="side-icon">◆</span>Fases</div>
   </div>
   <div class="side-section">
@@ -1013,6 +1014,7 @@ body.dev-previewing .l-nav{top:38px;}
     <button class="btn btn-sm btn-accent" id="mf-all" onclick="setModelFilter('')">Todos</button>
     <button class="btn btn-sm" id="mf-dean" onclick="setModelFilter('Dean')">Dean</button>
     <button class="btn btn-sm" id="mf-naoto" onclick="setModelFilter('Naoto')">Naoto</button>
+    <button class="btn btn-sm" id="mf-mine" onclick="setModelFilter('__mine__')">👤 Minhas Tarefas</button>
   </div>
   <button class="btn btn-accent" onclick="openModal('m-asset')">+ Asset</button>
 </div>
@@ -1028,6 +1030,7 @@ body.dev-previewing .l-nav{top:38px;}
   <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
     <button class="btn btn-sm btn-accent" id="af-all" onclick="setAnimFilter('')">Todos</button>
     <button class="btn btn-sm" id="af-huygetsu" onclick="setAnimFilter('Huygetsu')">Huygetsu</button>
+    <button class="btn btn-sm" id="af-mine" onclick="setAnimFilter('__mine__')">👤 Minhas Tarefas</button>
   </div>
   <button class="btn btn-accent" onclick="openModal('m-anim')">+ Tarefa</button>
 </div>
@@ -1685,11 +1688,11 @@ function addSys(){const n=document.getElementById('ms-name').value.trim();if(!n)
 let modelFilter='';
 function setModelFilter(m){
   modelFilter=m;
-  ['all','dean','naoto'].forEach(k=>{
+  ['all','dean','naoto','mine'].forEach(k=>{
     const el=document.getElementById('mf-'+k);
     if(el)el.classList.remove('btn-accent');
   });
-  const key=m===''?'all':m.toLowerCase();
+  const key=m===''?'all':m==='__mine__'?'mine':m.toLowerCase();
   const el=document.getElementById('mf-'+key);
   if(el)el.classList.add('btn-accent');
   renderModel();
@@ -1698,7 +1701,8 @@ function getOpenModel(){return[...document.querySelectorAll('.model-card.open')]
 function togModel(id){document.getElementById('mo'+id).classList.toggle('open');}
 function renderModel(){
   const open=getOpenModel();
-  const src=modelFilter?D.assets.filter(a=>(a.modeler||'')=== modelFilter):D.assets;
+  const effFilter=modelFilter==='__mine__'?(window._currentUsername||''):modelFilter;
+  const src=effFilter?D.assets.filter(a=>(a.modeler||'')===effFilter):D.assets;
   const d=src.filter(a=>a.status==='done').length;
   const w=src.filter(a=>a.status==='wip').length;
   const t=src.filter(a=>a.status==='todo').length;
@@ -1766,11 +1770,11 @@ function addAsset(){const n=document.getElementById('ma-name').value.trim();if(!
 let animFilter='';
 function setAnimFilter(m){
   animFilter=m;
-  ['all','huygetsu'].forEach(k=>{
+  ['all','huygetsu','mine'].forEach(k=>{
     const el=document.getElementById('af-'+k);
     if(el)el.classList.remove('btn-accent');
   });
-  const key=m===''?'all':m.toLowerCase();
+  const key=m===''?'all':m==='__mine__'?'mine':m.toLowerCase();
   const el=document.getElementById('af-'+key);
   if(el)el.classList.add('btn-accent');
   renderAnim();
@@ -1780,7 +1784,8 @@ function togAnim(id){document.getElementById('an'+id).classList.toggle('open');}
 function renderAnim(){
   if(!D.animations)D.animations=[];
   const open=getOpenAnim();
-  const src=animFilter?D.animations.filter(a=>(a.animator||'')===animFilter):D.animations;
+  const effFilter=animFilter==='__mine__'?(window._currentUsername||''):animFilter;
+  const src=effFilter?D.animations.filter(a=>(a.animator||'')===effFilter):D.animations;
   const d=src.filter(a=>a.status==='done').length;
   const w=src.filter(a=>a.status==='wip').length;
   const t=src.filter(a=>a.status==='todo').length;
@@ -2768,6 +2773,8 @@ function checkDeadlines(){
   });
   const badge=document.getElementById('notif-count');
   if(badge){if(items.length){badge.textContent=items.length;badge.style.display='flex';}else badge.style.display='none';}
+  const sideBadge=document.getElementById('side-alert-tl');
+  if(sideBadge){if(items.length){sideBadge.textContent=items.length;sideBadge.style.display='flex';}else sideBadge.style.display='none';}
   const list=document.getElementById('notif-list');
   if(list){
     list.innerHTML=items.length?items.map(it=>`<div class="notif-item">
@@ -2998,12 +3005,14 @@ function calcWeightedProgress(){
   const completion={
     system:{done:1,wip:0.5,todo:0,blocked:0},
     asset:{done:1,wip:0.5,todo:0},
+    anim:{done:1,wip:0.5,todo:0},
     build:{done:1,wip:0.5,todo:0},
     lore:{developed:1,draft:0.2,archived:0}
   };
   let totalW=0,doneW=0;
   D.systems.forEach(s=>{const w=W[s.importance||'medium'];totalW+=w;doneW+=(completion.system[s.status]||0)*w;});
   D.assets.forEach(a=>{const w=W[a.importance||'medium'];totalW+=w;doneW+=(completion.asset[a.status]||0)*w;});
+  (D.animations||[]).forEach(a=>{const w=W[a.importance||'medium'];totalW+=w;doneW+=(completion.anim[a.status]||0)*w;});
   (D.builds||[]).forEach(b=>{const w=W[b.importance||'medium'];totalW+=w;doneW+=(completion.build[b.status]||0)*w;});
   (D.lore||[]).filter(l=>l.status!=='archived').forEach(l=>{const w=W[l.importance||'low'];totalW+=w;doneW+=(completion.lore[l.status]||0)*w;});
   return totalW?Math.round(doneW/totalW*100):0;
@@ -3015,6 +3024,7 @@ function calcWeightedBreakdown(){
   const all=[
     ...D.systems.map(s=>({importance:s.importance||'medium',done:s.status==='done'})),
     ...D.assets.map(a=>({importance:a.importance||'medium',done:a.status==='done'})),
+    ...(D.animations||[]).map(a=>({importance:a.importance||'medium',done:a.status==='done'})),
     ...(D.builds||[]).map(b=>({importance:b.importance||'medium',done:b.status==='done'})),
     ...(D.lore||[]).filter(l=>l.status!=='archived').map(l=>({importance:l.importance||'low',done:l.status==='developed'})),
   ];
