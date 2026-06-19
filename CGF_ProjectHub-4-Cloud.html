@@ -1031,7 +1031,7 @@ body.dev-previewing .l-nav{top:38px;}
   </div>
   <button class="btn btn-accent" onclick="openModal('m-anim')">+ Tarefa</button>
 </div>
-<div class="table-wrap"><table><thead><tr><th>#</th><th>Asset</th><th>Categoria</th><th>Animador</th><th>Fase</th><th>Prazo</th><th>Estado</th><th>Ações</th></tr></thead><tbody id="anim-table"></tbody></table></div>
+<div id="anim-list"></div>
 </div>
 
 <!-- LORE -->
@@ -1738,8 +1738,11 @@ function setAnimFilter(m){
   if(el)el.classList.add('btn-accent');
   renderAnim();
 }
+function getOpenAnim(){return[...document.querySelectorAll('.anim-card.open')].map(el=>parseInt(el.id.slice(2))).filter(Boolean);}
+function togAnim(id){document.getElementById('an'+id).classList.toggle('open');}
 function renderAnim(){
   if(!D.animations)D.animations=[];
+  const open=getOpenAnim();
   const src=animFilter?D.animations.filter(a=>(a.animator||'')===animFilter):D.animations;
   const d=src.filter(a=>a.status==='done').length;
   const w=src.filter(a=>a.status==='wip').length;
@@ -1750,29 +1753,54 @@ function renderAnim(){
     <div class="stat"><div class="stat-n c-fg3">${t}</div><div class="stat-l">Por Fazer</div></div>`;
   const sb={done:'b-done',wip:'b-wip',todo:'b-todo'};
   const sl={done:'Entregue',wip:'Em Prod.',todo:'A Fazer'};
+  const list=document.getElementById('anim-list');
   const sorted=[...src].sort((a,b)=>a.priority-b.priority);
-  document.getElementById('anim-table').innerHTML=sorted.map(a=>`<tr>
-    <td style="font-weight:700;color:var(--accent);">#${a.priority}</td>
-    <td style="font-weight:600;color:var(--fg);">
-      <span class="imp-dot ${a.importance||'medium'}" title="Importância"></span>${a.link?`<a href="${a.link}" target="_blank" rel="noopener noreferrer">${a.name}</a>`:a.name}
-      ${a.desc?`<div style="font-size:0.7rem;color:var(--fg3);font-weight:400;margin-top:0.15rem;">${a.desc.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`:''}
-    </td>
-    <td>${a.cat}</td>
-    <td><select class="imp-sel" title="Animador" onchange="D.animations.find(x=>x.id===${a.id}).animator=this.value;save();"><option value=""${!(a.animator)?' selected':''}>—</option><option value="Huygetsu"${(a.animator)==='Huygetsu'?' selected':''}>Huygetsu</option></select></td>
-    <td><select class="imp-sel" title="Fase" onchange="D.animations.find(x=>x.id===${a.id}).phase=parseInt(this.value);save();"><option value="1"${(a.phase||1)===1?' selected':''}>F1</option><option value="2"${(a.phase||1)===2?' selected':''}>F2</option><option value="3"${(a.phase||1)===3?' selected':''}>F3</option></select></td>
-    <td>${deadlineInputAnim(a.id,a.deadline)}</td>
-    <td><span class="badge ${sb[a.status]}">${sl[a.status]}</span></td>
-    <td style="white-space:nowrap;display:flex;align-items:center;gap:0.3rem;flex-wrap:wrap;">
-      <select class="imp-sel" title="Importância" onchange="D.animations.find(x=>x.id===${a.id}).importance=this.value;save();"><option value="high"${(a.importance||'medium')==='high'?' selected':''}>🔴</option><option value="medium"${(a.importance||'medium')==='medium'?' selected':''}>🟡</option><option value="low"${(a.importance||'medium')==='low'?' selected':''}>🟢</option></select>
-      <button class="btn btn-sm btn-icon" style="border-color:var(--green);color:var(--green);" onclick="chAnim(${a.id},'done')">✓</button>
-      <button class="btn btn-sm btn-icon" style="border-color:var(--accent);color:var(--accent);" onclick="chAnim(${a.id},'wip')">⚙</button>
-      <button class="btn btn-sm btn-icon btn-danger" onclick="delAnim(${a.id})">✕</button>
-    </td>
-  </tr>`).join('');
+  if(!sorted.length){list.innerHTML='<div class="empty"><div class="empty-icon">🎬</div>Nenhuma tarefa de animação</div>';return;}
+  list.innerHTML=sorted.map(a=>`<div class="sys anim-card" id="an${a.id}" onclick="togAnim(${a.id})">
+    <div class="sys-h">
+      <span class="badge b-phase">#${a.priority}</span>
+      <span class="imp-dot ${a.importance||'medium'}" title="Importância"></span>
+      <span class="sys-name">${escHTML(a.name)}</span>
+      ${deadlineSpan(a.deadline)}
+      <span class="badge ${sb[a.status]}">${sl[a.status]}</span>
+      <span class="sys-chev">▼</span>
+    </div>
+    <div class="sys-body" onclick="event.stopPropagation()">
+      <div class="field"><div class="field-l">Descrição</div><textarea class="txta" id="and${a.id}">${escHTML(a.desc)}</textarea></div>
+      <div class="field"><div class="field-l">Link do modelo</div><input class="inp" id="anl${a.id}" value="${escHTML(a.link)}" placeholder="https://..."></div>
+      ${a.link?`<div style="margin:-0.3rem 0 0.6rem;"><a href="${a.link}" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem;">🔗 Abrir modelo de referência</a></div>`:''}
+      <div class="g2">
+        <div class="field"><div class="field-l">Prazo</div><input class="inp" type="date" id="andl${a.id}" value="${toISODate(a.deadline)}"></div>
+        <div class="field"><div class="field-l">Fase</div><select class="sel" id="anp${a.id}"><option value="1"${(a.phase||1)===1?' selected':''}>Fase 1</option><option value="2"${(a.phase||1)===2?' selected':''}>Fase 2</option><option value="3"${(a.phase||1)===3?' selected':''}>Fase 3</option></select></div>
+      </div>
+      <div class="g2">
+        <div class="field"><div class="field-l">Categoria</div><input class="inp" id="anc${a.id}" value="${escHTML(a.cat)}"></div>
+        <div class="field"><div class="field-l">Animador</div><select class="sel" id="ana${a.id}"><option value=""${!(a.animator)?' selected':''}>— Não atribuído —</option><option value="Huygetsu"${(a.animator)==='Huygetsu'?' selected':''}>Huygetsu</option></select></div>
+      </div>
+      <div class="field"><div class="field-l">Importância no progresso geral</div><select class="imp-sel" id="ani${a.id}" style="width:100%;"><option value="high"${(a.importance||'medium')==='high'?' selected':''}>🔴 Alta — Crítico</option><option value="medium"${(a.importance||'medium')==='medium'?' selected':''}>🟡 Média — Importante</option><option value="low"${(a.importance||'medium')==='low'?' selected':''}>🟢 Baixa — Nice-to-have</option></select></div>
+      <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.5rem;">
+        <button class="btn btn-sm" style="border-color:var(--green);color:var(--green);" onclick="chAnim(${a.id},'done')">✓ Completo</button>
+        <button class="btn btn-sm" style="border-color:var(--accent);color:var(--accent);" onclick="chAnim(${a.id},'wip')">⚙ Em Produção</button>
+        <button class="btn btn-sm" onclick="chAnim(${a.id},'todo')">○ A Fazer</button>
+        <button class="btn btn-sm btn-accent" onclick="saveAnim(${a.id})">Guardar</button>
+        <button class="btn btn-sm btn-danger" onclick="delAnim(${a.id})">Remover</button>
+      </div>
+    </div>
+  </div>`).join('');
+  open.forEach(id=>{const el=document.getElementById('an'+id);if(el)el.classList.add('open');});
 }
-function deadlineInputAnim(id,dl){
-  const od=isOverdue(dl);
-  return `<input type="date" class="inp" style="width:130px;padding:0.2rem 0.4rem;font-size:0.75rem;${od?'border-color:var(--red);color:var(--red);':''}" value="${toISODate(dl)}" onchange="D.animations.find(x=>x.id===${id}).deadline=this.value;save();renderAnim();">`;
+function saveAnim(id){
+  const a=D.animations.find(x=>x.id===id);if(!a)return;
+  a.desc=document.getElementById('and'+id).value;
+  a.link=document.getElementById('anl'+id).value.trim();
+  a.deadline=document.getElementById('andl'+id).value;
+  a.phase=parseInt(document.getElementById('anp'+id).value);
+  a.cat=document.getElementById('anc'+id).value;
+  a.animator=document.getElementById('ana'+id).value||'';
+  a.importance=document.getElementById('ani'+id).value||a.importance||'medium';
+  save();renderAnim();
+  if(window.logChange)window.logChange(`Editou tarefa de animação "${a.name}"`);
+  toast('Tarefa guardada.');
 }
 function chAnim(id,st){const a=D.animations.find(x=>x.id===id);a.status=st;renderAnim();save();const ll={done:'Entregue',wip:'Em Produção',todo:'A Fazer'};if(window.logChange)window.logChange(`Marcou tarefa de animação "${a.name}" como ${ll[st]||st}`);}
 function delAnim(id){const a=D.animations.find(x=>x.id===id);D.animations=D.animations.filter(x=>x.id!==id);renderAnim();save();if(window.logChange&&a)window.logChange(`Removeu tarefa de animação "${a.name}"`);}
